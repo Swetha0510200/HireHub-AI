@@ -1,0 +1,3561 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Resume Analyzer | HireHub AI</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/resume.css}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard">
+
+
+    <!-- ========================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ========================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-briefcase"></i>
+
+            <span>HireHub AI</span>
+
+        </div>
+
+
+        <ul>
+
+            <li>
+
+                <a th:href="@{/dashboard}">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a th:href="@{/browse-jobs}">
+
+                    <i class="fa-solid fa-briefcase"></i>
+
+                    <span>Browse Jobs</span>
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a th:href="@{/ai-job-match}">
+
+                    <i class="fa-solid fa-robot"></i>
+
+                    <span>AI Job Match</span>
+
+                </a>
+
+            </li>
+
+
+            <li class="active">
+
+                <a th:href="@{/resume-analyzer}">
+
+                    <i class="fa-solid fa-file-lines"></i>
+
+                    <span>Resume Analyzer</span>
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a th:href="@{/ats-score}">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    <span>ATS Score</span>
+
+                </a>
+
+            </li>
+
+
+            <li>
+                <a th:href="@{/saved-jobs}">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span>Saved Jobs</span>
+                </a>
+            </li>
+
+            <li>
+                <a th:href="@{/applications}">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Applications</span>
+                </a>
+            </li>
+
+            <li>
+                <a th:href="@{/interviews}">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Interviews</span>
+                </a>
+            </li>
+
+
+            <li>
+
+                <a th:href="@{/profile}">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <span>Profile</span>
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a th:href="@{/settings}">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    <span>Settings</span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+
+    <!-- ========================================================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ========================================================= -->
+
+    <main class="content">
+
+
+        <!-- ===================================================== -->
+        <!-- TOP BAR -->
+        <!-- ===================================================== -->
+
+        <header class="topbar">
+
+            <div class="search">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text"
+                       placeholder="Search anything...">
+
+            </div>
+
+
+            <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                <a th:href="@{/notifications}" style="color: inherit; text-decoration: none;">
+                    <i class="fa-regular fa-bell"></i>
+                </a>
+                <div th:if="${session.userProfileImage != null && !session.userProfileImage.isEmpty()}">
+                    <img th:src="${session.userProfileImage}" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                </div>
+                <div th:if="${session.userProfileImage == null || session.userProfileImage.isEmpty()}" class="avatar-initial"
+                     th:text="${session.userInitials != null ? session.userInitials : (userName != null && !userName.isEmpty() ? (userName.contains(' ') ? userName.split(' ')[0].substring(0,1).toUpperCase() + userName.split(' ')[userName.split(' ').length-1].substring(0,1).toUpperCase() : userName.substring(0,1).toUpperCase()) : 'U')}">
+                    U
+                </div>
+                <div>
+                    <h4 th:text="${userName != null ? userName : 'Candidate'}">
+                        Candidate
+                    </h4>
+                    <small th:text="${userRole != null ? userRole : 'Student'}">
+                        Student
+                    </small>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===================================================== -->
+        <!-- HERO -->
+        <!-- ===================================================== -->
+
+        <section class="hero">
+            <div>
+                <span class="tag">
+                    AI Resume Intelligence
+                </span>
+
+                <h1>
+                    Analyze Your Resume Like Top Recruiters
+                </h1>
+
+                <p>
+                    Upload your resume and receive an ATS score,
+                    AI recommendations, recruiter insights,
+                    keyword analysis and career guidance
+                    based on your actual resume.
+                </p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.18); border-radius: 20px; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #ffffff; margin-right: 1.5rem;">
+                <i class="fa-solid fa-file-invoice"></i>
+            </div>
+        </section>
+
+        <div th:if="${errorMessage}" style="background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 12px; margin: 1.5rem 0; font-weight: 600;">
+            <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${errorMessage}">Error message</span>
+        </div>
+        <div th:if="${successMessage}" style="background: #dcfce7; color: #16a34a; padding: 1rem; border-radius: 12px; margin: 1.5rem 0; font-weight: 600;">
+            <i class="fa-solid fa-circle-check"></i> <span th:text="${successMessage}">Success message</span>
+        </div>
+
+        <!-- ===================================================== -->
+        <!-- UPLOAD SECTION -->
+        <!-- ===================================================== -->
+
+        <section class="upload-section">
+
+
+            <div class="upload-box">
+
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+
+
+                <h2>
+
+                    Upload Resume
+
+                </h2>
+
+
+                <p>
+
+                    PDF • DOC • DOCX
+
+                </p>
+
+
+                <form th:action="@{/analyze-resume}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+
+                    <input type="file"
+                           id="resumeUpload"
+                           name="resume"
+                           accept=".pdf,.doc,.docx"
+                           hidden
+                           onchange="this.form.submit()">
+
+
+                    <button type="button"
+                            onclick="document.getElementById('resumeUpload').click()">
+
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                        Upload Resume
+
+                    </button>
+
+
+                </form>
+
+            </div>
+
+
+
+            <div class="upload-info">
+
+
+                <div class="mini-card">
+
+                    <i class="fa-solid fa-file-pdf"></i>
+
+                    <div>
+
+                        <h3>
+
+                            Supported Files
+
+                        </h3>
+
+                        <p>
+
+                            PDF, DOC, DOCX
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="mini-card">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                    <div>
+
+                        <h3>
+
+                            Processing Time
+
+                        </h3>
+
+                        <p>
+
+                            Usually a few seconds
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="mini-card">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <div>
+
+                        <h3>
+
+                            Resume Privacy
+
+                        </h3>
+
+                        <p>
+
+                            Your resume stays private
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div th:if="${resumeId != null}" style="margin-top:18px;">
+                <a th:href="@{/resume/{id}/download(id=${resumeId})}"
+                   class="download-resume-btn">
+                    <i class="fa-solid fa-download"></i>
+                    Download Uploaded Resume
+                </a>
+            </div>
+
+        </section>
+
+        <!-- EMPTY STATE WHEN NO RESUME ANALYZED -->
+        <section th:if="${analysis == null}" style="background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1; padding: 4rem 2rem; text-align: center; margin: 2rem 0;">
+            <div style="width: 70px; height: 70px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 1rem;">
+                <i class="fa-solid fa-file-arrow-up"></i>
+            </div>
+            <h2 style="font-size: 1.4rem; color: #0f172a; margin-bottom: 0.5rem;">No resume analyzed yet</h2>
+            <p style="color: #64748b; max-width: 500px; margin: 0 auto 1.5rem;">Upload your PDF, DOC or DOCX resume using the upload box above to view real-time ATS scoring, keyword detection, section breakdown, and personalized recommendations.</p>
+        </section>
+
+        <!-- CONTAINER FOR REAL ANALYSIS RESULTS -->
+        <div th:if="${analysis != null}">
+
+        <!-- ===================================================== -->
+        <!-- AI ANALYSIS DASHBOARD -->
+        <!-- ===================================================== -->
+
+        <section class="analysis-dashboard">
+
+
+            <div class="section-title">
+
+                <h2>
+
+                    AI Resume Analysis
+
+                </h2>
+
+                <p>
+
+                    Powered by HireHub AI • Resume Intelligence Engine
+
+                </p>
+
+            </div>
+
+
+
+            <div class="analysis-grid">
+
+
+                <!-- ================================================= -->
+                <!-- LEFT PANEL -->
+                <!-- ================================================= -->
+
+                <div class="analysis-left">
+
+
+                    <!-- ============================================= -->
+                    <!-- ATS SCORE -->
+                    <!-- ============================================= -->
+
+                    <div class="score-card">
+
+
+                        <div class="score-circle">
+
+
+                            <svg>
+
+                                <circle cx="90"
+                                        cy="90"
+                                        r="70">
+                                </circle>
+
+
+                                <circle class="progress"
+                                        cx="90"
+                                        cy="90"
+                                        r="70">
+                                </circle>
+
+                            </svg>
+
+
+
+                            <div class="score-value">
+
+
+                                <h1 id="atsScoreValue"
+                                    th:text="${atsScore != null ? atsScore + '%' : '0%'}">
+
+                                    0%
+
+                                </h1>
+
+
+                                <span>
+
+                                    ATS Score
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="score-details">
+
+
+                            <div class="metric">
+
+                                <h4>
+
+                                    Resume Quality
+
+                                </h4>
+
+
+                                <span class="excellent"
+                                      th:text="${resumeQuality != null ? resumeQuality : 'Build recruiter-ready quality'}">
+
+                                    Build recruiter-ready quality
+
+                                </span>
+
+                            </div>
+
+
+
+                            <div class="metric">
+
+                                <h4>
+
+                                    Ranking
+
+                                </h4>
+
+
+                                <span th:text="${ranking != null ? ranking : 'Improve your ATS ranking through targeted skills'}">
+
+                                    Improve your ATS ranking through targeted skills
+
+                                </span>
+
+                            </div>
+
+
+
+                            <div class="metric">
+
+                                <h4>
+
+                                    Expected ATS Pass
+
+                                </h4>
+
+
+                                <span th:text="${expectedAtsPass != null ? expectedAtsPass + '%' : 'Improve keyword and skill alignment'}">
+
+                                    Improve keyword and skill alignment
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ============================================= -->
+                    <!-- RESUME SUMMARY -->
+                    <!-- ============================================= -->
+
+                    <div class="summary-card">
+
+
+                        <div class="card-header">
+
+                            <i class="fa-solid fa-file-circle-check"></i>
+
+                            <h3>
+
+                                AI Resume Summary
+
+                            </h3>
+
+                        </div>
+
+
+                        <p th:text="${summary != null ? summary : 'Upload your resume to receive a personalized summary covering your professional profile, technical strengths, projects, education and recruiter readiness.'}">
+
+                            Upload your resume to receive a personalized summary covering your professional profile, technical strengths, projects, education and recruiter readiness.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- ============================================= -->
+                    <!-- DETECTED SKILLS -->
+                    <!-- ============================================= -->
+
+                    <div class="skills-analysis">
+
+
+                        <div class="card-header">
+
+                            <i class="fa-solid fa-laptop-code"></i>
+
+                            <h3>
+
+                                Detected Skills
+
+                            </h3>
+
+                        </div>
+
+
+
+                        <div class="skill-tags"
+                             th:if="${skills != null and !#lists.isEmpty(skills)}">
+
+
+                            <span th:each="skill : ${skills}"
+                                  th:text="${skill}">
+
+                                Skill
+
+                            </span>
+
+
+                        </div>
+
+
+
+                        <div th:if="${skills == null or #lists.isEmpty(skills)}">
+
+                            <p>
+
+                                Your resume does not currently show enough technical skills.
+
+                                <strong>
+
+                                    Recommended starting skills:
+
+                                </strong>
+
+                                Java/Python, SQL, Git, REST APIs,
+                                HTML, CSS and JavaScript.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ================================================= -->
+                <!-- RIGHT PANEL -->
+                <!-- ================================================= -->
+
+                <div class="analysis-right">
+
+
+                    <!-- ============================================= -->
+                    <!-- ATS BREAKDOWN -->
+                    <!-- ============================================= -->
+
+                    <div class="ats-breakdown">
+
+
+                        <div class="card-header">
+
+                            <i class="fa-solid fa-chart-pie"></i>
+
+                            <h3>
+
+                                Resume Breakdown
+
+                            </h3>
+
+                        </div>
+
+
+
+                        <!-- FORMATTING -->
+
+                        <div class="progress-item">
+
+
+                            <span>
+
+                                Formatting
+
+                            </span>
+
+
+                            <div class="progress-bar">
+
+
+                                <div th:style="'width:' + ${formattingScore != null ? formattingScore : 0} + '%'">
+
+                                </div>
+
+                            </div>
+
+
+                            <strong th:text="${formattingScore != null ? formattingScore + '%' : 'Improve'}">
+
+                                Improve
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <!-- KEYWORDS -->
+
+                        <div class="progress-item">
+
+
+                            <span>
+
+                                Keyword Match
+
+                            </span>
+
+
+                            <div class="progress-bar">
+
+
+                                <div th:style="'width:' + ${keywordScore != null ? keywordScore : 0} + '%'">
+
+                                </div>
+
+                            </div>
+
+
+                            <strong th:text="${keywordScore != null ? keywordScore + '%' : 'Improve'}">
+
+                                Improve
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <!-- SKILLS -->
+
+                        <div class="progress-item">
+
+
+                            <span>
+
+                                Skills
+
+                            </span>
+
+
+                            <div class="progress-bar">
+
+
+                                <div th:style="'width:' + ${skillScore != null ? skillScore : 0} + '%'">
+
+                                </div>
+
+                            </div>
+
+
+                            <strong th:text="${skillScore != null ? skillScore + '%' : 'Build'}">
+
+                                Build
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <!-- EXPERIENCE -->
+
+                        <div class="progress-item">
+
+
+                            <span>
+
+                                Experience
+
+                            </span>
+
+
+                            <div class="progress-bar">
+
+
+                                <div th:style="'width:' + ${experienceScore != null ? experienceScore : 0} + '%'">
+
+                                </div>
+
+                            </div>
+
+
+                            <strong th:text="${experienceScore != null ? experienceScore + '%' : 'Develop'}">
+
+                                Develop
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <!-- PROJECTS -->
+
+                        <div class="progress-item">
+
+
+                            <span>
+
+                                Projects
+
+                            </span>
+
+
+                            <div class="progress-bar">
+
+
+                                <div th:style="'width:' + ${projectScore != null ? projectScore : 0} + '%'">
+
+                                </div>
+
+                            </div>
+
+
+                            <strong th:text="${projectScore != null ? projectScore + '%' : 'Build'}">
+
+                                Build
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <!-- EDUCATION -->
+
+                        <div class="progress-item">
+
+
+                            <span>
+
+                                Education
+
+                            </span>
+
+
+                            <div class="progress-bar">
+
+
+                                <div th:style="'width:' + ${educationScore != null ? educationScore : 0} + '%'">
+
+                                </div>
+
+                            </div>
+
+
+                            <strong th:text="${educationScore != null ? educationScore + '%' : 'Add'}">
+
+                                Add
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ============================================= -->
+                    <!-- RESUME STRENGTH -->
+                    <!-- ============================================= -->
+
+                    <div class="strength-card">
+
+
+                        <div class="card-header">
+
+                            <i class="fa-solid fa-shield-heart"></i>
+
+                            <h3>
+
+                                Resume Strength
+
+                            </h3>
+
+                        </div>
+
+
+
+                        <ul th:if="${strengths != null and !#lists.isEmpty(strengths)}">
+
+
+                            <li th:each="strength : ${strengths}"
+                                th:text="'✔ ' + ${strength}">
+
+                                ✔ Resume strength detected
+
+                            </li>
+
+
+                        </ul>
+
+
+
+                        <ul th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+
+                            <li>
+
+                                ✔ Add a clear professional summary
+
+                            </li>
+
+
+                            <li>
+
+                                ✔ Highlight technical skills relevant to your target role
+
+                            </li>
+
+
+                            <li>
+
+                                ✔ Add at least 2 practical projects
+
+                            </li>
+
+
+                            <li>
+
+                                ✔ Include measurable achievements
+
+                            </li>
+
+
+                            <li>
+
+                                ✔ Add GitHub and LinkedIn links
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- AI CAREER INSIGHTS -->
+        <!-- ===================================================== -->
+
+        <section class="insights-section">
+
+
+            <div class="section-title">
+
+                <h2>
+
+                    AI Career Insights
+
+                </h2>
+
+                <p>
+
+                    Advanced Resume Intelligence powered by HireHub AI
+
+                </p>
+
+            </div>
+
+
+
+            <div class="insights-grid">
+
+
+                <!-- ================================================= -->
+                <!-- MISSING SKILLS / LEARNING GUIDANCE -->
+                <!-- ================================================= -->
+
+                <div class="insight-card">
+
+
+                    <div class="card-header">
+
+                        <i class="fa-solid fa-graduation-cap"></i>
+
+                        <h3>
+
+                            Skills You Should Learn
+
+                        </h3>
+
+                    </div>
+
+
+                    <p class="card-description">
+
+                        HireHub AI compares your resume against
+                        skills commonly expected for modern software
+                        development roles.
+
+                    </p>
+
+
+
+                    <div class="missing-skills"
+                         th:if="${missingSkills != null and !#lists.isEmpty(missingSkills)}">
+
+
+                        <span th:each="skill : ${missingSkills}"
+                              th:text="${skill}">
+
+                            Skill
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- DEFAULT GUIDANCE -->
+
+                    <div class="missing-skills"
+                         th:if="${missingSkills == null or #lists.isEmpty(missingSkills)}">
+
+
+                        <span>
+
+                            Git & GitHub
+
+                        </span>
+
+
+                        <span>
+
+                            SQL
+
+                        </span>
+
+
+                        <span>
+
+                            REST API
+
+                        </span>
+
+
+                        <span>
+
+                            Spring Boot
+
+                        </span>
+
+
+                        <span>
+
+                            Docker
+
+                        </span>
+
+
+                        <span>
+
+                            AWS
+
+                        </span>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ================================================= -->
+                <!-- LEARNING ROADMAP -->
+                <!-- ================================================= -->
+
+                <div class="insight-card">
+
+
+                    <div class="card-header">
+
+                        <i class="fa-solid fa-route"></i>
+
+                        <h3>
+
+                            Recommended Learning Path
+
+                        </h3>
+
+                    </div>
+
+
+
+                    <div class="keyword-box">
+
+
+                        <div class="keyword-item">
+
+                            <span>
+
+                                Backend Development
+
+                            </span>
+
+                            <strong>
+
+                                Spring Boot + REST APIs
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="keyword-item">
+
+                            <span>
+
+                                Database
+
+                            </span>
+
+                            <strong>
+
+                                SQL + MySQL
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="keyword-item">
+
+                            <span>
+
+                                Version Control
+
+                            </span>
+
+                            <strong>
+
+                                Git + GitHub
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="keyword-item">
+
+                            <span>
+
+                                Deployment
+
+                            </span>
+
+                            <strong>
+
+                                Docker + AWS
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="keyword-item">
+
+                            <span>
+
+                                Security
+
+                            </span>
+
+                            <strong>
+
+                                Spring Security + JWT
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ================================================= -->
+                <!-- RESUME SECTIONS -->
+                <!-- ================================================= -->
+
+                <div class="insight-card">
+
+
+                    <div class="card-header">
+
+                        <i class="fa-solid fa-file-circle-check"></i>
+
+                        <h3>
+
+                            Resume Sections
+
+                        </h3>
+
+                    </div>
+
+
+
+                    <ul class="section-status">
+
+
+                        <li>
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            Professional Summary
+
+                        </li>
+
+
+                        <li>
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            Education
+
+                        </li>
+
+
+                        <li>
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            Technical Skills
+
+                        </li>
+
+
+                        <li>
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            Projects
+
+                        </li>
+
+
+                        <li>
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            Experience
+
+                        </li>
+
+
+                        <li>
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                            Certifications / Achievements
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+
+                <!-- ================================================= -->
+                <!-- AI SUGGESTIONS -->
+                <!-- ================================================= -->
+
+                <div class="insight-card">
+
+
+                    <div class="card-header">
+
+                        <i class="fa-solid fa-lightbulb"></i>
+
+                        <h3>
+
+                            AI Suggestions
+
+                        </h3>
+
+                    </div>
+
+
+
+                    <ul class="suggestions"
+                        th:if="${improvements != null and !#lists.isEmpty(improvements)}">
+
+
+                        <li th:each="improvement : ${improvements}"
+                            th:text="${improvement}">
+
+                            Resume improvement
+
+                        </li>
+
+
+                    </ul>
+
+
+
+                    <ul class="suggestions"
+                        th:if="${improvements == null or #lists.isEmpty(improvements)}">
+
+
+                        <li>
+
+                            Add measurable achievements using numbers and percentages.
+
+                        </li>
+
+
+                        <li>
+
+                            Mention the technologies used in every major project.
+
+                        </li>
+
+
+                        <li>
+
+                            Add GitHub repository links for technical projects.
+
+                        </li>
+
+
+                        <li>
+
+                            Add REST API and database experience if you have completed projects using them.
+
+                        </li>
+
+
+                        <li>
+
+                            Learn Docker and basic AWS deployment to strengthen your profile.
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- JOB MATCH PREDICTION -->
+        <!-- ===================================================== -->
+
+        <section class="prediction-section">
+
+
+            <div class="prediction-card">
+
+
+                <div class="prediction-left">
+
+
+                    <span class="prediction-tag">
+
+                        AI Job Match Guidance
+
+                    </span>
+
+
+                    <h2>
+
+                        Roles You Can Target
+
+                    </h2>
+
+
+                    <h1 th:text="${jobMatchScore != null ? jobMatchScore + '%' : 'Build'}">
+
+                        Build
+
+                    </h1>
+
+
+                    <p th:text="${jobMatchMessage != null ? jobMatchMessage : 'Your resume will be compared with job requirements after analysis. Focus on building strong projects, technical skills, GitHub evidence and role-specific keywords.'}">
+
+                        Your resume will be compared with job requirements after analysis. Focus on building strong projects, technical skills, GitHub evidence and role-specific keywords.
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="prediction-right">
+
+
+                    <div class="job-match">
+
+                        <span>
+
+                            Java Developer
+
+                        </span>
+
+
+                        <div class="match-bar">
+
+                            <div th:style="'width:' + ${javaMatch != null ? javaMatch : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+
+                        <strong th:text="${javaMatch != null ? javaMatch + '%' : 'Recommended'}">
+
+                            Recommended
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="job-match">
+
+                        <span>
+
+                            Backend Developer
+
+                        </span>
+
+
+                        <div class="match-bar">
+
+                            <div th:style="'width:' + ${backendMatch != null ? backendMatch : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+
+                        <strong th:text="${backendMatch != null ? backendMatch + '%' : 'Recommended'}">
+
+                            Recommended
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="job-match">
+
+                        <span>
+
+                            Full Stack Developer
+
+                        </span>
+
+
+                        <div class="match-bar">
+
+                            <div th:style="'width:' + ${fullStackMatch != null ? fullStackMatch : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+
+                        <strong th:text="${fullStackMatch != null ? fullStackMatch + '%' : 'Recommended'}">
+
+                            Recommended
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="job-match">
+
+                        <span>
+
+                            Software Engineer
+
+                        </span>
+
+
+                        <div class="match-bar">
+
+                            <div th:style="'width:' + ${softwareEngineerMatch != null ? softwareEngineerMatch : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+
+                        <strong th:text="${softwareEngineerMatch != null ? softwareEngineerMatch + '%' : 'Recommended'}">
+
+                            Recommended
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- ANALYSIS REPORT -->
+        <!-- ===================================================== -->
+
+        <section class="analysis-section">
+
+
+            <div class="section-title">
+
+
+                <h2>
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    Resume Analysis Report
+
+                </h2>
+
+
+                <span>
+
+                    Powered by HireHub AI
+
+                </span>
+
+            </div>
+
+
+
+            <div class="analysis-grid">
+
+
+                <!-- ============================================= -->
+                <!-- ATS SCORE -->
+                <!-- ============================================= -->
+
+                <div class="score-card">
+
+
+                    <div class="circle-score">
+
+
+                        <svg>
+
+                            <circle cx="70"
+                                    cy="70"
+                                    r="60">
+                            </circle>
+
+
+                            <circle cx="70"
+                                    cy="70"
+                                    r="60"
+                                    class="progress-circle">
+                            </circle>
+
+                        </svg>
+
+
+
+                        <div class="score-text">
+
+
+                            <h1 th:text="${atsScore != null ? atsScore + '%' : '0%'}">
+
+                                0%
+
+                            </h1>
+
+
+                            <p>
+
+                                ATS Score
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <button class="improve-btn">
+
+                        Improve Resume
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- ============================================= -->
+                <!-- SCORE DETAILS -->
+                <!-- ============================================= -->
+
+                <div class="score-details">
+
+
+                    <div class="detail-box">
+
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+
+                        <div>
+
+                            <h3>
+
+                                Formatting
+
+                            </h3>
+
+
+                            <span th:text="${formattingLabel != null ? formattingLabel : 'Use simple ATS-friendly formatting'}">
+
+                                Use simple ATS-friendly formatting
+
+                            </span>
+
+                        </div>
+
+
+                        <strong th:text="${formattingScore != null ? formattingScore + '%' : 'Improve'}">
+
+                            Improve
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="detail-box">
+
+
+                        <i class="fa-solid fa-key"></i>
+
+
+                        <div>
+
+                            <h3>
+
+                                Keywords
+
+                            </h3>
+
+
+                            <span th:text="${keywordLabel != null ? keywordLabel : 'Add role-specific keywords'}">
+
+                                Add role-specific keywords
+
+                            </span>
+
+                        </div>
+
+
+                        <strong th:text="${keywordScore != null ? keywordScore + '%' : 'Improve'}">
+
+                            Improve
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="detail-box">
+
+
+                        <i class="fa-solid fa-code"></i>
+
+
+                        <div>
+
+                            <h3>
+
+                                Technical Skills
+
+                            </h3>
+
+
+                            <span th:text="${skillLabel != null ? skillLabel : 'Build job-ready technical skills'}">
+
+                                Build job-ready technical skills
+
+                            </span>
+
+                        </div>
+
+
+                        <strong th:text="${skillScore != null ? skillScore + '%' : 'Build'}">
+
+                            Build
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="detail-box">
+
+
+                        <i class="fa-solid fa-award"></i>
+
+
+                        <div>
+
+                            <h3>
+
+                                Projects
+
+                            </h3>
+
+
+                            <span th:text="${projectLabel != null ? projectLabel : 'Add practical projects'}">
+
+                                Add practical projects
+
+                            </span>
+
+                        </div>
+
+
+                        <strong th:text="${projectScore != null ? projectScore + '%' : 'Build'}">
+
+                            Build
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- KEYWORD ANALYSIS -->
+        <!-- ===================================================== -->
+
+        <section class="keyword-section">
+
+
+            <div class="section-title">
+
+
+                <h2>
+
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+
+                    Keyword Analysis
+
+                </h2>
+
+            </div>
+
+
+
+            <div class="keyword-grid">
+
+
+                <!-- DETECTED -->
+
+                <div class="keyword-card success">
+
+
+                    <h3>
+
+                        Detected Keywords
+
+                    </h3>
+
+
+
+                    <div class="tags"
+                         th:if="${keywords != null and !#lists.isEmpty(keywords)}">
+
+
+                        <span th:each="keyword : ${keywords}"
+                              th:text="${keyword}">
+
+                            Keyword
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    <div class="tags"
+                         th:if="${keywords == null or #lists.isEmpty(keywords)}">
+
+
+                        <span>
+
+                            Java
+
+                        </span>
+
+
+                        <span>
+
+                            Python
+
+                        </span>
+
+
+                        <span>
+
+                            JavaScript
+
+                        </span>
+
+
+                        <span>
+
+                            HTML
+
+                        </span>
+
+
+                        <span>
+
+                            CSS
+
+                        </span>
+
+
+                        <span>
+
+                            SQL
+
+                        </span>
+
+
+                        <span>
+
+                            GitHub
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MISSING -->
+
+                <div class="keyword-card warning">
+
+
+                    <h3>
+
+                        Skills To Add For Better ATS Matching
+
+                    </h3>
+
+
+
+                    <div class="tags"
+                         th:if="${missingKeywords != null and !#lists.isEmpty(missingKeywords)}">
+
+
+                        <span th:each="keyword : ${missingKeywords}"
+                              th:text="${keyword}">
+
+                            Keyword
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    <div class="tags"
+                         th:if="${missingKeywords == null or #lists.isEmpty(missingKeywords)}">
+
+
+                        <span>
+
+                            REST API
+
+                        </span>
+
+
+                        <span>
+
+                            Spring Boot
+
+                        </span>
+
+
+                        <span>
+
+                            Docker
+
+                        </span>
+
+
+                        <span>
+
+                            AWS
+
+                        </span>
+
+
+                        <span>
+
+                            Spring Security
+
+                        </span>
+
+
+                        <span>
+
+                            CI/CD
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- SKILL MATCH -->
+        <!-- ===================================================== -->
+
+        <section class="skill-match">
+
+
+            <div class="section-title">
+
+
+                <h2>
+
+                    <i class="fa-solid fa-laptop-code"></i>
+
+                    Skill Match Analysis
+
+                </h2>
+
+            </div>
+
+
+
+            <div class="skill-progress">
+
+
+                <!-- JAVA -->
+
+                <div class="skill-item">
+
+
+                    <span>
+
+                        Java
+
+                    </span>
+
+
+                    <div class="bar">
+
+
+                        <div th:style="'width:' + ${javaSkillScore != null ? javaSkillScore : 0} + '%'">
+
+                        </div>
+
+                    </div>
+
+
+                    <small th:text="${javaSkillScore != null ? javaSkillScore + '%' : 'Learn'}">
+
+                        Learn
+
+                    </small>
+
+                </div>
+
+
+
+                <!-- SPRING -->
+
+                <div class="skill-item">
+
+
+                    <span>
+
+                        Spring Boot
+
+                    </span>
+
+
+                    <div class="bar">
+
+
+                        <div th:style="'width:' + ${springSkillScore != null ? springSkillScore : 0} + '%'">
+
+                        </div>
+
+                    </div>
+
+
+                    <small th:text="${springSkillScore != null ? springSkillScore + '%' : 'Recommended'}">
+
+                        Recommended
+
+                    </small>
+
+                </div>
+
+
+
+                <!-- SQL -->
+
+                <div class="skill-item">
+
+
+                    <span>
+
+                        SQL / MySQL
+
+                    </span>
+
+
+                    <div class="bar">
+
+
+                        <div th:style="'width:' + ${sqlSkillScore != null ? sqlSkillScore : 0} + '%'">
+
+                        </div>
+
+                    </div>
+
+
+                    <small th:text="${sqlSkillScore != null ? sqlSkillScore + '%' : 'Recommended'}">
+
+                        Recommended
+
+                    </small>
+
+                </div>
+
+
+
+                <!-- FRONTEND -->
+
+                <div class="skill-item">
+
+
+                    <span>
+
+                        HTML / CSS / JavaScript
+
+                    </span>
+
+
+                    <div class="bar">
+
+
+                        <div th:style="'width:' + ${frontendSkillScore != null ? frontendSkillScore : 0} + '%'">
+
+                        </div>
+
+                    </div>
+
+
+                    <small th:text="${frontendSkillScore != null ? frontendSkillScore + '%' : 'Recommended'}">
+
+                        Recommended
+
+                    </small>
+
+                </div>
+
+
+
+                <!-- CLOUD -->
+
+                <div class="skill-item">
+
+
+                    <span>
+
+                        Cloud / AWS
+
+                    </span>
+
+
+                    <div class="bar">
+
+
+                        <div th:style="'width:' + ${cloudSkillScore != null ? cloudSkillScore : 0} + '%'">
+
+                        </div>
+
+                    </div>
+
+
+                    <small th:text="${cloudSkillScore != null ? cloudSkillScore + '%' : 'Learn'}">
+
+                        Learn
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- RESUME STRENGTHS / IMPROVEMENTS -->
+        <!-- ===================================================== -->
+
+        <section class="insight-grid">
+
+
+            <!-- STRENGTHS -->
+
+            <div class="insight-card success">
+
+
+                <div class="insight-title">
+
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+
+                    <h3>
+
+                        Resume Strengths
+
+                    </h3>
+
+                </div>
+
+
+
+                <ul>
+
+
+                    <li th:each="strength : ${strengths}"
+                        th:if="${strengths != null and !#lists.isEmpty(strengths)}"
+                        th:text="'✔ ' + ${strength}">
+
+                        ✔ Strength
+
+                    </li>
+
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Add a clear professional summary
+
+                    </li>
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Highlight your strongest technical skills
+
+                    </li>
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Add practical projects with measurable results
+
+                    </li>
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Include GitHub and LinkedIn profiles
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+
+            <!-- IMPROVEMENTS -->
+
+            <div class="insight-card warning">
+
+
+                <div class="insight-title">
+
+
+                    <i class="fa-solid fa-lightbulb"></i>
+
+
+                    <h3>
+
+                        Suggested Improvements
+
+                    </h3>
+
+                </div>
+
+
+
+                <ul class="suggestions">
+
+
+                    <li th:each="improvement : ${improvements}"
+                        th:if="${improvements != null and !#lists.isEmpty(improvements)}"
+                        th:text="${improvement}">
+
+                        Improvement
+
+                    </li>
+
+
+                    <li th:if="${improvements == null or #lists.isEmpty(improvements)}">
+
+                        Use measurable achievements such as percentages,
+                        performance improvements, time saved or user counts.
+
+                    </li>
+
+
+                    <li th:if="${improvements == null or #lists.isEmpty(improvements)}">
+
+                        Start project bullets with action verbs such as
+                        Developed, Implemented, Designed, Optimized or Automated.
+
+                    </li>
+
+
+                    <li th:if="${improvements == null or #lists.isEmpty(improvements)}">
+
+                        Mention the exact technologies used in every project.
+
+                    </li>
+
+
+                    <li th:if="${improvements == null or #lists.isEmpty(improvements)}">
+
+                        Add GitHub repositories and professional profile links.
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+
+            <!-- MISSING KEYWORDS -->
+
+            <div class="insight-card danger">
+
+
+                <div class="insight-title">
+
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+
+                    <h3>
+
+                        Missing / Recommended Skills
+
+                    </h3>
+
+                </div>
+
+
+
+                <div class="keyword-list"
+                     th:if="${missingKeywords != null and !#lists.isEmpty(missingKeywords)}">
+
+
+                    <span th:each="keyword : ${missingKeywords}"
+                          th:text="${keyword}">
+
+                        Keyword
+
+                    </span>
+
+
+                </div>
+
+
+
+                <div class="keyword-list"
+                     th:if="${missingKeywords == null or #lists.isEmpty(missingKeywords)}">
+
+
+                    <span>
+
+                        Docker
+
+                    </span>
+
+
+                    <span>
+
+                        AWS
+
+                    </span>
+
+
+                    <span>
+
+                        Spring Security
+
+                    </span>
+
+
+                    <span>
+
+                        REST API
+
+                    </span>
+
+
+                    <span>
+
+                        CI/CD
+
+                    </span>
+
+
+                    <span>
+
+                        Microservices
+
+                    </span>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- RESUME PREVIEW -->
+        <!-- ===================================================== -->
+
+        <section class="resume-preview-section">
+
+
+            <div class="section-header">
+
+
+                <h2>
+
+                    <i class="fa-solid fa-file-lines"></i>
+
+                    Resume Preview
+
+                </h2>
+
+
+                <div class="preview-actions">
+
+
+                    <button class="preview-btn">
+
+                        <i class="fa-solid fa-eye"></i>
+
+                        Preview
+
+                    </button>
+
+
+                    <button class="download-btn">
+
+                        <i class="fa-solid fa-download"></i>
+
+                        Download Report
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="resume-preview-card">
+
+
+                <div class="resume-header">
+
+
+                    <div class="candidate">
+
+
+                        <div class="candidate-avatar">
+
+                            <i class="fa-solid fa-user-graduate"></i>
+
+                        </div>
+
+
+                        <div>
+
+
+                            <h2 th:text="${candidateName != null ? candidateName : 'Candidate'}">
+
+                                Candidate
+
+                            </h2>
+
+
+                            <p th:text="${candidateRole != null ? candidateRole : 'Software Developer'}">
+
+                                Software Developer
+
+                            </p>
+
+
+                            <span th:text="${experience != null ? 'Experience : ' + experience : 'Experience : Build practical experience through projects and internships'}">
+
+                                Experience : Build practical experience through projects and internships
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="status">
+
+
+                        <span class="verified">
+
+                            ✔ Resume Analysis Ready
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="resume-body">
+
+
+                    <!-- SUMMARY -->
+
+                    <div class="resume-block">
+
+
+                        <h4>
+
+                            Professional Summary
+
+                        </h4>
+
+
+                        <p th:text="${summary != null ? summary : 'Build a concise summary highlighting your target role, strongest technical skills, practical projects and the type of problems you can solve.'}">
+
+                            Build a concise summary highlighting your target role, strongest technical skills, practical projects and the type of problems you can solve.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- SKILLS -->
+
+                    <div class="resume-block">
+
+
+                        <h4>
+
+                            Technical Skills
+
+                        </h4>
+
+
+
+                        <div class="tag-list"
+                             th:if="${skills != null and !#lists.isEmpty(skills)}">
+
+
+                            <span th:each="skill : ${skills}"
+                                  th:text="${skill}">
+
+                                Skill
+
+                            </span>
+
+
+                        </div>
+
+
+
+                        <div class="tag-list"
+                             th:if="${skills == null or #lists.isEmpty(skills)}">
+
+
+                            <span>
+
+                                Java
+
+                            </span>
+
+
+                            <span>
+
+                                Python
+
+                            </span>
+
+
+                            <span>
+
+                                JavaScript
+
+                            </span>
+
+
+                            <span>
+
+                                SQL
+
+                            </span>
+
+
+                            <span>
+
+                                Git
+
+                            </span>
+
+
+                            <span>
+
+                                REST API
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- EDUCATION -->
+
+                    <div class="resume-block">
+
+
+                        <h4>
+
+                            Education
+
+                        </h4>
+
+
+                        <p th:text="${education != null ? education : 'Add your degree, specialization, institution and academic achievements.'}">
+
+                            Add your degree, specialization, institution and academic achievements.
+
+                        </p>
+
+
+                        <small th:text="${graduationYear != null ? 'Graduation : ' + graduationYear : 'Graduation : Add your expected or completed graduation year'}">
+
+                            Graduation : Add your expected or completed graduation year
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- DETECTED SKILLS + STRENGTHS -->
+        <!-- ===================================================== -->
+
+        <section class="skills-analysis">
+
+
+            <div class="analysis-card">
+
+
+                <div class="analysis-title">
+
+
+                    <i class="fa-solid fa-code"></i>
+
+
+                    <h3>
+
+                        Detected Skills
+
+                    </h3>
+
+                </div>
+
+
+
+                <div class="skill-grid">
+
+
+                    <div class="skill-box">
+
+
+                        <span>
+
+                            Java
+
+                        </span>
+
+
+                        <div class="skill-progress">
+
+
+                            <div th:style="'width:' + ${javaSkillScore != null ? javaSkillScore : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="skill-box">
+
+
+                        <span>
+
+                            Spring Boot
+
+                        </span>
+
+
+                        <div class="skill-progress">
+
+
+                            <div th:style="'width:' + ${springSkillScore != null ? springSkillScore : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="skill-box">
+
+
+                        <span>
+
+                            SQL
+
+                        </span>
+
+
+                        <div class="skill-progress">
+
+
+                            <div th:style="'width:' + ${sqlSkillScore != null ? sqlSkillScore : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="skill-box">
+
+
+                        <span>
+
+                            REST API
+
+                        </span>
+
+
+                        <div class="skill-progress">
+
+
+                            <div th:style="'width:' + ${restApiSkillScore != null ? restApiSkillScore : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="skill-box">
+
+
+                        <span>
+
+                            Git / GitHub
+
+                        </span>
+
+
+                        <div class="skill-progress">
+
+
+                            <div th:style="'width:' + ${gitSkillScore != null ? gitSkillScore : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="skill-box">
+
+
+                        <span>
+
+                            Problem Solving
+
+                        </span>
+
+
+                        <div class="skill-progress">
+
+
+                            <div th:style="'width:' + ${problemSolvingScore != null ? problemSolvingScore : 0} + '%'">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- STRENGTHS FOUND -->
+            <!-- ================================================= -->
+
+            <div class="analysis-card">
+
+
+                <div class="analysis-title">
+
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+
+                    <h3>
+
+                        Strengths Found
+
+                    </h3>
+
+                </div>
+
+
+
+                <ul class="strength-list">
+
+
+                    <li th:each="strength : ${strengths}"
+                        th:if="${strengths != null and !#lists.isEmpty(strengths)}"
+                        th:text="'✔ ' + ${strength}">
+
+                        ✔ Strength
+
+                    </li>
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Professional contact information
+
+                    </li>
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Technical skills section
+
+                    </li>
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Project-based learning
+
+                    </li>
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Education information
+
+                    </li>
+
+
+                    <li th:if="${strengths == null or #lists.isEmpty(strengths)}">
+
+                        ✔ Professional profile links
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- AI RESUME SUGGESTIONS -->
+        <!-- ===================================================== -->
+
+        <section class="ai-suggestions-section">
+
+
+            <div class="section-header">
+
+
+                <h2>
+
+                    <i class="fa-solid fa-robot"></i>
+
+                    AI Resume Suggestions
+
+                </h2>
+
+
+                <span class="live-tag">
+
+                    AI Generated
+
+                </span>
+
+            </div>
+
+
+
+            <div class="suggestion-grid">
+
+
+                <!-- ============================================= -->
+                <!-- STRONG STRUCTURE -->
+                <!-- ============================================= -->
+
+                <div class="suggestion-card success">
+
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+
+                            Build an ATS-Friendly Structure
+
+                        </h3>
+
+
+                        <p>
+
+                            Keep your resume simple, readable and
+                            structured with clear sections such as
+                            Summary, Skills, Projects, Education and Experience.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ============================================= -->
+                <!-- PROJECTS -->
+                <!-- ============================================= -->
+
+                <div class="suggestion-card warning">
+
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-lightbulb"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+
+                            Build Real Projects
+
+                        </h3>
+
+
+                        <p>
+
+                            Companies value proof of practical ability.
+                            Add projects using Java, Spring Boot, databases,
+                            APIs, authentication and deployment.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ============================================= -->
+                <!-- CLOUD -->
+                <!-- ============================================= -->
+
+                <div class="suggestion-card info">
+
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-cloud"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+
+                            Learn Cloud & Deployment
+
+                        </h3>
+
+
+                        <p>
+
+                            If AWS or cloud deployment is missing,
+                            learn AWS fundamentals, Docker and basic
+                            CI/CD. These skills can significantly improve
+                            your profile for modern development roles.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ============================================= -->
+                <!-- SECURITY -->
+                <!-- ============================================= -->
+
+                <div class="suggestion-card danger">
+
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+
+                            Strengthen Application Security
+
+                        </h3>
+
+
+                        <p>
+
+                            Learn Spring Security, JWT authentication,
+                            authorization and secure REST APIs to
+                            demonstrate production-level backend knowledge.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- MISSING ATS KEYWORDS -->
+        <!-- ===================================================== -->
+
+        <section class="keyword-section">
+
+
+            <div class="section-header">
+
+
+                <h2>
+
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+
+                    Recommended ATS Keywords
+
+                </h2>
+
+            </div>
+
+
+
+            <div class="keyword-container">
+
+
+                <span class="keyword danger">
+
+                    Docker
+
+                </span>
+
+
+                <span class="keyword warning">
+
+                    AWS
+
+                </span>
+
+
+                <span class="keyword warning">
+
+                    Spring Security
+
+                </span>
+
+
+                <span class="keyword info">
+
+                    REST API
+
+                </span>
+
+
+                <span class="keyword success">
+
+                    JWT
+
+                </span>
+
+
+                <span class="keyword info">
+
+                    CI/CD
+
+                </span>
+
+
+                <span class="keyword warning">
+
+                    Microservices
+
+                </span>
+
+
+                <span class="keyword success">
+
+                    GitHub
+
+                </span>
+
+
+                <span class="keyword danger">
+
+                    Testing / JUnit
+
+                </span>
+
+
+                <span class="keyword info">
+
+                    Agile
+
+                </span>
+
+            </div>
+
+
+            <p style="margin-top:15px;">
+
+                <strong>
+
+                    Recruiter guidance:
+
+                </strong>
+
+                Do not add a keyword just because it is popular.
+                Learn the technology and use it in a project before
+                adding it to your resume.
+
+            </p>
+
+        </section>
+
+
+
+        <!-- ===================================================== -->
+        <!-- RECRUITER ATTENTION HEATMAP -->
+        <!-- ===================================================== -->
+
+        <section class="heatmap-section">
+
+
+            <div class="section-header">
+
+
+                <h2>
+
+                    <i class="fa-solid fa-eye"></i>
+
+                    Recruiter Attention Areas
+
+                </h2>
+
+            </div>
+
+
+
+            <div class="heatmap">
+
+
+                <div class="heat-card excellent">
+
+
+                    <h3>
+
+                        Professional Summary
+
+                    </h3>
+
+
+                    <span th:text="${summaryScore != null ? summaryScore + '%' : 'High Priority'}">
+
+                        High Priority
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="heat-card excellent">
+
+
+                    <h3>
+
+                        Technical Skills
+
+                    </h3>
+
+
+                    <span th:text="${skillScore != null ? skillScore + '%' : 'High Priority'}">
+
+                        High Priority
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="heat-card good">
+
+
+                    <h3>
+
+                        Projects
+
+                    </h3>
+
+
+                    <span th:text="${projectScore != null ? projectScore + '%' : 'High Priority'}">
+
+                        High Priority
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="heat-card average">
+
+
+                    <h3>
+
+                        Certifications
+
+                    </h3>
+
+
+                    <span>
+
+                        Recommended
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="heat-card weak">
+
+
+                    <h3>
+
+                        Achievements
+
+                    </h3>
+
+
+                    <span>
+
+                        Add measurable results
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- ========================================================= -->
+<!-- FLOATING AI ASSISTANT -->
+<!-- ========================================================= -->
+
+<div class="floating-ai">
+
+    <button>
+
+        <i class="fa-solid fa-robot"></i>
+
+    </button>
+
+</div>
+
+
+
+</div>
+
+<!-- ========================================================= -->
+<!-- FOOTER -->
+<!-- ========================================================= -->
+
+<footer class="footer">
+
+
+    <div>
+
+
+        <h3>
+
+            HireHub AI Resume Analyzer
+
+        </h3>
+
+
+        <p>
+
+            AI Powered Resume Intelligence • ATS Optimization • Career Guidance
+
+        </p>
+
+    </div>
+
+
+    <div class="footer-links">
+
+
+        <a href="#">
+
+            Privacy
+
+        </a>
+
+
+        <a href="#">
+
+            Terms
+
+        </a>
+
+
+        <a href="#">
+
+            Support
+
+        </a>
+
+
+        <a href="#">
+
+            Contact
+
+        </a>
+
+    </div>
+
+</footer>
+
+
+
+<!-- ========================================================= -->
+<!-- SMALL FRONT-END BEHAVIOUR -->
+<!-- ========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /*
+     * Read the ATS score generated by the Spring Boot backend.
+     * This does NOT create a fake score.
+     */
+
+    const scoreElement =
+        document.getElementById("atsScoreValue");
+
+    if (scoreElement) {
+
+        const scoreText =
+            scoreElement.textContent.replace("%", "").trim();
+
+        const score =
+            parseInt(scoreText);
+
+        if (!isNaN(score)) {
+
+            const circles =
+                document.querySelectorAll(".progress");
+
+            circles.forEach(function (circle) {
+
+                const radius =
+                    circle.getAttribute("r");
+
+                const circumference =
+                    2 * Math.PI * radius;
+
+                circle.style.strokeDasharray =
+                    circumference;
+
+                circle.style.strokeDashoffset =
+                    circumference -
+                    (score / 100) * circumference;
+
+            });
+
+        }
+
+    }
+
+
+    /*
+     * File upload feedback
+     */
+
+    const uploadInput =
+        document.getElementById("resumeUpload");
+
+    if (uploadInput) {
+
+        uploadInput.addEventListener("change", function () {
+
+            if (this.files.length > 0) {
+
+                const file =
+                    this.files[0];
+
+                console.log(
+                    "Resume selected:",
+                    file.name
+                );
+
+            }
+
+        });
+
+    }
+
+
+    /*
+     * Improve Resume button
+     */
+
+    const improveButton =
+        document.querySelector(".improve-btn");
+
+    if (improveButton) {
+
+        improveButton.addEventListener("click", function () {
+
+            const target =
+                document.querySelector(".insights-section");
+
+            if (target) {
+
+                target.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+        });
+
+    }
+
+
+    /*
+     * Optimize / Improve button
+     */
+
+    const optimizeButton =
+        document.querySelector(".optimize-btn");
+
+    if (optimizeButton) {
+
+        optimizeButton.addEventListener("click", function () {
+
+            const target =
+                document.querySelector(".ai-suggestions-section");
+
+            if (target) {
+
+                target.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+        });
+
+    }
+
+
+    /*
+     * Preview button
+     */
+
+    const previewButton =
+        document.querySelector(".preview-btn");
+
+    if (previewButton) {
+
+        previewButton.addEventListener("click", function () {
+
+            const preview =
+                document.querySelector(".resume-preview-section");
+
+            if (preview) {
+
+                preview.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
+
+
+</body>
+
+</html>

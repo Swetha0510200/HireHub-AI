@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users | HireHub Admin</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        th, td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #475569;
+            text-transform: uppercase;
+        }
+        tr:hover {
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Admin Portal</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/admin/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+            <a th:href="@{/admin/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Moderate Jobs</span></a>
+            <a th:href="@{/admin/internships}" class="menu-item"><i class="fa-solid fa-graduation-cap"></i><span>Moderate Internships</span></a>
+            <a th:href="@{/admin/users}" class="menu-item active"><i class="fa-solid fa-users"></i><span>Manage Users</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="top-header" style="margin-bottom: 1.5rem;">
+            <div>
+                <h3 style="font-weight: 700; color: #0f172a; margin: 0;">User Directory & Management</h3>
+                <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.2rem;">Activate, deactivate, and moderate student candidates and recruiter accounts.</p>
+            </div>
+        </header>
+
+        <!-- Flash Messages -->
+        <div th:if="${successMessage}" style="background: #dcfce7; color: #16a34a; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fa-solid fa-circle-check"></i> <span th:text="${successMessage}">Success message</span>
+        </div>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin: 1.5rem 0 0.5rem 0;">Recruiter Accounts (<span th:text="${totalRecruiters}">0</span>)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Recruiter / Company</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="r : ${recruiters}">
+                    <td>
+                        <strong th:text="${r.name}" style="color: #0f172a;">Recruiter Name</strong>
+                        <div style="font-size: 0.8rem; color: #64748b;" th:text="${r.companyName != null ? r.companyName : 'Tech Recruiter'}">Company</div>
+                    </td>
+                    <td th:text="${r.email}">recruiter@example.com</td>
+                    <td>
+                        <span th:if="${r.enabled}" style="background: #dcfce7; color: #16a34a; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px;">Active</span>
+                        <span th:if="${!r.enabled}" style="background: #fee2e2; color: #dc2626; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px;">Deactivated</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <form th:action="@{'/admin/users/' + ${r.email} + '/toggle'}" method="POST" style="display: inline;">
+                                <button type="submit" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                                    <span th:text="${r.enabled ? 'Deactivate' : 'Activate'}">Toggle</span>
+                                </button>
+                            </form>
+                            <form th:action="@{'/admin/users/' + ${r.email} + '/delete'}" method="POST" style="display: inline;">
+                                <button type="submit" onclick="return confirm('Delete this recruiter user permanently?')" style="background: #ef4444; color: #fff; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin: 2rem 0 0.5rem 0;">Candidate Accounts (<span th:text="${totalCandidates}">0</span>)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Email</th>
+                    <th>Qualification</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${candidates}">
+                    <td>
+                        <strong th:text="${c.name}" style="color: #0f172a;">Candidate Name</strong>
+                    </td>
+                    <td th:text="${c.email}">candidate@example.com</td>
+                    <td th:text="${c.qualification != null ? c.qualification : 'B.Tech CS'}">B.Tech CS</td>
+                    <td>
+                        <span th:if="${c.enabled}" style="background: #dcfce7; color: #16a34a; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px;">Active</span>
+                        <span th:if="${!c.enabled}" style="background: #fee2e2; color: #dc2626; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px;">Deactivated</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <form th:action="@{'/admin/users/' + ${c.email} + '/toggle'}" method="POST" style="display: inline;">
+                                <button type="submit" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                                    <span th:text="${c.enabled ? 'Deactivate' : 'Activate'}">Toggle</span>
+                                </button>
+                            </form>
+                            <form th:action="@{'/admin/users/' + ${c.email} + '/delete'}" method="POST" style="display: inline;">
+                                <button type="submit" onclick="return confirm('Delete this candidate user permanently?')" style="background: #ef4444; color: #fff; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+
+</body>
+</html>

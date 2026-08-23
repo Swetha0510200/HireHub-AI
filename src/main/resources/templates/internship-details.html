@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${internship.title} + ' | HireHub AI'">Internship Details | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/jobs.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .details-block {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .details-block h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .details-block p, .details-block pre {
+            color: #334155;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            white-space: pre-line;
+            font-family: inherit;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-dialog {
+            background: #ffffff;
+            border-radius: 16px;
+            max-width: 650px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Student Portal</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/dashboard}" class="menu-item"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a th:href="@{/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Find Jobs</span></a>
+            <a th:href="@{/internships}" class="menu-item active"><i class="fa-solid fa-graduation-cap"></i><span>Internships</span></a>
+            <a th:href="@{/recommendations}" class="menu-item"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a>
+            <a th:href="@{/saved-jobs}" class="menu-item"><i class="fa-solid fa-bookmark"></i><span>Saved</span></a>
+            <a th:href="@{/applications}" class="menu-item"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a>
+            <a th:href="@{/profile}" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="top-header" style="margin-bottom: 1.5rem;">
+            <a th:href="@{/internships}" style="color: #0ea5e9; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+                <i class="fa-solid fa-arrow-left"></i> Back to All Internships
+            </a>
+        </header>
+
+        <!-- Internship Header Card -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; border-left: 6px solid #0ea5e9;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <span style="background: #e0f2fe; color: #0369a1; font-weight: 700; font-size: 0.8rem; padding: 4px 12px; border-radius: 9999px;">
+                        <i class="fa-solid fa-graduation-cap"></i> Student Internship
+                    </span>
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin: 0.75rem 0 0.5rem 0;" th:text="${internship.title}">
+                        Internship Title
+                    </h1>
+                    <p style="font-size: 1.05rem; font-weight: 600; color: #64748b; margin: 0;">
+                        <i class="fa-regular fa-building"></i> <span th:text="${internship.company}">Company</span>
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                    <form th:action="@{'/internships/' + ${internship.id} + '/save'}" method="POST" style="display: inline;">
+                        <button type="submit" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 0.7rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; color: #475569;">
+                            <i th:class="${hasSaved ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'}" th:style="${hasSaved ? 'color: #f59e0b;' : ''}"></i>
+                            <span th:text="${hasSaved ? 'Saved' : 'Save'}">Save</span>
+                        </button>
+                    </form>
+
+                    <div th:if="${hasApplied}" style="background: #dcfce7; color: #16a34a; padding: 0.7rem 1.5rem; border-radius: 8px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-circle-check"></i> Application Submitted
+                    </div>
+
+                    <button th:if="${!hasApplied}" onclick="openApplyModal()" style="background: #0ea5e9; color: #ffffff; border: none; padding: 0.7rem 1.75rem; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer;">
+                        Apply for Internship
+                    </button>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #f1f5f9; font-size: 0.9rem; color: #475569;">
+                <div><strong>Stipend:</strong> <span th:text="${internship.getDisplayPay()}" style="color: #0ea5e9; font-weight: 700;">₹25,000 / month</span></div>
+                <div><strong>Duration:</strong> <span th:text="${internship.getDisplayDurationOrExp()}">6 Months</span></div>
+                <div><strong>Work Mode:</strong> <span th:text="${internship.workMode}">Remote</span></div>
+                <div><strong>Location:</strong> <span th:text="${internship.location}">Remote</span></div>
+                <div><strong>Deadline:</strong> <span th:text="${internship.deadline != null ? internship.deadline : 'Open'}">2026-12-31</span></div>
+            </div>
+        </div>
+
+        <!-- Description & Responsibilities -->
+        <div class="details-block">
+            <h3><i class="fa-solid fa-file-lines" style="color: #0ea5e9;"></i> About the Internship</h3>
+            <p th:text="${internship.description}">Internship description details...</p>
+        </div>
+
+        <div class="details-block" th:if="${internship.responsibilities != null and !internship.responsibilities.isBlank()}">
+            <h3><i class="fa-solid fa-list-check" style="color: #0ea5e9;"></i> Key Responsibilities</h3>
+            <p th:text="${internship.responsibilities}">Responsibilities details...</p>
+        </div>
+
+        <div class="details-block" th:if="${internship.requirements != null and !internship.requirements.isBlank()}">
+            <h3><i class="fa-solid fa-user-check" style="color: #0ea5e9;"></i> Requirements & Eligibility</h3>
+            <p th:text="${internship.requirements}">Requirements details...</p>
+        </div>
+
+        <div class="details-block">
+            <h3><i class="fa-solid fa-wand-magic-sparkles" style="color: #0ea5e9;"></i> Required Skills</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" th:if="${internship.skills != null}">
+                <span th:each="skill : ${#strings.arraySplit(internship.skills, ',')}" class="skill-tag" th:text="${#strings.trim(skill)}" style="background: #e0f2fe; color: #0369a1; font-weight: 600; padding: 4px 12px; border-radius: 6px;">Skill</span>
+            </div>
+        </div>
+
+        <div class="details-block" th:if="${internship.benefits != null and !internship.benefits.isBlank()}">
+            <h3><i class="fa-solid fa-gift" style="color: #0ea5e9;"></i> Perks & Benefits</h3>
+            <p th:text="${internship.benefits}">Perks details...</p>
+        </div>
+    </main>
+</div>
+
+<!-- Quick Apply Modal -->
+<div id="internshipApplyModal" class="modal">
+    <div class="modal-dialog">
+        <div style="padding: 1.5rem 2rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-weight: 700; color: #0f172a;">Apply for Internship</h3>
+            <button onclick="closeApplyModal()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #94a3b8;">&times;</button>
+        </div>
+        <form th:action="@{'/internships/' + ${internship.id} + '/apply'}" method="POST" enctype="multipart/form-data" style="padding: 2rem;">
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; color: #334155;">Availability *</label>
+                <select name="availability" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    <option value="Immediate">Immediate (Starting this week)</option>
+                    <option value="15 Days">Within 15 Days</option>
+                    <option value="1 Month">Within 1 Month</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; color: #334155;">College / University</label>
+                <input type="text" name="college" placeholder="e.g. National Institute of Technology" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; color: #334155;">Graduation Year</label>
+                <input type="number" name="graduationYear" value="2025" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; color: #334155;">Cover Note / Why you're a great fit</label>
+                <textarea name="coverLetter" rows="4" placeholder="Briefly share why you are interested in this internship and relevant projects you've completed..." style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; color: #334155;">Upload Updated Resume (PDF/DOCX)</label>
+                <input type="file" name="resumeFile" accept=".pdf,.doc,.docx" style="width: 100%; padding: 0.5rem; border: 1px dashed #cbd5e1; border-radius: 8px; background: #f8fafc;">
+                <small style="color: #64748b; font-size: 0.75rem;">Optional: If left blank, your profile resume will be attached automatically.</small>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" onclick="closeApplyModal()" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.65rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button type="submit" style="background: #0ea5e9; color: #ffffff; border: none; padding: 0.65rem 1.75rem; border-radius: 8px; font-weight: 700; cursor: pointer;">Submit Application</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openApplyModal() {
+        document.getElementById('internshipApplyModal').style.display = 'flex';
+    }
+    function closeApplyModal() {
+        document.getElementById('internshipApplyModal').style.display = 'none';
+    }
+    window.onclick = function(event) {
+        const modal = document.getElementById('internshipApplyModal');
+        if (event.target === modal) {
+            closeApplyModal();
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HireHub | Student Dashboard</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/dashboard.css}">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- ================= Sidebar ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-briefcase"></i>
+
+            <span>HireHub AI</span>
+
+        </div>
+
+        <ul>
+
+            <li class="active">
+
+                <a th:href="@{/dashboard}">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a th:href="@{/browse-jobs}">
+
+                    <i class="fa-solid fa-briefcase"></i>
+
+                    <span>Browse Jobs</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a th:href="@{/ai-job-match}">
+
+                    <i class="fa-solid fa-robot"></i>
+
+                    <span>AI Job Match</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a th:href="@{/resume-analyzer}">
+
+                    <i class="fa-solid fa-file"></i>
+
+                    <span>Resume Analyzer</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a th:href="@{/ats-score}">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    <span>ATS Resume Score</span>
+
+                </a>
+
+            </li>
+
+            <li>
+                <a th:href="@{/saved-jobs}">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span>Saved Jobs</span>
+                </a>
+            </li>
+
+            <li>
+                <a th:href="@{/applications}">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Applications</span>
+                </a>
+            </li>
+
+            <li>
+                <a th:href="@{/interviews}">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Interviews</span>
+                </a>
+            </li>
+
+            <li>
+
+                <a th:href="@{/profile}">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <span>Profile</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a th:href="@{/settings}">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    <span>Settings</span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+        <div class="logout">
+
+            <button type="button"
+                    onclick="window.location.href='/logout'">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= Main ================= -->
+
+    <main class="main-content">
+
+
+        <!-- ================= Navbar ================= -->
+
+        <nav class="navbar">
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                        type="text"
+                        placeholder="Search jobs, companies, internships...">
+
+            </div>
+
+
+            <div class="nav-right">
+
+                <div class="live-status" id="liveStatus">
+                    <span class="live-dot"></span>
+                    Live updates online
+                </div>
+
+                <!-- Notifications -->
+
+                <div class="icon">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    <span class="badge"
+                          th:text="${notificationCount != null ? notificationCount : 0}">
+                        0
+                    </span>
+
+                </div>
+
+
+                <!-- Messages -->
+
+                <div class="icon">
+
+                    <i class="fa-regular fa-envelope"></i>
+
+                    <span class="badge"
+                          th:text="${messageCount != null ? messageCount : 0}">
+                        0
+                    </span>
+
+                </div>
+
+
+                <!-- Profile -->
+
+                <div class="profile">
+
+                    <div th:if="${profileImage != null && !profileImage.isEmpty()}">
+                        <img th:src="${profileImage}" alt="Profile" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                    <div th:if="${profileImage == null || profileImage.isEmpty()}" class="avatar-initial"
+                         th:text="${userName != null && !userName.isEmpty() ? userName.substring(0, 1).toUpperCase() : 'U'}">
+                        U
+                    </div>
+
+                    <div>
+
+                        <h4 th:text="${userName != null ? userName : 'User'}">
+                            User
+                        </h4>
+
+                        <small th:text="${userRole != null ? userRole : 'Student'}">
+                            Student
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+        <!-- ================= Welcome Banner ================= -->
+
+        <section class="hero">
+
+            <div>
+
+                <h1>
+
+                    Welcome Back
+                    <span th:text="${userName != null ? userName : 'there'}">
+                        there
+                    </span>
+                    👋
+
+                </h1>
+
+                <p>
+
+                    Your HireHub career dashboard is updated using
+                    your profile, resume analysis and application activity.
+
+                </p>
+
+                <button type="button"
+                        onclick="window.location.href='/browse-jobs'">
+
+                    Explore Jobs
+
+                </button>
+
+            </div>
+
+            <div style="background: rgba(255,255,255,0.18); border-radius: 20px; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #ffffff; margin-right: 1.5rem;">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+
+        </section>
+
+
+        <!-- ================= Statistics ================= -->
+
+        <section class="cards">
+
+
+            <!-- ATS Score -->
+
+            <div class="card">
+
+                <div class="icon blue">
+
+                    <i class="fa-solid fa-file"></i>
+
+                </div>
+
+                <div>
+
+                    <h2>
+
+                        <span id="atsScoreValue" th:text="${atsScore != null ? atsScore : 0}">
+                            0
+                        </span>%
+
+                    </h2>
+
+                    <p>ATS Resume Score</p>
+
+                </div>
+
+            </div>
+
+
+            <!-- AI Job Match -->
+
+            <div class="card">
+
+                <div class="icon green">
+
+                    <i class="fa-solid fa-robot"></i>
+
+                </div>
+
+                <div>
+
+                    <h2>
+
+                        <span th:text="${jobMatchScore != null ? jobMatchScore : 0}">
+                            0
+                        </span>%
+
+                    </h2>
+
+                    <p>AI Job Match</p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Applications -->
+
+            <div class="card">
+
+                <div class="icon orange">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 id="applicationsValue"
+                            th:text="${applicationsCount != null ? applicationsCount : 0}">
+                        0
+                    </h2>
+
+                    <p>Applications</p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Interviews -->
+
+            <div class="card">
+
+                <div class="icon purple">
+
+                    <i class="fa-solid fa-calendar-check"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 id="interviewValue"
+                            th:text="${interviewCount != null ? interviewCount : 0}">
+                        0
+                    </h2>
+
+                    <p>Interviews</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= Dashboard Content ================= -->
+
+        <div th:if="${successMessage}" class="dashboard-toast success"><i class="fa-solid fa-circle-check"></i><span th:text="${successMessage}">Success</span></div>
+        <div th:if="${infoMessage}" class="dashboard-toast info"><i class="fa-solid fa-circle-info"></i><span th:text="${infoMessage}">Information</span></div>
+        <div th:if="${errorMessage}" class="dashboard-toast error"><i class="fa-solid fa-circle-exclamation"></i><span th:text="${errorMessage}">Error</span></div>
+
+
+        <section class="box applications-dashboard-box">
+            <div class="title">
+                <div>
+                    <span class="section-kicker">CAREER ACTIVITY</span>
+                    <h2>Recent Applications</h2>
+                </div>
+                <span class="application-total" th:text="${applicationsCount != null ? applicationsCount : 0}">0</span>
+            </div>
+
+            <div class="dashboard-applications" th:if="${recentApplications != null && !recentApplications.isEmpty()}">
+                <div class="dashboard-application" th:each="app : ${recentApplications}">
+                    <div class="application-company-icon"><i class="fa-solid fa-building"></i></div>
+                    <div class="application-main">
+                        <h3 th:text="${app.job.title}">Job Title</h3>
+                        <p><span th:text="${app.job.company}">Company</span> · <span th:text="${app.job.location}">Location</span></p>
+                        <small th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy, hh:mm a')}">09 Aug 2026</small>
+                    </div>
+                    <span class="application-status" th:text="${app.status}">Applied</span>
+                </div>
+            </div>
+
+            <div class="dashboard-empty-applications" th:if="${recentApplications == null || recentApplications.isEmpty()}">
+                <i class="fa-solid fa-paper-plane"></i>
+                <div><h3>No applications yet</h3><p>Apply to a job and your live application status will appear here.</p></div>
+                <a th:href="@{/browse-jobs}">Browse Jobs</a>
+            </div>
+        </section>
+
+
+        <div class="dashboard-grid">
+
+
+            <!-- ================= LEFT PANEL ================= -->
+
+            <div class="left-panel">
+
+
+                <!-- ================= AI Career Insights ================= -->
+
+                <section class="box">
+
+                    <div class="title">
+
+                        <h2>AI Career Insights</h2>
+
+                        <a th:href="@{/resume-analyzer}">
+                            View Analysis
+                        </a>
+
+                    </div>
+
+
+                    <!-- Resume Strength -->
+
+                    <div class="insight">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        <div>
+
+                            <h4>Resume Strength</h4>
+
+                            <p>
+
+                                <span
+                                        th:text="${summary != null
+                                                ? summary
+                                                : 'Upload your resume to generate personalized resume insights.'}">
+                                    Upload your resume to generate personalized
+                                    resume insights.
+                                </span>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Skills -->
+
+                    <div class="insight">
+
+                        <i class="fa-solid fa-lightbulb"></i>
+
+                        <div>
+
+                            <h4>Detected Skills</h4>
+
+                            <p>
+
+                                <span
+                                        th:if="${skills != null && !skills.isEmpty()}">
+
+                                    <span th:text="${skillCount}">
+                                        0
+                                    </span>
+
+                                    skills detected:
+
+                                    <span th:each="skill, stat : ${skills}">
+
+                                        <span th:text="${skill}">
+                                            Skill
+                                        </span>
+
+                                        <span th:if="${!stat.last}">
+                                            ,
+                                        </span>
+
+                                    </span>
+
+                                </span>
+
+
+                                <span
+                                        th:if="${skills == null || skills.isEmpty()}">
+
+                                    Upload a resume to identify your technical
+                                    skills and receive learning recommendations.
+
+                                </span>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Improvement -->
+
+                    <div class="insight">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        <div>
+
+                            <h4>Recommended Improvement</h4>
+
+                            <p>
+
+                                <span
+                                        th:if="${improvements != null && !improvements.isEmpty()}"
+                                        th:text="${improvements[0]}">
+
+                                    Resume improvement recommendation
+
+                                </span>
+
+                                <span
+                                        th:if="${improvements == null || improvements.isEmpty()}">
+
+                                    Complete your profile and upload a resume
+                                    to receive personalized career guidance.
+
+                                </span>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= Recommended Jobs ================= -->
+
+                <section class="box">
+
+                    <div class="title">
+
+                        <h2>Recommended Jobs</h2>
+
+                        <a th:href="@{/browse-jobs}">
+                            See More
+                        </a>
+
+                    </div>
+
+
+                    <!-- Dynamic jobs -->
+
+                    <div
+                            class="job-card"
+                            th:each="job : ${recommendedJobs}">
+
+                        <div>
+
+                            <h3
+                                    th:text="${job.title}">
+                                Job Title
+                            </h3>
+
+                            <span>
+
+                                <span
+                                        th:text="${job.company}">
+                                    Company
+                                </span>
+
+                                •
+
+                                <span
+                                        th:text="${job.location}">
+                                    Location
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <a
+                                class="job-apply-btn"
+                                th:href="@{/jobs/{id}(id=${job.id})}">
+
+                            Apply
+
+                        </a>
+
+                    </div>
+
+
+                    <!-- If there are no jobs -->
+
+                    <div
+                            class="job-card"
+                            th:if="${recommendedJobs == null || recommendedJobs.isEmpty()}">
+
+                        <div>
+
+                            <h3>No matching jobs yet</h3>
+
+                            <span>
+                                Complete your profile and resume analysis
+                                to receive relevant job recommendations.
+                            </span>
+
+                        </div>
+
+                        <a
+                                th:href="@{/browse-jobs}"
+                                class="job-apply-btn">
+
+                            Browse Jobs
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= Recent Activity ================= -->
+
+                <section class="box">
+
+                    <div class="title">
+
+                        <h2>Recent Activity</h2>
+
+                    </div>
+
+
+                    <ul class="activity">
+
+
+                        <li
+                                th:each="activity : ${recentActivities}">
+
+                            <i class="fa-solid fa-circle"></i>
+
+                            <span
+                                    th:text="${activity}">
+                                Activity
+                            </span>
+
+                        </li>
+
+
+                        <li
+                                th:if="${recentActivities == null || recentActivities.isEmpty()}">
+
+                            <i class="fa-solid fa-circle"></i>
+
+                            <span>
+                                Your dashboard activity will appear here
+                                as you upload resumes, apply for jobs
+                                and update your profile.
+                            </span>
+
+                        </li>
+
+                    </ul>
+
+                </section>
+
+            </div>
+
+
+            <!-- ================= RIGHT PANEL ================= -->
+
+            <div class="right-panel">
+
+
+                <!-- ================= Profile ================= -->
+
+                <section class="profile-card">
+
+                    <div th:if="${profileImage != null && !profileImage.isEmpty()}">
+                        <img th:src="${profileImage}" alt="Profile" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px; display: block;">
+                    </div>
+                    <div th:if="${profileImage == null || profileImage.isEmpty()}" class="avatar-initial-large"
+                         th:text="${userName != null && !userName.isEmpty() ? userName.substring(0, 1).toUpperCase() : 'U'}">
+                        U
+                    </div>
+
+                    <h2
+                            th:text="${userName != null ? userName : 'User'}">
+
+                        User
+
+                    </h2>
+
+
+                    <p
+                            th:text="${profileTitle != null
+                                      ? profileTitle
+                                      : 'Complete your professional profile'}">
+
+                        Complete your professional profile
+
+                    </p>
+
+
+                    <div class="progress-box">
+
+                        <span>
+                            Profile Completion
+                        </span>
+
+
+                        <div class="progress">
+
+                            <div
+                                    class="fill"
+                                    th:style="'width:' +
+                                    (${profileCompletion != null
+                                    ? profileCompletion
+                                    : 0}) + '%'">
+                            </div>
+
+                        </div>
+
+
+                        <small>
+
+                            <span
+                                    th:text="${profileCompletion != null
+                                              ? profileCompletion
+                                              : 0}">
+                                0
+                            </span>%
+
+                            Completed
+
+                        </small>
+
+                    </div>
+
+
+                    <a
+                            th:href="@{/profile}"
+                            class="profile-edit-btn">
+
+                        Complete / Edit Profile
+
+                    </a>
+
+                </section>
+
+
+                <!-- ================= Interview ================= -->
+
+                <section class="box">
+
+                    <div class="title">
+
+                        <h2>Upcoming Interview</h2>
+
+                    </div>
+
+
+                    <div
+                            class="interview"
+                            th:if="${upcomingInterview != null}">
+
+                        <h3
+                                th:text="${upcomingInterview.company}">
+                            Company
+                        </h3>
+
+                        <p>
+
+                            <span
+                                    th:text="${upcomingInterview.date}">
+                                Interview Date
+                            </span>
+
+                            •
+
+                            <span
+                                    th:text="${upcomingInterview.time}">
+                                Time
+                            </span>
+
+                        </p>
+
+
+                        <a
+                                th:if="${upcomingInterview.meetingUrl != null}"
+                                th:href="${upcomingInterview.meetingUrl}"
+                                target="_blank">
+
+                            Join Meeting
+
+                        </a>
+
+                    </div>
+
+
+                    <div
+                            class="interview"
+                            th:if="${upcomingInterview == null}">
+
+                        <h3>No upcoming interview</h3>
+
+                        <p>
+                            Interviews will appear here after a recruiter
+                            schedules one.
+                        </p>
+
+                        <a th:href="@{/browse-jobs}">
+                            Find Opportunities
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= Notifications ================= -->
+
+                <section class="box">
+
+                    <div class="title">
+
+                        <h2>Notifications</h2>
+
+                    </div>
+
+
+                    <ul class="notify">
+
+
+                        <li
+                                th:each="notification : ${notifications}">
+
+                            <span
+                                    th:text="${notification}">
+                                Notification
+                            </span>
+
+                        </li>
+
+
+                        <li
+                                th:if="${notifications == null || notifications.isEmpty()}">
+
+                            No new notifications.
+
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <!-- ================= Skills ================= -->
+
+                <section class="box">
+
+                    <div class="title">
+
+                        <h2>Top Skills</h2>
+
+                        <a th:href="@{/resume-analyzer}">
+                            Analyze
+                        </a>
+
+                    </div>
+
+
+                    <!-- Dynamic detected skills -->
+
+                    <div
+                            class="skill"
+                            th:each="skill : ${skills}">
+
+                        <span
+                                th:text="${skill}">
+                            Skill
+                        </span>
+
+
+                        <div class="bar">
+
+                            <div
+                                    th:style="'width:' +
+                                    (${skillScores != null &&
+                                      skillScores[skill] != null
+                                      ? skillScores[skill]
+                                      : 0}) + '%'">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- No skills -->
+
+                    <div
+                            th:if="${skills == null || skills.isEmpty()}">
+
+                        <p>
+                            Upload your resume to detect technical skills.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= Footer ================= -->
+
+        <footer class="dashboard-footer">
+
+            <div class="footer-left">
+
+                <h3>HireHub AI</h3>
+
+                <p>
+
+                    AI Powered Career Platform for Students &
+                    Recruiters.
+
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <a href="#">
+                    About
+                </a>
+
+                <a href="#">
+                    Privacy
+                </a>
+
+                <a href="#">
+                    Terms
+                </a>
+
+                <a href="#">
+                    Support
+                </a>
+
+                <a href="#">
+                    Contact
+                </a>
+
+            </div>
+
+
+            <div class="footer-social">
+
+                <a href="#"
+                   th:if="${linkedinUrl != null}"
+                   th:href="${linkedinUrl}"
+                   target="_blank">
+
+                    <i class="fab fa-linkedin"></i>
+
+                </a>
+
+
+                <a href="#"
+                   th:if="${githubUrl != null}"
+                   th:href="${githubUrl}"
+                   target="_blank">
+
+                    <i class="fab fa-github"></i>
+
+                </a>
+
+
+                <a href="#"
+                   th:if="${twitterUrl != null}"
+                   th:href="${twitterUrl}"
+                   target="_blank">
+
+                    <i class="fab fa-twitter"></i>
+
+                </a>
+
+
+                <a href="#"
+                   th:if="${instagramUrl != null}"
+                   th:href="${instagramUrl}"
+                   target="_blank">
+
+                    <i class="fab fa-instagram"></i>
+
+                </a>
+
+            </div>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- ================= Floating AI Assistant ================= -->
+
+<div class="floating-ai">
+
+    <button
+            title="AI Career Assistant"
+            onclick="window.location.href='/ai-job-match'">
+
+        <i class="fa-solid fa-robot"></i>
+
+    </button>
+
+</div>
+
+
+<!-- ================= Chat Support ================= -->
+
+<div class="floating-chat">
+
+    <button
+            title="Chat Support">
+
+        <i class="fa-solid fa-comments"></i>
+
+    </button>
+
+</div>
+
+
+<!-- ================= Scroll Top ================= -->
+
+<button id="scrollTop">
+
+    <i class="fa-solid fa-arrow-up"></i>
+
+</button>
+
+
+<script th:src="@{/js/dashboard.js}"></script>
+
+
+<script>
+
+const scrollBtn = document.getElementById("scrollTop");
+
+window.addEventListener("scroll", function () {
+
+    if (document.documentElement.scrollTop > 200) {
+
+        scrollBtn.style.display = "flex";
+
+    } else {
+
+        scrollBtn.style.display = "none";
+
+    }
+
+});
+
+
+scrollBtn.addEventListener("click", function () {
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+});
+
+</script>
+
+
+</body>
+
+</html>`

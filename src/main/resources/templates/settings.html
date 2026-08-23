@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/settings.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>HireHub AI</span>
+        </div>
+        <ul th:if="${userRole != 'Recruiter' and userRole != 'Admin'}">
+            <li><a th:href="@{/dashboard}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-briefcase"></i><span>Browse Jobs</span></a></li>
+            <li><a th:href="@{/ai-job-match}"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a></li>
+            <li><a th:href="@{/resume-analyzer}"><i class="fa-solid fa-file-lines"></i><span>Resume Analyzer</span></a></li>
+            <li><a th:href="@{/ats-score}"><i class="fa-solid fa-chart-line"></i><span>ATS Resume Score</span></a></li>
+            <li><a th:href="@{/saved-jobs}"><i class="fa-solid fa-bookmark"></i><span>Saved Jobs</span></a></li>
+            <li><a th:href="@{/applications}"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a></li>
+            <li><a th:href="@{/interviews}"><i class="fa-solid fa-calendar-days"></i><span>Interviews</span></a></li>
+            <li><a th:href="@{/profile}"><i class="fa-solid fa-user"></i><span>Profile</span></a></li>
+            <li class="active"><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+        <ul th:if="${userRole == 'Recruiter'}">
+            <li><a th:href="@{/recruiter/dashboard}"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a></li>
+            <li><a th:href="@{/post-job}"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a></li>
+            <li><a th:href="@{/recruiter/jobs}"><i class="fa-solid fa-briefcase"></i><span>Manage Jobs</span></a></li>
+            <li><a th:href="@{/recruiter/applicants}"><i class="fa-solid fa-users"></i><span>Applicants</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-globe"></i><span>Browse Live Jobs</span></a></li>
+            <li><a th:href="@{/profile}"><i class="fa-solid fa-building"></i><span>Company Profile</span></a></li>
+            <li class="active"><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+        <ul th:if="${userRole == 'Admin'}">
+            <li><a th:href="@{/admin/dashboard}"><i class="fa-solid fa-chart-line"></i><span>Overview</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-briefcase"></i><span>Live Jobs</span></a></li>
+            <li class="active"><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="content">
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">ACCOUNT CONTROL CENTER</span>
+                <h1>Settings</h1>
+            </div>
+            <a th:href="@{/profile}" class="top-profile"><i class="fa-solid fa-user"></i> My Profile</a>
+        </header>
+
+        <div th:if="${successMessage}" class="settings-toast success"><i class="fa-solid fa-circle-check"></i><span th:text="${successMessage}">Saved</span></div>
+        <div th:if="${errorMessage}" class="settings-toast error"><i class="fa-solid fa-circle-exclamation"></i><span th:text="${errorMessage}">Error</span></div>
+
+        <section class="settings-hero">
+            <div><span class="hero-tag"><i class="fa-solid fa-sliders"></i> PERSONAL WORKSPACE</span><h2>Control how HireHub works for you.</h2><p>Manage career alerts, account security and communication preferences. These settings are saved to your account and affect your future sessions.</p></div>
+            <div class="hero-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        </section>
+
+        <section class="settings-grid">
+            <article class="settings-card wide">
+                <div class="card-heading"><div class="card-icon blue"><i class="fa-solid fa-bell"></i></div><div><h2>Notification preferences</h2><p>Choose the updates you want HireHub to prepare for your account.</p></div></div>
+                <form th:action="@{/settings/preferences}" method="post" class="preference-form">
+                    <label class="preference-row"><span><strong>Job alerts</strong><small>Receive relevant opportunity alerts based on your career profile.</small></span><input type="checkbox" name="jobAlertsEnabled" th:checked="${account != null && account.jobAlertsEnabled}"><b class="switch"></b></label>
+                    <label class="preference-row"><span><strong>Email updates</strong><small>Receive important account and application updates.</small></span><input type="checkbox" name="emailUpdatesEnabled" th:checked="${account != null && account.emailUpdatesEnabled}"><b class="switch"></b></label>
+                    <label class="preference-row"><span><strong>Interview reminders</strong><small>Keep interview scheduling reminders enabled.</small></span><input type="checkbox" name="interviewRemindersEnabled" th:checked="${account != null && account.interviewRemindersEnabled}"><b class="switch"></b></label>
+                    <button class="primary-btn" type="submit"><i class="fa-solid fa-check"></i> Save Preferences</button>
+                </form>
+            </article>
+
+            <article class="settings-card">
+                <div class="card-heading"><div class="card-icon purple"><i class="fa-solid fa-user-shield"></i></div><div><h2>Account</h2><p>Your registered account details.</p></div></div>
+                <div class="account-lines">
+                    <div><span>Email</span><strong th:text="${account != null ? account.email : ''}">email</strong></div>
+                    <div><span>Role</span><strong th:text="${account != null ? account.role : userRole}">Student</strong></div>
+                    <div><span>Name</span><strong th:text="${account != null ? account.name : userName}">Candidate</strong></div>
+                </div>
+                <a th:href="@{/profile}" class="secondary-btn"><i class="fa-solid fa-user-pen"></i> Update Profile</a>
+            </article>
+
+            <article class="settings-card">
+                <div class="card-heading"><div class="card-icon green"><i class="fa-solid fa-lock"></i></div><div><h2>Security</h2><p>Change your account password securely.</p></div></div>
+                <form th:action="@{/settings/password}" method="post" class="password-form">
+                    <input type="password" name="currentPassword" placeholder="Current password" required>
+                    <input type="password" name="newPassword" placeholder="New password (8+ characters)" minlength="8" required>
+                    <input type="password" name="confirmPassword" placeholder="Confirm new password" minlength="8" required>
+                    <button class="primary-btn" type="submit"><i class="fa-solid fa-key"></i> Change Password</button>
+                </form>
+            </article>
+
+            <article class="settings-card wide career-card">
+                <div class="card-heading"><div class="card-icon orange"><i class="fa-solid fa-compass"></i></div><div><h2>Career preferences</h2><p>These values help HireHub personalize your job discovery experience.</p></div></div>
+                <div class="preference-summary">
+                    <div><span>Preferred role</span><strong th:text="${profile.preferredRole != null && !profile.preferredRole.isBlank() ? profile.preferredRole : 'Not set'}">Not set</strong></div>
+                    <div><span>Preferred location</span><strong th:text="${profile.preferredLocation != null && !profile.preferredLocation.isBlank() ? profile.preferredLocation : 'Not set'}">Not set</strong></div>
+                    <div><span>Experience</span><strong th:text="${profile.experienceLevel != null && !profile.experienceLevel.isBlank() ? profile.experienceLevel : 'Not set'}">Not set</strong></div>
+                    <div><span>Skills</span><strong th:text="${profile.skills != null && !profile.skills.isBlank() ? profile.skills : 'Not set'}">Not set</strong></div>
+                </div>
+                <a th:href="@{/profile}" class="secondary-btn"><i class="fa-solid fa-sliders"></i> Manage Career Profile</a>
+            </article>
+        </section>
+    </main>
+</div>
+</body>
+</html>

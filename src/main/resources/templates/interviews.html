@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduled Interviews | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/interviews.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>HireHub AI</span>
+        </div>
+        <ul th:if="${userRole != 'Recruiter' and userRole != 'Admin'}">
+            <li><a th:href="@{/dashboard}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-briefcase"></i><span>Browse Jobs</span></a></li>
+            <li><a th:href="@{/ai-job-match}"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a></li>
+            <li><a th:href="@{/resume-analyzer}"><i class="fa-solid fa-file-lines"></i><span>Resume Analyzer</span></a></li>
+            <li><a th:href="@{/ats-score}"><i class="fa-solid fa-chart-line"></i><span>ATS Resume Score</span></a></li>
+            <li><a th:href="@{/saved-jobs}"><i class="fa-solid fa-bookmark"></i><span>Saved Jobs</span></a></li>
+            <li><a th:href="@{/applications}"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a></li>
+            <li class="active"><a th:href="@{/interviews}"><i class="fa-solid fa-calendar-days"></i><span>Interviews</span></a></li>
+            <li><a th:href="@{/profile}"><i class="fa-solid fa-user"></i><span>Profile</span></a></li>
+            <li><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+        <ul th:if="${userRole == 'Recruiter' or userRole == 'Admin'}">
+            <li><a th:href="@{/recruiter/dashboard}"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a></li>
+            <li><a th:href="@{/post-job}"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a></li>
+            <li><a th:href="@{/recruiter/jobs}"><i class="fa-solid fa-briefcase"></i><span>Manage Jobs</span></a></li>
+            <li><a th:href="@{/recruiter/applicants}"><i class="fa-solid fa-users"></i><span>Applicants</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-globe"></i><span>Browse Live Jobs</span></a></li>
+            <li><a th:href="@{/profile}"><i class="fa-solid fa-building"></i><span>Company Profile</span></a></li>
+            <li><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="content">
+        <header class="topbar">
+            <div class="search"><i class="fa-solid fa-search"></i><input type="text" placeholder="Search scheduled interviews..."></div>
+            <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                <a th:href="@{/notifications}" style="color: #64748b; text-decoration: none;">
+                    <i class="fa-regular fa-bell"></i>
+                </a>
+                <div th:if="${session.userProfileImage != null && !session.userProfileImage.isEmpty()}">
+                    <img th:src="${session.userProfileImage}" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+                </div>
+                <div th:if="${session.userProfileImage == null || session.userProfileImage.isEmpty()}" class="avatar-initial"
+                     th:text="${session.userInitials != null ? session.userInitials : (userName != null && !userName.isEmpty() ? (userName.contains(' ') ? userName.split(' ')[0].substring(0,1).toUpperCase() + userName.split(' ')[userName.split(' ').length-1].substring(0,1).toUpperCase() : userName.substring(0,1).toUpperCase()) : 'U')}">
+                    U
+                </div>
+                <div>
+                    <h4 style="font-size: 0.9rem; font-weight: 600; margin: 0;" th:text="${userName != null ? userName : 'Student'}">Candidate</h4>
+                    <small style="color: #64748b; font-size: 0.75rem;" th:text="${userRole != null ? userRole : 'Student'}">Student</small>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div>
+                <span class="tag">Interview Calendar</span>
+                <h1>Your Scheduled Interviews</h1>
+                <p>Track your upcoming recruiter discussions, coding rounds, and video interviews with meeting links and preparation tips.</p>
+            </div>
+        </section>
+
+        <section class="interview-list">
+            <div th:if="${interviews != null and !interviews.isEmpty()}">
+                <div class="interview-card" th:each="iv : ${interviews}">
+                    <div class="interview-top">
+                        <div>
+                            <h2 th:text="${iv.role}">Software Engineer</h2>
+                            <span><i class="fa-solid fa-building"></i> <span th:text="${iv.company}">Company</span></span>
+                        </div>
+                        <div class="interview-status">
+                            <span th:text="${iv.status}">Scheduled</span>
+                        </div>
+                    </div>
+
+                    <div class="interview-details">
+                        <span><i class="fa-solid fa-calendar-days"></i> <strong>Date:</strong> <span th:text="${iv.interviewDate}">Date</span></span>
+                        <span><i class="fa-solid fa-clock"></i> <strong>Time:</strong> <span th:text="${iv.interviewTime}">Time</span></span>
+                        <span><i class="fa-solid fa-video"></i> <strong>Type:</strong> <span th:text="${iv.interviewType}">Technical Round</span></span>
+                        <span th:if="${iv.location != null}"><i class="fa-solid fa-location-dot"></i> <span th:text="${iv.location}">Online</span></span>
+                    </div>
+
+                    <div th:if="${iv.notes != null and !iv.notes.isBlank()}" style="font-size: 0.85rem; color: #475569; background: #f8fafc; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #0284c7;">
+                        <strong><i class="fa-solid fa-circle-info"></i> Recruiter Note:</strong> <span th:text="${iv.notes}">Notes</span>
+                    </div>
+
+                    <div class="interview-link" th:if="${iv.meetingUrl != null and !iv.meetingUrl.isBlank()}">
+                        <a th:href="${iv.meetingUrl}" target="_blank"><i class="fa-solid fa-video"></i> Launch Meeting Link</a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${interviews == null or #lists.isEmpty(interviews)}" class="empty-state">
+                <i class="fa-solid fa-calendar-xmark" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                <h2>No interviews scheduled yet</h2>
+                <p>When recruiters review and shortlist your applications, your interview schedule will appear here.</p>
+                <a th:href="@{/browse-jobs}" class="primary-btn"><i class="fa-solid fa-briefcase"></i> Explore Available Jobs</a>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

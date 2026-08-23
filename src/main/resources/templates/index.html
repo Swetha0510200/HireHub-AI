@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireHub – AI-Powered Job & Internship Portal</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="brand-logo">
+                <i class="fa-solid fa-briefcase" style="color: var(--primary);"></i>
+                HireHub
+                <span class="ai-badge">AI Powered</span>
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="/jobs" class="active"><i class="fa-solid fa-magnifying-glass"></i> Find Jobs</a></li>
+                <li><a href="/internships"><i class="fa-solid fa-graduation-cap"></i> Internships</a></li>
+                <li><a href="/recommendations"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Match</a></li>
+                <li th:if="${userRole == 'Recruiter'}"><a href="/recruiter/dashboard"><i class="fa-solid fa-chart-line"></i> Recruiter Hub</a></li>
+                <li th:if="${userRole == 'Admin'}"><a href="/admin/dashboard"><i class="fa-solid fa-shield-halved"></i> Admin Hub</a></li>
+                <li th:if="${userRole == 'Student' or userRole == 'Candidate'}"><a href="/dashboard"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <div th:if="${userEmail == null}">
+                    <a href="/login" class="btn btn-outline-primary"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a>
+                    <a href="/register" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Register</a>
+                </div>
+                <div th:if="${userEmail != null}" style="display: flex; align-items: center; gap: 12px;">
+                    <a th:if="${userRole == 'Student' or userRole == 'Candidate'}" href="/dashboard" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-regular fa-user"></i> <span th:text="${userName != null ? userName : 'My Account'}">Candidate</span>
+                    </a>
+                    <a th:if="${userRole == 'Recruiter'}" href="/recruiter/dashboard" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-building"></i> <span th:text="${userName != null ? userName : 'Recruiter'}">Recruiter</span>
+                    </a>
+                    <a th:if="${userRole == 'Admin'}" href="/admin/dashboard" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-shield"></i> Admin
+                    </a>
+                    <a href="/logout" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-tag">
+                <i class="fa-solid fa-bolt"></i> Intelligent Skill-Based Career Platform
+            </div>
+            <h1 class="hero-title">
+                Find the right job. Discover the right internship. <span>Build your career.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Connect directly with premier tech companies. Get intelligent AI-driven recommendations tailored precisely to your skill set and career track.
+            </p>
+
+            <!-- Search Box -->
+            <form action="/jobs" method="GET" class="hero-search-box">
+                <input type="text" name="search" placeholder="Search by job title, skill (e.g. Java, Python), or company...">
+                <select name="category">
+                    <option value="">All Categories</option>
+                    <option value="Software Development">Software Development</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Artificial Intelligence">Artificial Intelligence</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Cloud Computing">Cloud Computing</option>
+                    <option value="Cyber Security">Cyber Security</option>
+                    <option value="UI/UX Design">UI/UX Design</option>
+                </select>
+                <select name="mode">
+                    <option value="">All Work Modes</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="On-site">On-site</option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+            </form>
+
+            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                <a href="/jobs" class="btn btn-primary"><i class="fa-solid fa-briefcase"></i> Explore Jobs</a>
+                <a href="/internships" class="btn btn-secondary"><i class="fa-solid fa-graduation-cap"></i> Find Internships</a>
+                <a href="/post-job" class="btn btn-outline-primary" style="background: rgba(255,255,255,0.1); color: #fff !important; border-color: rgba(255,255,255,0.3);"><i class="fa-solid fa-plus"></i> Post a Job</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Statistics Strip -->
+    <div class="stats-strip">
+        <div class="container stats-grid">
+            <div class="stat-item">
+                <h3 th:text="${totalJobs} + '+'">500+</h3>
+                <p>Active Job Openings</p>
+            </div>
+            <div class="stat-item">
+                <h3 th:text="${totalInternships} + '+'">350+</h3>
+                <p>Verified Internships</p>
+            </div>
+            <div class="stat-item">
+                <h3 th:text="${totalCompanies} + '+'">120+</h3>
+                <p>Hiring Companies</p>
+            </div>
+            <div class="stat-item">
+                <h3 th:text="${totalCandidates} + '+'">15,000+</h3>
+                <p>Registered Students</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content" style="padding-top: 50px;">
+        <div class="container">
+
+            <!-- Popular Categories Section -->
+            <section style="margin-bottom: 60px;">
+                <div style="text-align: center; margin-bottom: 35px;">
+                    <h2 style="font-size: 2rem; font-weight: 800; color: var(--dark);">Popular Career Categories</h2>
+                    <p style="color: var(--text-muted);">Explore opportunities matching your domain expertise</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+                    <a href="/jobs?category=Software+Development" class="card" style="text-align: center; padding: 24px 16px;">
+                        <i class="fa-solid fa-code" style="font-size: 2rem; color: var(--primary); margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--dark);">Software Development</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Java, Python, C++, Go</p>
+                    </a>
+                    <a href="/jobs?category=Artificial+Intelligence" class="card" style="text-align: center; padding: 24px 16px;">
+                        <i class="fa-solid fa-brain" style="font-size: 2rem; color: #8b5cf6; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--dark);">AI & Machine Learning</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">PyTorch, NLP, Computer Vision</p>
+                    </a>
+                    <a href="/jobs?category=Data+Science" class="card" style="text-align: center; padding: 24px 16px;">
+                        <i class="fa-solid fa-chart-pie" style="font-size: 2rem; color: #06b6d4; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--dark);">Data Science & Analytics</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">SQL, Pandas, Statistics</p>
+                    </a>
+                    <a href="/jobs?category=Cloud+Computing" class="card" style="text-align: center; padding: 24px 16px;">
+                        <i class="fa-solid fa-cloud" style="font-size: 2rem; color: #f59e0b; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--dark);">Cloud & DevOps</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">AWS, Docker, Kubernetes</p>
+                    </a>
+                    <a href="/jobs?category=Web+Development" class="card" style="text-align: center; padding: 24px 16px;">
+                        <i class="fa-solid fa-laptop-code" style="font-size: 2rem; color: #10b981; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--dark);">Web Development</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">HTML5, CSS3, JavaScript, React</p>
+                    </a>
+                    <a href="/jobs?category=UI%2FUX+Design" class="card" style="text-align: center; padding: 24px 16px;">
+                        <i class="fa-solid fa-palette" style="font-size: 2rem; color: #ec4899; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--dark);">UI/UX Design</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Figma, Wireframing, UX</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Featured Jobs Section -->
+            <section style="margin-bottom: 60px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+                    <div>
+                        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--dark);">Featured Job Openings</h2>
+                        <p style="color: var(--text-muted);">Handpicked full-time roles from verified employers</p>
+                    </div>
+                    <a href="/jobs" class="btn btn-outline-primary btn-sm">View All Jobs <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                    <div th:each="job : ${featuredJobs}" class="job-card">
+                        <div>
+                            <div class="job-card-header">
+                                <div>
+                                    <h3 class="job-card-title">
+                                        <a th:href="@{'/jobs/' + ${job.id}}" th:text="${job.title}">Job Title</a>
+                                    </h3>
+                                    <p class="job-card-company"><i class="fa-regular fa-building"></i> <span th:text="${job.company}">Company</span></p>
+                                </div>
+                                <span class="badge badge-primary" th:text="${job.category}">Category</span>
+                            </div>
+
+                            <div class="job-card-meta" style="margin: 12px 0;">
+                                <span class="job-card-meta-item"><i class="fa-solid fa-location-dot"></i> <span th:text="${job.location}">Location</span></span>
+                                <span class="job-card-meta-item"><i class="fa-solid fa-briefcase"></i> <span th:text="${job.workMode}">Work Mode</span></span>
+                                <span class="job-card-meta-item"><i class="fa-solid fa-clock"></i> <span th:text="${job.experience}">Experience</span></span>
+                            </div>
+
+                            <div class="job-card-skills" th:if="${job.skills != null}">
+                                <span th:each="skill : ${#strings.arraySplit(job.skills, ',')}" class="skill-tag" th:text="${#strings.trim(skill)}">Skill</span>
+                            </div>
+                        </div>
+
+                        <div class="job-card-footer">
+                            <span class="job-card-salary" th:text="${job.getDisplayPay()}">₹12,00,000 / year</span>
+                            <a th:href="@{'/jobs/' + ${job.id}}" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Internships Section -->
+            <section style="margin-bottom: 60px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+                    <div>
+                        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--dark);">Top Student Internships</h2>
+                        <p style="color: var(--text-muted);">High-stipend internships for college students and recent graduates</p>
+                    </div>
+                    <a href="/internships" class="btn btn-outline-primary btn-sm">View All Internships <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                    <div th:each="internship : ${featuredInternships}" class="job-card" style="border-left: 4px solid var(--secondary);">
+                        <div>
+                            <div class="job-card-header">
+                                <div>
+                                    <h3 class="job-card-title">
+                                        <a th:href="@{'/internships/' + ${internship.id}}" th:text="${internship.title}">Internship Title</a>
+                                    </h3>
+                                    <p class="job-card-company"><i class="fa-regular fa-building"></i> <span th:text="${internship.company}">Company</span></p>
+                                </div>
+                                <span class="badge badge-secondary">Internship</span>
+                            </div>
+
+                            <div class="job-card-meta" style="margin: 12px 0;">
+                                <span class="job-card-meta-item"><i class="fa-solid fa-location-dot"></i> <span th:text="${internship.location}">Location</span></span>
+                                <span class="job-card-meta-item"><i class="fa-regular fa-calendar"></i> <span th:text="${internship.getDisplayDurationOrExp()}">Duration</span></span>
+                                <span class="job-card-meta-item"><i class="fa-solid fa-laptop"></i> <span th:text="${internship.workMode}">Work Mode</span></span>
+                            </div>
+
+                            <div class="job-card-skills" th:if="${internship.skills != null}">
+                                <span th:each="skill : ${#strings.arraySplit(internship.skills, ',')}" class="skill-tag" th:text="${#strings.trim(skill)}">Skill</span>
+                            </div>
+                        </div>
+
+                        <div class="job-card-footer">
+                            <span class="job-card-salary" style="color: var(--secondary);" th:text="${internship.getDisplayPay()}">₹35,000 / month</span>
+                            <a th:href="@{'/internships/' + ${internship.id}}" class="btn btn-secondary btn-sm">Apply Internship</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How HireHub Works Section -->
+            <section style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: 50px 30px; margin-bottom: 60px;">
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <h2 style="font-size: 2rem; font-weight: 800; color: var(--dark);">How HireHub AI Works</h2>
+                    <p style="color: var(--text-muted);">Fast, transparent, and intelligent career matching</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; text-align: center;">
+                    <div>
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px;">
+                            1
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 8px;">Create Profile & Upload Resume</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Add your education, skills, and resume. Our engine extracts your competency profile instantly.</p>
+                    </div>
+
+                    <div>
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: #e0f2fe; color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px;">
+                            2
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 8px;">Intelligent Skill Matching</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Our weighted recommendation algorithm matches your skills with top job requirements, showing precise match %.</p>
+                    </div>
+
+                    <div>
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--success-light); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px;">
+                            3
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 8px;">Track Applications Live</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Apply with 1 click and follow your application status through our live step-by-step timeline.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Call to Action Banner -->
+            <section style="background: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%); border-radius: var(--border-radius-lg); padding: 50px 30px; text-align: center; color: #ffffff;">
+                <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 12px;">Ready to Take the Next Step in Your Career?</h2>
+                <p style="font-size: 1.1rem; opacity: 0.9; max-width: 650px; margin: 0 auto 30px;">Join thousands of students and recruiters finding their perfect match on HireHub AI.</p>
+                <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                    <a href="/register" class="btn btn-lg" style="background: #ffffff; color: var(--primary) !important; font-weight: 700;">Join as Candidate</a>
+                    <a href="/register?role=recruiter" class="btn btn-lg btn-outline-primary" style="background: rgba(255,255,255,0.15); color: #ffffff !important; border-color: rgba(255,255,255,0.4);">Hire Top Talent</a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4 style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-briefcase" style="color: var(--primary);"></i> HireHub
+                    </h4>
+                    <p style="font-size: 0.9rem; margin-top: 10px; line-height: 1.6;">
+                        HireHub is an AI-powered job and internship recruitment ecosystem connecting ambitious students with premier tech recruiters.
+                    </p>
+                </div>
+                <div>
+                    <h4>Job Seekers</h4>
+                    <ul>
+                        <li><a href="/jobs">Browse Jobs</a></li>
+                        <li><a href="/internships">Explore Internships</a></li>
+                        <li><a href="/recommendations">AI Job Matcher</a></li>
+                        <li><a href="/dashboard">Candidate Dashboard</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Employers</h4>
+                    <ul>
+                        <li><a href="/post-job">Post a Job</a></li>
+                        <li><a href="/post-internship">Post an Internship</a></li>
+                        <li><a href="/recruiter/dashboard">Recruiter Hub</a></li>
+                        <li><a href="/recruiter/applicants">Manage Applicants</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="/login">Account Login</a></li>
+                        <li><a href="/register">Create Account</a></li>
+                        <li><a href="/admin/dashboard">Admin Portal</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 HireHub Inc. All rights reserved. Built with Java 17, Spring Boot, MySQL & Vanilla JavaScript.
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

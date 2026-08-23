@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | HireHub AI</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Existing Profile CSS -->
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+
+    <style>
+        .avatar-initial-large {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 2.2rem;
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3);
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .avatar-initial {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .skills-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .skill-badge {
+            background: #e0f2fe;
+            color: #0284c7;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border: 1px solid #bae6fd;
+        }
+
+        .edit-form-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .edit-form-card h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .edit-form-card h2 i {
+            color: #0284c7;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>HireHub AI</span>
+        </div>
+
+        <ul th:if="${userRole != 'Recruiter' and userRole != 'Admin' and profile.role != 'Recruiter'}">
+            <li><a th:href="@{/dashboard}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-briefcase"></i><span>Browse Jobs</span></a></li>
+            <li><a th:href="@{/ai-job-match}"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a></li>
+            <li><a th:href="@{/resume-analyzer}"><i class="fa-solid fa-file-lines"></i><span>Resume Analyzer</span></a></li>
+            <li><a th:href="@{/ats-score}"><i class="fa-solid fa-chart-line"></i><span>ATS Resume Score</span></a></li>
+            <li><a th:href="@{/saved-jobs}"><i class="fa-solid fa-bookmark"></i><span>Saved Jobs</span></a></li>
+            <li><a th:href="@{/applications}"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a></li>
+            <li><a th:href="@{/interviews}"><i class="fa-solid fa-calendar-days"></i><span>Interviews</span></a></li>
+            <li class="active"><a th:href="@{/profile}"><i class="fa-solid fa-user"></i><span>Profile</span></a></li>
+            <li><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+        <ul th:if="${userRole == 'Recruiter' or profile.role == 'Recruiter'}">
+            <li><a th:href="@{/recruiter/dashboard}"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a></li>
+            <li><a th:href="@{/post-job}"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a></li>
+            <li><a th:href="@{/recruiter/jobs}"><i class="fa-solid fa-briefcase"></i><span>Manage Jobs</span></a></li>
+            <li><a th:href="@{/recruiter/applicants}"><i class="fa-solid fa-users"></i><span>Applicants</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-globe"></i><span>Browse Live Jobs</span></a></li>
+            <li class="active"><a th:href="@{/profile}"><i class="fa-solid fa-building"></i><span>Company Profile</span></a></li>
+            <li><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+        <ul th:if="${userRole == 'Admin'}">
+            <li><a th:href="@{/admin/dashboard}"><i class="fa-solid fa-chart-line"></i><span>Overview</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-briefcase"></i><span>Live Jobs</span></a></li>
+            <li class="active"><a th:href="@{/profile}"><i class="fa-solid fa-user"></i><span>Profile</span></a></li>
+            <li><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+
+        <div class="logout">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <header class="topbar">
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search profile information...">
+            </div>
+            <div class="top-profile">
+                <a th:href="@{/notifications}" class="notification" style="text-decoration: none;">
+                    <i class="fa-regular fa-bell"></i>
+                </a>
+                <div th:if="${profile.imageUrl != null && !profile.imageUrl.isEmpty()}">
+                    <img id="topProfileImage" th:src="${profile.imageUrl}" alt="Profile Photo" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                </div>
+                <div th:if="${profile.imageUrl == null || profile.imageUrl.isEmpty()}" class="avatar-initial"
+                     th:text="${profile.initials}">
+                    U
+                </div>
+                <div class="top-profile-info">
+                    <h4 th:text="${profile.name != null && !profile.name.isBlank() ? profile.name : 'Candidate'}">Name</h4>
+                    <small id="topRole" th:text="${profile.role != null ? profile.role : 'Student'}">Student</small>
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash & Notification Messages -->
+        <div th:if="${param.success}" style="background: #dcfce7; color: #16a34a; padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-circle-check"></i> <span th:text="${param.success}">Success message</span>
+        </div>
+        <div th:if="${param.error}" style="background: #fee2e2; color: #dc2626; padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${param.error}">Error message</span>
+        </div>
+
+        <!-- =========================================================
+             PROFILE HERO (ALWAYS VISIBLE)
+             ========================================================= -->
+        <section class="profile-hero">
+            <div class="hero-left">
+                <div class="profile-image-wrapper">
+                    <div th:if="${profile.imageUrl != null && !profile.imageUrl.isEmpty()}">
+                        <img id="heroProfileImage" th:src="${profile.imageUrl}" alt="Profile Photo" class="profile-image">
+                    </div>
+                    <div th:if="${profile.imageUrl == null || profile.imageUrl.isEmpty()}" class="avatar-initial-large" style="margin: 0;"
+                         th:text="${profile.initials}">
+                        U
+                    </div>
+                    <span class="online-dot"></span>
+                </div>
+
+                <div class="hero-details">
+                    <span class="profile-role" id="heroRole" th:text="${profile.role != null ? profile.role : 'Student'}">Student</span>
+                    <h1 th:text="${profile.name != null && !profile.name.isBlank() ? profile.name : 'Candidate Profile'}">Profile Name</h1>
+                    <p class="profile-summary" th:text="${profile.summary != null && !profile.summary.isBlank() ? profile.summary : 'No summary added yet. Click Edit Profile to add your professional background.'}">
+                        Professional summary.
+                    </p>
+                    <div class="location">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span th:text="${profile.location != null && !profile.location.isBlank() ? profile.location : 'Location Not Specified'}">Location</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-right">
+                <div class="profile-status">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div>
+                        <span>Account Status</span>
+                        <strong>Active</strong>
+                    </div>
+                </div>
+
+                <a th:if="${!isEdit}" th:href="@{/profile(edit='true')}" class="edit-profile-btn">
+                    <i class="fa-solid fa-pen"></i> Edit Profile
+                </a>
+                <a th:if="${isEdit}" th:href="@{/profile}" class="edit-profile-btn" style="background: #f1f5f9; color: #475569;">
+                    <i class="fa-solid fa-eye"></i> View Profile
+                </a>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             STANDALONE PHOTO UPLOAD (QUICK ACTION)
+             ========================================================= -->
+        <section class="role-selector-section" style="padding: 20px 25px; margin-bottom: 25px;">
+            <form id="photoUploadForm" th:action="@{/profile/photo/upload}" method="post" enctype="multipart/form-data">
+                <div class="photo-upload-area" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div th:if="${profile.imageUrl != null && !profile.imageUrl.isEmpty()}" class="photo-preview-wrap">
+                            <img id="photoPreview" class="photo-preview" th:src="${profile.imageUrl}" alt="Profile Preview" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                        </div>
+                        <div th:if="${profile.imageUrl == null || profile.imageUrl.isEmpty()}" class="avatar-initial" th:text="${profile.initials}">U</div>
+                        <div>
+                            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: #0f172a;">Profile Photo</h4>
+                            <p style="margin: 0; font-size: 0.8rem; color: #64748b;">Upload a high-quality photo (JPG, PNG, WEBP). Photo persists in MySQL.</p>
+                        </div>
+                    </div>
+                    <label class="upload-photo-btn" style="cursor: pointer; background: #0284c7; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-camera"></i> Change Photo
+                        <input type="file" name="photo" id="profilePhoto" accept="image/png,image/jpeg,image/webp" style="display: none;" onchange="document.getElementById('photoUploadForm').submit()">
+                    </label>
+                </div>
+            </form>
+        </section>
+
+        <!-- =========================================================
+             CASE 1: READ-ONLY SAVED VIEW (!isEdit)
+             ========================================================= -->
+        <div th:if="${!isEdit}">
+            <!-- Overview Stats -->
+            <section class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-icon blue"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <span>Account Role</span>
+                        <strong th:text="${profile.role != null ? profile.role : 'Student'}">Student</strong>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon green"><i class="fa-solid fa-location-dot"></i></div>
+                    <div>
+                        <span>Location</span>
+                        <strong th:text="${profile.location != null && !profile.location.isBlank() ? profile.location : 'Not Set'}">Location</strong>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon purple"><i class="fa-solid fa-envelope"></i></div>
+                    <div>
+                        <span>Email</span>
+                        <strong th:text="${profile.email}">Email</strong>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-icon orange"><i class="fa-solid fa-phone"></i></div>
+                    <div>
+                        <span>Mobile / Phone</span>
+                        <strong th:text="${profile.phone != null && !profile.phone.isBlank() ? profile.phone : 'Not Set'}">Phone</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Personal Information -->
+            <section class="profile-section">
+                <div class="section-header">
+                    <div>
+                        <span class="section-label">PERSONAL DETAILS</span>
+                        <h2>Personal Information</h2>
+                    </div>
+                    <div class="section-icon"><i class="fa-solid fa-id-card"></i></div>
+                </div>
+                <div class="information-grid">
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-user"></i></div>
+                        <div>
+                            <span>Full Name</span>
+                            <strong th:text="${profile.name != null && !profile.name.isBlank() ? profile.name : 'Not Set'}">Name</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-envelope"></i></div>
+                        <div>
+                            <span>Email Address</span>
+                            <strong th:text="${profile.email}">Email</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-phone"></i></div>
+                        <div>
+                            <span>Phone Number</span>
+                            <strong th:text="${profile.phone != null && !profile.phone.isBlank() ? profile.phone : 'Not Set'}">Phone</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <div>
+                            <span>Current Location</span>
+                            <strong th:text="${profile.location != null && !profile.location.isBlank() ? profile.location : 'Not Set'}">Location</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Student Academic & Career Details (if Student) -->
+            <section class="profile-section" th:if="${profile.role != 'Recruiter'}">
+                <div class="section-header">
+                    <div>
+                        <span class="section-label">ACADEMIC & CAREER</span>
+                        <h2>Education & Technical Profile</h2>
+                    </div>
+                    <div class="section-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                </div>
+                <div class="information-grid">
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-building-columns"></i></div>
+                        <div>
+                            <span>College / University</span>
+                            <strong th:text="${profile.college != null && !profile.college.isBlank() ? profile.college : 'Not Specified'}">College</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-certificate"></i></div>
+                        <div>
+                            <span>Degree & Specialization</span>
+                            <strong th:text="${(profile.degree != null && !profile.degree.isBlank() ? profile.degree : 'Degree') + (profile.specialization != null && !profile.specialization.isBlank() ? ' - ' + profile.specialization : '')}">B.Tech</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-calendar"></i></div>
+                        <div>
+                            <span>Graduation Year</span>
+                            <strong th:text="${profile.graduationYear != null ? profile.graduationYear : 'Not Specified'}">2026</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-user-clock"></i></div>
+                        <div>
+                            <span>Experience Level</span>
+                            <strong th:text="${profile.experienceLevel != null && !profile.experienceLevel.isBlank() ? profile.experienceLevel : 'Fresher'}">Fresher</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-briefcase"></i></div>
+                        <div>
+                            <span>Preferred Role</span>
+                            <strong th:text="${profile.preferredRole != null && !profile.preferredRole.isBlank() ? profile.preferredRole : 'Software Engineer'}">Role</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-map-pin"></i></div>
+                        <div>
+                            <span>Preferred Location</span>
+                            <strong th:text="${profile.preferredLocation != null && !profile.preferredLocation.isBlank() ? profile.preferredLocation : 'Any'}">Location</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Skills Badges -->
+                <div style="margin-top: 1.5rem; background: #f8fafc; padding: 1.25rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Indexed Technical Skills</span>
+                    <div class="skills-badges" th:if="${profile.skills != null && !profile.skills.isBlank()}">
+                        <span class="skill-badge" th:each="sk : ${#strings.arraySplit(profile.skills, ',')}" th:text="${#strings.trim(sk)}">Java</span>
+                    </div>
+                    <p th:if="${profile.skills == null || profile.skills.isBlank()}" style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.5rem;">No technical skills indexed yet. Click Edit Profile to add skills.</p>
+                </div>
+            </section>
+
+            <!-- Recruiter Company Details (if Recruiter) -->
+            <section class="profile-section" th:if="${profile.role == 'Recruiter'}">
+                <div class="section-header">
+                    <div>
+                        <span class="section-label">EMPLOYER INFO</span>
+                        <h2>Company & Recruitment Profile</h2>
+                    </div>
+                    <div class="section-icon"><i class="fa-solid fa-building"></i></div>
+                </div>
+                <div class="information-grid">
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-building"></i></div>
+                        <div>
+                            <span>Company Name</span>
+                            <strong th:text="${profile.companyName != null && !profile.companyName.isBlank() ? profile.companyName : 'Not Set'}">Company</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-globe"></i></div>
+                        <div>
+                            <span>Company Website</span>
+                            <strong th:text="${profile.companyWebsite != null && !profile.companyWebsite.isBlank() ? profile.companyWebsite : 'Not Set'}">Website</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <span>Company Size</span>
+                            <strong th:text="${profile.companySize != null && !profile.companySize.isBlank() ? profile.companySize : 'Not Set'}">Size</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-industry"></i></div>
+                        <div>
+                            <span>Industry</span>
+                            <strong th:text="${profile.industry != null && !profile.industry.isBlank() ? profile.industry : 'Information Technology'}">Industry</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <div>
+                            <span>Hiring Locations</span>
+                            <strong th:text="${profile.hiringLocation != null && !profile.hiringLocation.isBlank() ? profile.hiringLocation : 'Not Set'}">Locations</strong>
+                        </div>
+                    </div>
+                    <div class="information-card">
+                        <div class="information-icon"><i class="fa-solid fa-phone"></i></div>
+                        <div>
+                            <span>Recruiter Contact</span>
+                            <strong th:text="${profile.recruiterContact != null && !profile.recruiterContact.isBlank() ? profile.recruiterContact : profile.phone}">Contact</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Professional Links & Social -->
+            <section class="profile-section">
+                <div class="section-header">
+                    <div>
+                        <span class="section-label">ONLINE PRESENCE</span>
+                        <h2>Professional Links</h2>
+                    </div>
+                    <div class="section-icon"><i class="fa-solid fa-globe"></i></div>
+                </div>
+                <div class="professional-links">
+                    <div class="professional-link">
+                        <div class="link-logo email"><i class="fa-solid fa-envelope"></i></div>
+                        <div class="link-content">
+                            <span>Email</span>
+                            <strong th:text="${profile.email}">Email</strong>
+                        </div>
+                    </div>
+
+                    <a class="professional-link" th:if="${profile.linkedIn != null and !#strings.isEmpty(profile.linkedIn)}" th:href="${profile.linkedIn}" target="_blank" rel="noopener noreferrer">
+                        <div class="link-logo linkedin"><i class="fa-brands fa-linkedin-in"></i></div>
+                        <div class="link-content">
+                            <span>LinkedIn</span>
+                            <strong th:text="${profile.linkedIn}">Profile</strong>
+                        </div>
+                        <i class="fa-solid fa-arrow-up-right-from-square link-arrow"></i>
+                    </a>
+
+                    <a class="professional-link" th:if="${profile.github != null and !#strings.isEmpty(profile.github)}" th:href="${profile.github}" target="_blank" rel="noopener noreferrer">
+                        <div class="link-logo github"><i class="fa-brands fa-github"></i></div>
+                        <div class="link-content">
+                            <span>GitHub</span>
+                            <strong th:text="${profile.github}">Repository</strong>
+                        </div>
+                        <i class="fa-solid fa-arrow-up-right-from-square link-arrow"></i>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Resume & ATS Summary Card -->
+            <section class="profile-section" th:if="${profile.role != 'Recruiter'}">
+                <div class="section-header">
+                    <div>
+                        <span class="section-label">CAREER ATTACHMENT</span>
+                        <h2>Resume & ATS Analytics</h2>
+                    </div>
+                    <div class="section-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                </div>
+                <div style="background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 50px; height: 50px; border-radius: 12px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <div>
+                            <h4 style="margin: 0; font-size: 1rem; font-weight: 700; color: #0f172a;" th:text="${resumeRecord != null ? resumeRecord.fileName : 'No Resume Uploaded'}">resume.pdf</h4>
+                            <p style="margin: 0.2rem 0 0; font-size: 0.85rem; color: #64748b;" th:text="${resumeRecord != null ? 'Uploaded: ' + #temporals.format(resumeRecord.uploadedAt, 'MMM dd, yyyy') : 'Upload your resume in Edit Profile to calculate ATS score.'}">Status</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span th:if="${atsScore != null}" style="background: #dcfce7; color: #16a34a; font-weight: 800; font-size: 0.95rem; padding: 0.4rem 1rem; border-radius: 20px;">
+                            <i class="fa-solid fa-bolt"></i> <span th:text="${atsScore + '% ATS Score'}">85% ATS</span>
+                        </span>
+                        <a th:href="@{/resume-analyzer}" style="background: #0284c7; color: #ffffff; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+                            Analyze Resume
+                        </a>
+                        <a th:href="@{/ats-score}" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+                            ATS Breakdown
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bottom Actions -->
+            <section class="profile-actions" style="margin-top: 2rem;">
+                <a th:href="@{/profile(edit='true')}" class="primary-action">
+                    <i class="fa-solid fa-user-pen"></i> Edit Profile
+                </a>
+                <a th:href="@{/browse-jobs}" class="secondary-action">
+                    <i class="fa-solid fa-briefcase"></i> Browse Jobs
+                </a>
+            </section>
+        </div>
+
+        <!-- =========================================================
+             CASE 2: INTERACTIVE EDIT PROFILE MODE (isEdit == true)
+             ========================================================= -->
+        <div th:if="${isEdit}">
+            <!-- Student Edit Form -->
+            <div class="edit-form-card" th:if="${profile.role != 'Recruiter'}">
+                <h2><i class="fa-solid fa-user-graduate"></i> Edit Student Career Profile</h2>
+                <form th:action="@{/profile/student/save}" method="post" enctype="multipart/form-data">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="name" th:value="${profile.name}" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone / Mobile Number <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="phone" th:value="${profile.phone}" placeholder="+91 9876543210" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Current Location <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="location" th:value="${profile.location}" placeholder="e.g. Bengaluru, Karnataka" required>
+                        </div>
+                        <div class="form-group">
+                            <label>College / University <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="college" th:value="${profile.college}" placeholder="e.g. National Institute of Technology" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Degree <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="degree" th:value="${profile.degree}" placeholder="e.g. B.Tech in Computer Science" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Specialization</label>
+                            <input type="text" name="specialization" th:value="${profile.specialization}" placeholder="e.g. Artificial Intelligence / Cloud">
+                        </div>
+                        <div class="form-group">
+                            <label>Graduation Year <span style="color: #ef4444;">*</span></label>
+                            <input type="number" name="graduationYear" th:value="${profile.graduationYear}" placeholder="2026" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Experience Level</label>
+                            <select name="experienceLevel">
+                                <option value="Fresher" th:selected="${profile.experienceLevel == 'Fresher'}">Fresher</option>
+                                <option value="0-1 Years" th:selected="${profile.experienceLevel == '0-1 Years'}">0-1 Years</option>
+                                <option value="1-2 Years" th:selected="${profile.experienceLevel == '1-2 Years'}">1-2 Years</option>
+                                <option value="2-4 Years" th:selected="${profile.experienceLevel == '2-4 Years'}">2-4 Years</option>
+                                <option value="4+ Years" th:selected="${profile.experienceLevel == '4+ Years'}">4+ Years</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Job Role</label>
+                            <input type="text" name="preferredRole" th:value="${profile.preferredRole}" placeholder="e.g. Java Backend Engineer">
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Work Location</label>
+                            <input type="text" name="preferredLocation" th:value="${profile.preferredLocation}" placeholder="e.g. Bengaluru / Hyderabad / Remote">
+                        </div>
+                        <div class="form-group">
+                            <label>LinkedIn URL</label>
+                            <input type="url" name="linkedIn" th:value="${profile.linkedIn}" placeholder="https://linkedin.com/in/username">
+                        </div>
+                        <div class="form-group">
+                            <label>GitHub URL</label>
+                            <input type="url" name="github" th:value="${profile.github}" placeholder="https://github.com/username">
+                        </div>
+                        <div class="form-group full">
+                            <label>Technical Skills (comma-separated) <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="skills" th:value="${profile.skills}" placeholder="Java, Spring Boot, MySQL, REST API, React, Docker" required>
+                        </div>
+                        <div class="form-group full">
+                            <label>Professional Summary & Career Objective</label>
+                            <textarea name="careerObjective" rows="4" placeholder="Describe your technical background, core projects and career goals..." th:text="${profile.summary}"></textarea>
+                        </div>
+                        <div class="form-group full">
+                            <label>Update Resume (PDF, DOC, DOCX, TXT) - <em>Existing resume preserved if not selected</em></label>
+                            <input type="file" name="resume" accept=".pdf,.doc,.docx,.txt">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #f1f5f9;">
+                        <a th:href="@{/profile}" class="secondary-action" style="background: #f1f5f9; color: #475569; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                            Cancel
+                        </a>
+                        <button type="submit" class="primary-action" style="padding: 0.75rem 2rem; border-radius: 8px; border: none; background: #0284c7; color: #ffffff; font-weight: 700; cursor: pointer;">
+                            <i class="fa-solid fa-save"></i> Save Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Recruiter Edit Form -->
+            <div class="edit-form-card" th:if="${profile.role == 'Recruiter'}">
+                <h2><i class="fa-solid fa-building-user"></i> Edit Recruiter & Company Profile</h2>
+                <form th:action="@{/profile/recruiter/save}" method="post" enctype="multipart/form-data">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Recruiter Full Name <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="recruiterName" th:value="${profile.name}" placeholder="Recruiter name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Phone <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="recruiterContact" th:value="${profile.phone != null && !profile.phone.isBlank() ? profile.phone : profile.recruiterContact}" placeholder="+91 9876543210" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Company Name <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="companyName" th:value="${profile.companyName}" placeholder="Company name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Company Website</label>
+                            <input type="url" name="companyWebsite" th:value="${profile.companyWebsite}" placeholder="https://company.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Company Size</label>
+                            <select name="companySize">
+                                <option value="1-10" th:selected="${profile.companySize == '1-10'}">1-10 employees</option>
+                                <option value="11-50" th:selected="${profile.companySize == '11-50'}">11-50 employees</option>
+                                <option value="51-200" th:selected="${profile.companySize == '51-200'}">51-200 employees</option>
+                                <option value="201-500" th:selected="${profile.companySize == '201-500'}">201-500 employees</option>
+                                <option value="500+" th:selected="${profile.companySize == '500+'}">500+ employees</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Industry</label>
+                            <input type="text" name="industry" th:value="${profile.industry}" placeholder="Information Technology">
+                        </div>
+                        <div class="form-group">
+                            <label>Hiring Location</label>
+                            <input type="text" name="hiringLocation" th:value="${profile.hiringLocation != null ? profile.hiringLocation : profile.location}" placeholder="Bengaluru / Hybrid">
+                        </div>
+                        <div class="form-group">
+                            <label>Hiring Timeline</label>
+                            <input type="text" name="hiringTimeline" th:value="${profile.hiringTimeline}" placeholder="Immediate / 30 Days">
+                        </div>
+                        <div class="form-group full">
+                            <label>Preferred Skills / Hiring Focus</label>
+                            <input type="text" name="preferredSkills" th:value="${profile.preferredSkills}" placeholder="Java, Spring Boot, React, Microservices">
+                        </div>
+                        <div class="form-group full">
+                            <label>Company Description & Culture</label>
+                            <textarea name="companyDescription" rows="4" placeholder="Describe company products, work culture and perks..." th:text="${profile.companyDescription != null ? profile.companyDescription : profile.summary}"></textarea>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #f1f5f9;">
+                        <a th:href="@{/profile}" class="secondary-action" style="background: #f1f5f9; color: #475569; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                            Cancel
+                        </a>
+                        <button type="submit" class="primary-action" style="padding: 0.75rem 2rem; border-radius: 8px; border: none; background: #0284c7; color: #ffffff; font-weight: 700; cursor: pointer;">
+                            <i class="fa-solid fa-save"></i> Save Recruiter Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- =========================================================
+             FOOTER
+             ========================================================= -->
+        <footer class="profile-footer" style="margin-top: 3rem;">
+            <div>
+                <h3>HireHub AI</h3>
+                <p>AI-powered career and recruitment platform.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Support</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

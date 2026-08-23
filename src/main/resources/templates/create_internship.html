@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post an Internship | HireHub Recruiter</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/post-job.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Recruiter Portal</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/recruiter/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a>
+            <a th:href="@{/post-job}" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a>
+            <a th:href="@{/post-internship}" class="menu-item active"><i class="fa-solid fa-graduation-cap"></i><span>Post Internship</span></a>
+            <a th:href="@{/recruiter/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Manage Postings</span></a>
+            <a th:href="@{/recruiter/applicants}" class="menu-item"><i class="fa-solid fa-users"></i><span>Applicants</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="top-header" style="margin-bottom: 1.5rem;">
+            <div>
+                <h3 style="font-weight: 700; color: #0f172a; margin: 0;">Create Internship Opportunity</h3>
+                <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.2rem;">Post your internship to reach thousands of talented college students and fresh graduates.</p>
+            </div>
+        </header>
+
+        <div th:if="${errorMessage}" style="background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span th:text="${errorMessage}">Error message</span>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 2rem; max-width: 900px;">
+            <form th:action="@{/post-internship}" th:object="${internship}" method="POST">
+                <input type="hidden" name="type" value="Internship">
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Internship Role Title *</label>
+                        <input type="text" th:field="*{title}" placeholder="e.g. Machine Learning Research Intern" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Company Name *</label>
+                        <input type="text" th:field="*{company}" th:value="${defaultCompany != null ? defaultCompany : ''}" placeholder="e.g. Microsoft IDC" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Domain / Category *</label>
+                        <select th:field="*{category}" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                            <option value="Software Development">Software Development</option>
+                            <option value="Artificial Intelligence">AI & Machine Learning</option>
+                            <option value="Data Science">Data Science & Analytics</option>
+                            <option value="Cloud Computing">Cloud Computing</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="UI/UX Design">UI/UX Design</option>
+                            <option value="Cyber Security">Cyber Security</option>
+                            <option value="Testing">Software Testing / QA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Duration *</label>
+                        <select th:field="*{duration}" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                            <option value="3 Months">3 Months</option>
+                            <option value="6 Months">6 Months</option>
+                            <option value="2 Months">2 Months</option>
+                            <option value="1 Year">1 Year</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Monthly Stipend *</label>
+                        <input type="text" th:field="*{stipend}" placeholder="e.g. ₹35,000 / month" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Work Mode *</label>
+                        <select th:field="*{workMode}" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="On-site">On-site</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Location</label>
+                        <input type="text" th:field="*{location}" placeholder="e.g. Bengaluru, India" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Vacancies</label>
+                        <input type="number" th:field="*{vacancies}" value="3" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Required Skills (Comma separated) *</label>
+                    <input type="text" th:field="*{skills}" placeholder="e.g. Python, PyTorch, Deep Learning, SQL" required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                </div>
+
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Internship Description *</label>
+                    <textarea th:field="*{description}" rows="4" placeholder="Detailed overview of the internship role..." required style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit;"></textarea>
+                </div>
+
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Responsibilities</label>
+                    <textarea th:field="*{responsibilities}" rows="3" placeholder="List what the intern will do..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit;"></textarea>
+                </div>
+
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Eligibility & Requirements</label>
+                    <textarea th:field="*{requirements}" rows="3" placeholder="Eligibility criteria, college year, relevant skills..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit;"></textarea>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: #334155;">Perks & Benefits</label>
+                    <textarea th:field="*{benefits}" rows="2" placeholder="e.g. Certificate of Internship, PPO Opportunity, Flexible Hours" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit;"></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                    <a th:href="@{/recruiter/jobs}" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none;">Cancel</a>
+                    <button type="submit" style="background: #0ea5e9; color: #ffffff; border: none; padding: 0.75rem 2rem; border-radius: 8px; font-weight: 700; cursor: pointer;">Publish Internship</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile | HireHub Recruiter</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .profile-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .skill-pill {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Recruiter Portal</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/recruiter/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a>
+            <a th:href="@{/post-job}" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a>
+            <a th:href="@{/post-internship}" class="menu-item"><i class="fa-solid fa-graduation-cap"></i><span>Post Internship</span></a>
+            <a th:href="@{/recruiter/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Manage Postings</span></a>
+            <a th:href="@{/recruiter/applicants}" class="menu-item active"><i class="fa-solid fa-users"></i><span>Applicants</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="top-header" style="margin-bottom: 1.5rem;">
+            <a th:href="@{/recruiter/applicants}" style="color: #4f46e5; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Applicants List
+            </a>
+        </header>
+
+        <!-- Candidate Overview Card -->
+        <div class="profile-card" style="border-left: 6px solid #4f46e5;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem;">
+                <div style="display: flex; gap: 1.5rem; align-items: center;">
+                    <div style="width: 72px; height: 72px; border-radius: 50%; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700;">
+                        <span th:text="${candidateProfile != null && candidateProfile.name != null ? candidateProfile.name.substring(0,1).toUpperCase() : (application != null ? application.applicantName.substring(0,1).toUpperCase() : 'C')}">C</span>
+                    </div>
+                    <div>
+                        <h1 style="margin: 0 0 0.35rem 0; font-size: 1.6rem; font-weight: 800; color: #0f172a;"
+                            th:text="${candidateProfile != null && candidateProfile.name != null ? candidateProfile.name : (application != null ? application.applicantName : 'Candidate')}">
+                            Candidate Name
+                        </h1>
+                        <p style="margin: 0 0 0.5rem 0; color: #64748b; font-size: 0.95rem;">
+                            <i class="fa-regular fa-envelope"></i> <span th:text="${candidateProfile != null && candidateProfile.email != null ? candidateProfile.email : (application != null ? application.applicantEmail : '')}">candidate@example.com</span>
+                            <span th:if="${candidateProfile != null && candidateProfile.phone != null}">&bull; <i class="fa-solid fa-phone"></i> <span th:text="${candidateProfile.phone}">+91 9876543210</span></span>
+                            <span th:if="${candidateProfile != null && candidateProfile.location != null}">&bull; <i class="fa-solid fa-location-dot"></i> <span th:text="${candidateProfile.location}">Location</span></span>
+                        </p>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <a th:if="${candidateProfile != null && candidateProfile.linkedIn != null}" th:href="${candidateProfile.linkedIn}" target="_blank" style="color: #0284c7; font-size: 0.85rem; text-decoration: none; font-weight: 600;"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+                            <a th:if="${candidateProfile != null && candidateProfile.github != null}" th:href="${candidateProfile.github}" target="_blank" style="color: #334155; font-size: 0.85rem; text-decoration: none; font-weight: 600;"><i class="fa-brands fa-github"></i> GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Application Status Actions -->
+                <div th:if="${application != null}" style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1.25rem; border-radius: 12px; min-width: 260px;">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 0.5rem;">Current Application Status:</div>
+                    <div style="margin-bottom: 1rem;">
+                        <span th:class="'badge ' + ${application.getStatusBadgeClass()}" style="font-size: 0.9rem; padding: 6px 14px;" th:text="${application.status}">Under Review</span>
+                    </div>
+
+                    <!-- Change Status Form -->
+                    <form th:action="@{'/recruiter/applications/' + ${application.id} + '/status'}" method="POST">
+                        <label style="display: block; font-size: 0.8rem; font-weight: 600; color: #334155; margin-bottom: 0.35rem;">Update Status:</label>
+                        <select name="status" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                            <option value="Applied" th:selected="${application.status == 'Applied'}">Applied</option>
+                            <option value="Under Review" th:selected="${application.status == 'Under Review'}">Under Review</option>
+                            <option value="Shortlisted" th:selected="${application.status == 'Shortlisted'}">Shortlisted</option>
+                            <option value="Interview" th:selected="${application.status == 'Interview'}">Interview Scheduled</option>
+                            <option value="Selected" th:selected="${application.status == 'Selected'}">Selected / Hired</option>
+                            <option value="Rejected" th:selected="${application.status == 'Rejected'}">Rejected</option>
+                        </select>
+                        <input type="text" name="remarks" placeholder="Optional recruiter note..." style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                        <button type="submit" style="width: 100%; background: #4f46e5; color: #ffffff; border: none; padding: 0.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;">Save Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic & Experience Details -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="profile-card">
+                <h3 class="section-title"><i class="fa-solid fa-graduation-cap" style="color: #4f46e5;"></i> Education & Academics</h3>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>College / University:</strong>
+                    <div th:text="${candidateProfile != null && candidateProfile.college != null ? candidateProfile.college : 'Not specified'}" style="color: #475569;">IIT Madras</div>
+                </div>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Degree & Specialization:</strong>
+                    <div th:text="${candidateProfile != null ? (candidateProfile.degree != null ? candidateProfile.degree : '') + ' in ' + (candidateProfile.specialization != null ? candidateProfile.specialization : '') : 'B.Tech'}" style="color: #475569;">B.Tech Computer Science</div>
+                </div>
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Graduation Year:</strong>
+                    <div th:text="${candidateProfile != null && candidateProfile.graduationYear != null ? candidateProfile.graduationYear : '2025'}" style="color: #475569;">2025</div>
+                </div>
+            </div>
+
+            <div class="profile-card">
+                <h3 class="section-title"><i class="fa-solid fa-bolt" style="color: #4f46e5;"></i> Candidate Skills</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" th:if="${candidateProfile != null && candidateProfile.skills != null}">
+                    <span th:each="skill : ${#strings.arraySplit(candidateProfile.skills, ',')}" class="skill-pill" th:text="${#strings.trim(skill)}">Skill</span>
+                </div>
+                <div th:if="${candidateProfile == null || candidateProfile.skills == null}" style="color: #94a3b8;">No skills listed.</div>
+
+                <h3 class="section-title" style="margin-top: 1.5rem;"><i class="fa-solid fa-briefcase" style="color: #4f46e5;"></i> Experience Level</h3>
+                <div th:text="${candidateProfile != null && candidateProfile.experienceLevel != null ? candidateProfile.experienceLevel : 'Fresher (0 years)'}" style="color: #475569;">Fresher</div>
+            </div>
+        </div>
+
+        <!-- Cover Letter or Application Note -->
+        <div class="profile-card" th:if="${application != null and application.coverLetter != null and !application.coverLetter.isBlank()}">
+            <h3 class="section-title"><i class="fa-solid fa-envelope-open-text" style="color: #4f46e5;"></i> Candidate Cover Note</h3>
+            <p style="color: #334155; line-height: 1.7; white-space: pre-line;" th:text="${application.coverLetter}">Cover note text...</p>
+        </div>
+
+        <!-- Resume Download Action -->
+        <div class="profile-card" th:if="${application != null and application.resumeData != null}">
+            <h3 class="section-title"><i class="fa-solid fa-file-pdf" style="color: #dc2626;"></i> Attached Resume</h3>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">Candidate attached a verified resume for this opportunity.</p>
+            <a th:href="@{'/recruiter/applications/' + ${application.id} + '/resume'}" target="_blank" style="background: #dc2626; color: #ffffff; padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-download"></i> Download Resume (<span th:text="${application.resumeFileName != null ? application.resumeFileName : 'resume.pdf'}">resume.pdf</span>)
+            </a>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

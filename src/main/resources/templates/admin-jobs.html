@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderate Postings | HireHub Admin</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        th, td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #475569;
+            text-transform: uppercase;
+        }
+        tr:hover {
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Admin Portal</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/admin/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+            <a th:href="@{/admin/jobs}" class="menu-item active"><i class="fa-solid fa-briefcase"></i><span>Moderate Jobs</span></a>
+            <a th:href="@{/admin/internships}" class="menu-item"><i class="fa-solid fa-graduation-cap"></i><span>Moderate Internships</span></a>
+            <a th:href="@{/admin/users}" class="menu-item"><i class="fa-solid fa-users"></i><span>Manage Users</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="top-header" style="margin-bottom: 1.5rem;">
+            <div>
+                <h3 style="font-weight: 700; color: #0f172a; margin: 0;">Moderate Postings</h3>
+                <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.2rem;">Review, approve, or reject recruiter job and internship listings.</p>
+            </div>
+        </header>
+
+        <!-- Status Filter Tabs -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+            <a th:href="@{/admin/jobs}" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.85rem;"
+               th:style="${selectedStatus == null || selectedStatus == '' || selectedStatus == 'all' ? 'background: #4f46e5; color: #ffffff;' : 'background: #f1f5f9; color: #64748b;'}">
+                All Listings
+            </a>
+            <a th:href="@{/admin/jobs(status='Pending Approval')}" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.85rem;"
+               th:style="${selectedStatus == 'Pending Approval' ? 'background: #f59e0b; color: #ffffff;' : 'background: #f1f5f9; color: #64748b;'}">
+                Pending Approval
+            </a>
+            <a th:href="@{/admin/jobs(status='Approved')}" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.85rem;"
+               th:style="${selectedStatus == 'Approved' ? 'background: #10b981; color: #ffffff;' : 'background: #f1f5f9; color: #64748b;'}">
+                Approved
+            </a>
+            <a th:href="@{/admin/jobs(status='Rejected')}" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.85rem;"
+               th:style="${selectedStatus == 'Rejected' ? 'background: #ef4444; color: #ffffff;' : 'background: #f1f5f9; color: #64748b;'}">
+                Rejected
+            </a>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Opportunity</th>
+                    <th>Recruiter / Company</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="job : ${jobs}">
+                    <td>
+                        <strong th:text="${job.title}" style="color: #0f172a;">Job Title</strong>
+                        <div style="font-size: 0.8rem; color: #64748b;" th:text="${job.location} + ' &bull; ' + ${job.getDisplayPay()}">Location &bull; Pay</div>
+                    </td>
+                    <td>
+                        <span th:text="${job.company}" style="font-weight: 600; color: #334155;">Company</span>
+                        <div style="font-size: 0.75rem; color: #94a3b8;" th:text="${job.recruiterEmail}">recruiter@example.com</div>
+                    </td>
+                    <td>
+                        <span th:if="${job.isInternship()}" style="background: #e0f2fe; color: #0369a1; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">Internship</span>
+                        <span th:if="${!job.isInternship()}" style="background: #eef2ff; color: #4338ca; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">Job</span>
+                    </td>
+                    <td>
+                        <span th:if="${job.status == 'Approved'}" style="background: #dcfce7; color: #16a34a; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px;">Approved</span>
+                        <span th:if="${job.status == 'Pending Approval'}" style="background: #fef3c7; color: #d97706; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px;">Pending Approval</span>
+                        <span th:if="${job.status == 'Rejected'}" style="background: #fee2e2; color: #dc2626; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 9999px;">Rejected</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <form th:action="@{'/admin/jobs/' + ${job.id} + '/approve'}" method="POST" style="display: inline;">
+                                <button type="submit" style="background: #10b981; color: #fff; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                                    <i class="fa-solid fa-check"></i> Approve
+                                </button>
+                            </form>
+                            <form th:action="@{'/admin/jobs/' + ${job.id} + '/reject'}" method="POST" style="display: inline;">
+                                <button type="submit" style="background: #f59e0b; color: #fff; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                                    <i class="fa-solid fa-ban"></i> Reject
+                                </button>
+                            </form>
+                            <form th:action="@{'/admin/jobs/' + ${job.id} + '/delete'}" method="POST" style="display: inline;">
+                                <button type="submit" onclick="return confirm('Delete this posting permanently?')" style="background: #ef4444; color: #fff; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+
+</body>
+</html>

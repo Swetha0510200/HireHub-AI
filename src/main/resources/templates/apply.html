@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Apply for ' + ${job.title} + ' | HireHub AI'">Apply for Job | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/jobs.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .apply-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        .apply-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.08);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .apply-header {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            padding: 2rem;
+        }
+        .apply-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .apply-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        .apply-body {
+            padding: 2rem;
+        }
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-title i {
+            color: #0284c7;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+        }
+        .form-control {
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #1e293b;
+            transition: all 0.2s ease;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+        textarea.form-control {
+            min-height: 110px;
+            resize: vertical;
+        }
+        .resume-attached-box {
+            background: #f0f9ff;
+            border: 1.5px dashed #0284c7;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #0369a1;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .file-info i {
+            font-size: 1.4rem;
+        }
+        .actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        .btn-cancel {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+        .btn-cancel:hover {
+            background: #f8fafc;
+            color: #334155;
+        }
+        .btn-submit {
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 0.85rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        .btn-submit:hover {
+            background: #0369a1;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+    </style>
+</head>
+<body style="background-color: #f8fafc; font-family: 'Poppins', sans-serif;">
+
+<div class="apply-container">
+    <div class="apply-card">
+        <header class="apply-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.85;">
+                <i class="fa-solid fa-briefcase"></i> <span th:text="${job.company}">Company</span>
+            </div>
+            <h1 th:text="'Apply for ' + ${job.title}">Apply for Position</h1>
+            <p>
+                <i class="fa-solid fa-location-dot"></i> <span th:text="${job.location}">Location</span> &bull;
+                <i class="fa-solid fa-clock"></i> <span th:text="${job.type}">Job Type</span> &bull;
+                <i class="fa-solid fa-indian-rupee-sign"></i> <span th:text="${job.salary}">Salary</span>
+            </p>
+        </header>
+
+        <form th:action="@{/apply/{jobId}(jobId=${job.id})}" method="post" enctype="multipart/form-data" class="apply-body">
+            <!-- Candidate Details -->
+            <div class="form-section">
+                <div class="section-title"><i class="fa-solid fa-user"></i> Personal Information</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="applicantName">Full Name *</label>
+                        <input type="text" id="applicantName" name="applicantName" class="form-control"
+                               th:value="${profile.name != null ? profile.name : (account != null ? account.name : '')}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="applicantEmail">Email Address (Read-Only)</label>
+                        <input type="email" id="applicantEmail" class="form-control"
+                               th:value="${account != null ? account.email : ''}" readonly style="background-color: #f1f5f9; cursor: not-allowed;">
+                    </div>
+                    <div class="form-group">
+                        <label for="applicantPhone">Mobile Number *</label>
+                        <input type="tel" id="applicantPhone" name="applicantPhone" class="form-control"
+                               th:value="${account != null ? account.mobile : ''}" placeholder="+91 9876543210" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="experience">Experience Level</label>
+                        <input type="text" id="experience" name="experience" class="form-control"
+                               th:value="${profile.experienceLevel != null ? profile.experienceLevel : 'Fresher'}" placeholder="e.g. Fresher, 1-2 Years">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic & Links -->
+            <div class="form-section">
+                <div class="section-title"><i class="fa-solid fa-graduation-cap"></i> Academic & Professional Links</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="degree">Degree / Qualification</label>
+                        <input type="text" id="degree" name="degree" class="form-control"
+                               th:value="${profile.degree}" placeholder="e.g. B.Tech in Computer Science">
+                    </div>
+                    <div class="form-group">
+                        <label for="university">College / University</label>
+                        <input type="text" id="university" name="university" class="form-control"
+                               th:value="${profile.college}" placeholder="e.g. NIT Trichy">
+                    </div>
+                    <div class="form-group">
+                        <label for="graduationYear">Graduation Year</label>
+                        <input type="number" id="graduationYear" name="graduationYear" class="form-control"
+                               th:value="${profile.graduationYear}" placeholder="2025">
+                    </div>
+                    <div class="form-group">
+                        <label for="linkedIn">LinkedIn Profile</label>
+                        <input type="url" id="linkedIn" name="linkedIn" class="form-control"
+                               th:value="${profile.linkedIn}" placeholder="https://linkedin.com/in/username">
+                    </div>
+                    <div class="form-group">
+                        <label for="github">GitHub Profile</label>
+                        <input type="url" id="github" name="github" class="form-control"
+                               th:value="${profile.github}" placeholder="https://github.com/username">
+                    </div>
+                    <div class="form-group">
+                        <label for="portfolio">Portfolio URL</label>
+                        <input type="url" id="portfolio" name="portfolio" class="form-control"
+                               th:value="${profile.portfolio}" placeholder="https://yourportfolio.com">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills & Cover Letter -->
+            <div class="form-section">
+                <div class="section-title"><i class="fa-solid fa-code"></i> Skills & Cover Letter</div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="skills">Key Skills (Comma separated)</label>
+                        <input type="text" id="skills" name="skills" class="form-control"
+                               th:value="${profile.skills != null ? profile.skills : job.skills}" placeholder="Java, Spring Boot, MySQL, REST API, React">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="coverLetter">Cover Letter / Note to Recruiter</label>
+                        <textarea id="coverLetter" name="coverLetter" class="form-control"
+                                  placeholder="Explain why you are the ideal fit for this role, relevant achievements, and when you can join..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resume Attachment -->
+            <div class="form-section">
+                <div class="section-title"><i class="fa-solid fa-file-pdf"></i> Resume Attachment</div>
+                <div class="form-group">
+                    <label for="resumeFile">Upload Resume (PDF, DOC, DOCX - Max 25MB)</label>
+                    <input type="file" id="resumeFile" name="resumeFile" class="form-control" accept=".pdf,.doc,.docx">
+                    <small style="color: #64748b; margin-top: 0.3rem;">If you leave this empty, your latest uploaded profile resume will be attached automatically.</small>
+
+                    <div th:if="${latestResume != null}" class="resume-attached-box">
+                        <div class="file-info">
+                            <i class="fa-solid fa-file-circle-check"></i>
+                            <div>
+                                <div style="font-weight: 600;" th:text="${latestResume.fileName}">resume.pdf</div>
+                                <div style="font-size: 0.8rem; color: #64748b;" th:text="'ATS Score: ' + ${latestResume.atsScore} + '% (' + ${latestResume.resumeQuality} + ')'">Score</div>
+                            </div>
+                        </div>
+                        <span style="font-size: 0.8rem; background: #e0f2fe; color: #0369a1; padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: 600;">Active in Profile</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-row">
+                <a th:href="@{/jobs/{id}(id=${job.id})}" class="btn-cancel"><i class="fa-solid fa-arrow-left"></i> Back</a>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> Submit Application</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

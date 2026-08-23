@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/applications.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .timeline-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin: 1.5rem 0 1rem;
+            padding: 0 10px;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 25px;
+            right: 25px;
+            height: 3px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+        .timeline-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            gap: 6px;
+        }
+        .node-bubble {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #64748b;
+        }
+        .timeline-node.done .node-bubble {
+            background: #10b981;
+            border-color: #10b981;
+            color: #ffffff;
+        }
+        .timeline-node.current .node-bubble {
+            background: #4f46e5;
+            border-color: #c7d2fe;
+            color: #ffffff;
+            box-shadow: 0 0 0 4px #eef2ff;
+        }
+        .timeline-node.declined .node-bubble {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .node-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .timeline-node.current .node-text {
+            color: #4f46e5;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>HireHub AI</span>
+        </div>
+        <ul>
+            <li><a th:href="@{/dashboard}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-briefcase"></i><span>Browse Jobs</span></a></li>
+            <li><a th:href="@{/ai-job-match}"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a></li>
+            <li><a th:href="@{/resume-analyzer}"><i class="fa-solid fa-file-lines"></i><span>Resume Analyzer</span></a></li>
+            <li><a th:href="@{/ats-score}"><i class="fa-solid fa-chart-line"></i><span>ATS Resume Score</span></a></li>
+            <li><a th:href="@{/saved-jobs}"><i class="fa-solid fa-bookmark"></i><span>Saved Jobs</span></a></li>
+            <li class="active"><a th:href="@{/applications}"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a></li>
+            <li><a th:href="@{/interviews}"><i class="fa-solid fa-calendar-days"></i><span>Interviews</span></a></li>
+            <li><a th:href="@{/profile}"><i class="fa-solid fa-user"></i><span>Profile</span></a></li>
+            <li><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="content">
+        <header class="topbar">
+            <div class="search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search applications..." id="appSearch">
+            </div>
+            <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                <div>
+                    <h4 style="font-size: 0.9rem; font-weight: 600; margin: 0;" th:text="${userName != null ? userName : 'Student'}">Candidate</h4>
+                    <small style="color: #64748b; font-size: 0.75rem;" th:text="${userRole != null ? userRole : 'Job Seeker'}">Student</small>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero" style="margin-bottom: 1.5rem;">
+            <div>
+                <span class="tag">Applications Tracker</span>
+                <h1>Your Application Journey</h1>
+                <p>Track live application progress, recruiter reviews, and upcoming interview status across all roles.</p>
+            </div>
+        </section>
+
+        <!-- Status Filter / Stats Cards -->
+        <div class="stats-grid" style="margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="icon-box" style="background: #e0f2fe; color: #0284c7;"><i class="fa-solid fa-paper-plane"></i></div>
+                <div>
+                    <h3 th:text="${totalApplications}">0</h3>
+                    <p>Total Submitted</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-box" style="background: #fef3c7; color: #d97706;"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                    <h3 th:text="${reviewCount != null ? reviewCount : 0}">0</h3>
+                    <p>Under Review</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-box" style="background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <h3 th:text="${shortlistedCount != null ? shortlistedCount : 0}">0</h3>
+                    <p>Shortlisted</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-box" style="background: #f3e8ff; color: #9333ea;"><i class="fa-solid fa-video"></i></div>
+                <div>
+                    <h3 th:text="${interviewCount != null ? interviewCount : 0}">0</h3>
+                    <p>Interviews</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="application-list">
+            <div th:if="${applications != null and !applications.isEmpty()}">
+                <div class="application-card" th:each="app : ${applications}" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div class="application-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                        <div>
+                            <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;" th:text="${app.applicationId != null ? app.applicationId : 'HH-APP-' + app.id}">HH-APP-10001</div>
+                            <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0;" th:text="${app.job.title}">Job Title</h2>
+                            <div style="font-weight: 600; color: #4f46e5; font-size: 0.95rem;">
+                                <i class="fa-solid fa-building"></i> <span th:text="${app.job.company}">Company</span> &bull; <i class="fa-solid fa-location-dot"></i> <span th:text="${app.job.location}">Location</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span th:if="${app.status == 'Applied'}" class="badge badge-applied">Applied</span>
+                            <span th:if="${app.status == 'Under Review'}" class="badge badge-review">Under Review</span>
+                            <span th:if="${app.status == 'Shortlisted'}" class="badge badge-shortlisted">Shortlisted</span>
+                            <span th:if="${app.status == 'Interview'}" class="badge badge-interview">Interview Scheduled</span>
+                            <span th:if="${app.status == 'Selected'}" class="badge badge-selected">Selected / Hired</span>
+                            <span th:if="${app.status == 'Rejected'}" class="badge badge-rejected">Not Selected</span>
+                        </div>
+                    </div>
+
+                    <!-- Step-by-Step Progress Timeline Stepper -->
+                    <div class="timeline-container">
+                        <div class="timeline-node" th:classappend="${app.getTimelineStage() >= 1 ? (app.status == 'Applied' ? 'current' : 'done') : ''}">
+                            <div class="node-bubble"><i class="fa-solid fa-file-arrow-up"></i></div>
+                            <span class="node-text">Applied</span>
+                        </div>
+                        <div class="timeline-node" th:classappend="${app.getTimelineStage() >= 2 ? (app.status == 'Under Review' ? 'current' : 'done') : ''}">
+                            <div class="node-bubble"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <span class="node-text">Review</span>
+                        </div>
+                        <div class="timeline-node" th:classappend="${app.getTimelineStage() >= 3 ? (app.status == 'Shortlisted' ? 'current' : 'done') : ''}">
+                            <div class="node-bubble"><i class="fa-solid fa-user-check"></i></div>
+                            <span class="node-text">Shortlisted</span>
+                        </div>
+                        <div class="timeline-node" th:classappend="${app.getTimelineStage() >= 4 ? (app.status == 'Interview' ? 'current' : 'done') : ''}">
+                            <div class="node-bubble"><i class="fa-solid fa-video"></i></div>
+                            <span class="node-text">Interview</span>
+                        </div>
+                        <div class="timeline-node" th:classappend="${app.status == 'Selected' ? 'done' : (app.status == 'Rejected' ? 'declined' : '')}">
+                            <div class="node-bubble">
+                                <i th:if="${app.status == 'Rejected'}" class="fa-solid fa-xmark"></i>
+                                <i th:if="${app.status != 'Rejected'}" class="fa-solid fa-award"></i>
+                            </div>
+                            <span class="node-text" th:text="${app.status == 'Rejected' ? 'Rejected' : 'Selected'}">Decision</span>
+                        </div>
+                    </div>
+
+                    <div th:if="${app.recruiterRemarks != null and !app.recruiterRemarks.isBlank()}" style="background: #f8fafc; border-left: 3px solid #4f46e5; padding: 0.6rem 1rem; border-radius: 4px; font-size: 0.85rem; color: #334155; margin-bottom: 0.75rem;">
+                        <strong>Recruiter Feedback:</strong> <span th:text="${app.recruiterRemarks}">Feedback note</span>
+                    </div>
+
+                    <div class="application-details" style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: #64748b; padding-top: 0.75rem; border-top: 1px solid #f1f5f9; align-items: center;">
+                        <span><i class="fa-solid fa-calendar-days"></i> Applied: <strong th:text="${#temporals.format(app.appliedAt, 'MMM dd, yyyy')}">Date</strong></span>
+                        <span th:if="${app.job.getDisplayPay() != null}"><i class="fa-solid fa-indian-rupee-sign"></i> <strong th:text="${app.job.getDisplayPay()}">Pay</strong></span>
+                        <span th:if="${app.matchScore != null}"><i class="fa-solid fa-bolt" style="color: #10b981;"></i> Match: <strong th:text="${app.matchScore + '%'}">85%</strong></span>
+                        <a th:if="${app.job.isInternship()}" th:href="@{/internships/{id}(id=${app.job.id})}" style="margin-left: auto; color: #4f46e5; font-weight: 600; text-decoration: none;">
+                            View Opportunity <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a th:if="${!app.job.isInternship()}" th:href="@{/jobs/{id}(id=${app.job.id})}" style="margin-left: auto; color: #4f46e5; font-weight: 600; text-decoration: none;">
+                            View Opportunity <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${applications == null or #lists.isEmpty(applications)}" class="empty-state" style="text-align: center; padding: 4rem 1rem; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
+                <i class="fa-solid fa-folder-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                <h2>No applications submitted yet</h2>
+                <p style="color: #64748b; margin-bottom: 1.5rem;">Browse live job and internship openings on HireHub and submit your application today.</p>
+                <div style="display: flex; justify-content: center; gap: 1rem;">
+                    <a th:href="@{/jobs}" class="btn btn-primary"><i class="fa-solid fa-briefcase"></i> Explore Jobs</a>
+                    <a th:href="@{/internships}" class="btn btn-secondary"><i class="fa-solid fa-graduation-cap"></i> Explore Internships</a>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

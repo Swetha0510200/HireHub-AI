@@ -1,0 +1,1765 @@
+/* =====================================================
+   HIREHUB AI - SAVED JOBS PAGE
+   Premium Recruitment Dashboard UI
+===================================================== */
+
+
+/* ===============================
+   GLOBAL RESET
+================================ */
+
+
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    font-family:'Poppins',sans-serif;
+
+}
+
+
+
+body{
+
+    background:#f4f7fb;
+
+    color:#1f2937;
+
+    min-height:100vh;
+
+}
+
+
+
+/* ===============================
+   SIDEBAR
+================================ */
+
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:260px;
+    height:100vh;
+    background:linear-gradient(180deg, #0f6fff, #2ea8ff);
+    color:white;
+    padding:30px 20px;
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+    z-index:100;
+    overflow-y:auto;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:white;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:35px;
+}
+
+.logo i{
+    font-size:26px;
+    color:white;
+    background:transparent;
+}
+
+.sidebar ul{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.sidebar ul li{
+    margin-bottom:2px;
+}
+
+.sidebar ul li a{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px 16px;
+    color:rgba(255,255,255,0.9);
+    text-decoration:none;
+    border-radius:12px;
+    transition:.2s ease;
+    font-size:14px;
+    font-weight:500;
+}
+
+.sidebar ul li a i{
+    width:20px;
+    font-size:16px;
+}
+
+.sidebar ul li a:hover{
+    background:rgba(255,255,255,0.18);
+    color:white;
+}
+
+.sidebar ul li.active a,
+.sidebar ul li a.active,
+.sidebar ul li.active{
+    background:white;
+    color:#0284c7;
+    font-weight:600;
+    border-radius:12px;
+}
+
+.sidebar ul li.active a i{
+    color:#0284c7;
+}
+
+
+
+
+
+/* ===============================
+   MAIN CONTENT
+================================ */
+
+
+.content{
+
+    margin-left:270px;
+
+    padding:25px 35px;
+
+}
+
+
+
+
+
+/* ===============================
+   TOPBAR
+================================ */
+
+
+.topbar{
+
+    height:75px;
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:0 25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:35px;
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.06);
+
+}
+
+
+
+.search{
+
+    width:360px;
+
+    height:45px;
+
+    background:#f1f5f9;
+
+    border-radius:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:0 18px;
+
+}
+
+
+
+.search i{
+
+    color:#64748b;
+
+}
+
+
+
+.search input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:14px;
+
+}
+
+
+
+
+
+.profile{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+
+.profile>i{
+
+    font-size:20px;
+
+    color:#64748b;
+
+}
+
+
+
+.profile img{
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+}
+
+
+
+.profile h4{
+
+    font-size:15px;
+
+}
+
+
+
+.profile small{
+
+    font-size:12px;
+
+    color:#64748b;
+
+}
+
+
+
+
+
+/* ===============================
+   SAVED JOB HERO
+================================ */
+
+
+.saved-hero{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    border-radius:28px;
+
+    padding:45px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:white;
+
+    margin-bottom:35px;
+
+    overflow:hidden;
+
+}
+
+
+
+
+.hero-content{
+
+    max-width:650px;
+
+}
+
+
+
+.tag{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:
+
+    rgba(255,255,255,.18);
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+}
+
+
+
+
+
+.saved-hero h1{
+
+    font-size:42px;
+
+    margin:20px 0;
+
+    font-weight:700;
+
+}
+
+
+
+.saved-hero p{
+
+    color:#dbeafe;
+
+    line-height:1.7;
+
+    font-size:15px;
+
+}
+
+
+
+
+
+.hero-image{
+
+    width:180px;
+
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+
+    rgba(255,255,255,.15);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+
+.hero-image i{
+
+    font-size:80px;
+
+    color:white;
+
+}
+
+/* =====================================================
+   JOB STATISTICS SECTION
+===================================================== */
+
+
+.job-statistics{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(4,1fr);
+
+    gap:25px;
+
+    margin-bottom:45px;
+
+}
+
+
+
+.stat-card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    box-shadow:
+
+    0 12px 30px rgba(0,0,0,.06);
+
+    transition:.3s ease;
+
+}
+
+
+
+.stat-card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+
+
+.stat-card h2{
+
+    font-size:28px;
+
+    color:#111827;
+
+}
+
+
+
+.stat-card p{
+
+    color:#64748b;
+
+    font-size:14px;
+
+    margin-top:5px;
+
+}
+
+
+
+
+.stat-icon{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+}
+
+
+
+.stat-icon.blue{
+
+    background:#dbeafe;
+
+    color:#2563eb;
+
+}
+
+
+
+.stat-icon.green{
+
+    background:#dcfce7;
+
+    color:#16a34a;
+
+}
+
+
+
+.stat-icon.purple{
+
+    background:#ede9fe;
+
+    color:#7c3aed;
+
+}
+
+
+
+.stat-icon.orange{
+
+    background:#ffedd5;
+
+    color:#ea580c;
+
+}
+
+
+
+
+
+/* =====================================================
+   SAVED JOB SECTION HEADER
+===================================================== */
+
+
+.saved-job-section{
+
+    margin-top:30px;
+
+}
+
+
+
+.section-heading{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.section-heading h2{
+
+    font-size:30px;
+
+    color:#111827;
+
+}
+
+
+
+.section-heading p{
+
+    margin-top:8px;
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+
+
+.filter-btn{
+
+    padding:12px 24px;
+
+    border:none;
+
+    border-radius:25px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-weight:600;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+
+.filter-btn:hover{
+
+    background:#1d4ed8;
+
+    transform:translateY(-3px);
+
+}
+
+
+
+
+
+/* =====================================================
+   SAVED JOB CARDS GRID
+===================================================== */
+
+
+.saved-job-grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+    gap:25px;
+
+}
+
+
+
+
+
+.job-card{
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:25px;
+
+    box-shadow:
+
+    0 12px 35px rgba(0,0,0,.06);
+
+    transition:.3s ease;
+
+}
+
+
+
+.job-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+
+
+.job-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+
+
+
+.company-logo{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:30px;
+
+}
+
+
+
+.company-logo.amazon{
+
+    background:#fff7ed;
+
+    color:#ea580c;
+
+}
+
+
+
+.company-logo.google{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+}
+
+
+
+.company-logo.microsoft{
+
+    background:#f0fdf4;
+
+    color:#16a34a;
+
+}
+
+
+
+
+
+.job-actions{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+
+
+.job-actions button{
+
+    width:38px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f1f5f9;
+
+    color:#64748b;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+
+.job-actions button:hover{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+
+
+
+
+/* =====================================================
+   JOB INFORMATION
+===================================================== */
+
+
+.job-info h3{
+
+    font-size:19px;
+
+    margin-bottom:8px;
+
+    color:#111827;
+
+}
+
+
+
+.job-info h4{
+
+    color:#2563eb;
+
+    font-size:15px;
+
+    margin-bottom:18px;
+
+}
+
+
+
+.job-details{
+
+    display:flex;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:18px;
+
+}
+
+
+
+.job-details span{
+
+    color:#64748b;
+
+    font-size:13px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+}
+
+
+
+
+
+.salary{
+
+    font-weight:600;
+
+    color:#16a34a;
+
+    margin-bottom:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+
+
+
+
+.skills{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+}
+
+
+
+.skills span{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    padding:7px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:500;
+
+}
+
+/* =====================================================
+   AI MATCH SCORE SECTION
+===================================================== */
+
+
+.match-box{
+
+    margin-top:25px;
+
+    padding:18px;
+
+    background:#f8fafc;
+
+    border-radius:18px;
+
+}
+
+
+
+.match-box div:first-child{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:12px;
+
+}
+
+
+
+.match-box small{
+
+    color:#64748b;
+
+    font-size:13px;
+
+}
+
+
+
+.match-box h3{
+
+    color:#2563eb;
+
+    font-size:22px;
+
+}
+
+
+
+.match-progress{
+
+    height:8px;
+
+    background:#e2e8f0;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+
+
+.match-progress div{
+
+    height:100%;
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    border-radius:20px;
+
+}
+
+
+
+
+
+/* =====================================================
+   JOB CARD FOOTER
+===================================================== */
+
+
+.job-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:25px;
+
+    padding-top:20px;
+
+    border-top:1px solid #e5e7eb;
+
+}
+
+
+
+.job-footer span{
+
+    font-size:12px;
+
+    color:#64748b;
+
+}
+
+
+
+.apply-btn{
+
+    border:none;
+
+    padding:11px 22px;
+
+    border-radius:25px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #4f46e5
+    );
+
+    color:white;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s ease;
+
+}
+
+
+
+.apply-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+    0 8px 20px rgba(37,99,235,.3);
+
+}
+
+
+
+
+
+/* =====================================================
+   AI RECOMMENDED JOB SECTION
+===================================================== */
+
+
+.recommend-section{
+
+    margin-top:60px;
+
+}
+
+
+
+.ai-badge{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 18px;
+
+    border-radius:25px;
+
+    background:#ede9fe;
+
+    color:#7c3aed;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+
+
+
+.recommend-grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+    gap:25px;
+
+}
+
+
+
+
+
+.recommend-job{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    box-shadow:
+
+    0 12px 30px rgba(0,0,0,.06);
+
+    transition:.3s;
+
+}
+
+
+
+.recommend-job:hover{
+
+    transform:translateY(-7px);
+
+}
+
+
+
+.recommend-icon{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    color:white;
+
+    font-size:22px;
+
+}
+
+
+
+.recommend-job h3{
+
+    font-size:17px;
+
+    color:#111827;
+
+    margin-bottom:6px;
+
+}
+
+
+
+.recommend-job p{
+
+    color:#64748b;
+
+    font-size:14px;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.recommend-job span{
+
+    display:inline-block;
+
+    background:#dcfce7;
+
+    color:#16a34a;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+/* =====================================================
+   APPLICATION TRACKING SECTION
+===================================================== */
+
+
+.tracking-section{
+
+    margin-top:60px;
+
+}
+
+
+
+.timeline{
+
+    background:white;
+
+    padding:35px;
+
+    border-radius:25px;
+
+    box-shadow:
+
+    0 12px 35px rgba(0,0,0,.06);
+
+}
+
+
+
+.timeline-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:20px 0;
+
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+
+
+.timeline-item:last-child{
+
+    border-bottom:none;
+
+}
+
+
+
+.timeline-icon{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#e2e8f0;
+
+    color:#64748b;
+
+    font-size:20px;
+
+}
+
+
+
+.timeline-item.active .timeline-icon{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    color:white;
+
+}
+
+
+
+.timeline-item h3{
+
+    font-size:18px;
+
+    margin-bottom:6px;
+
+}
+
+
+
+.timeline-item p{
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+
+
+
+
+/* =====================================================
+   CAREER INSIGHT BANNER
+===================================================== */
+
+
+.career-insight{
+
+    margin-top:60px;
+
+}
+
+
+
+.insight-banner{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #312e81
+    );
+
+    padding:40px;
+
+    border-radius:28px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    color:white;
+
+}
+
+
+
+.insight-banner h2{
+
+    font-size:30px;
+
+    margin-bottom:12px;
+
+}
+
+
+
+.insight-banner p{
+
+    max-width:650px;
+
+    color:#cbd5e1;
+
+    line-height:1.7;
+
+}
+
+
+
+.insight-banner button{
+
+    padding:14px 28px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:white;
+
+    color:#2563eb;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+
+.insight-banner button:hover{
+
+    transform:translateY(-4px);
+
+}
+
+
+
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+
+.footer{
+
+    margin-top:70px;
+
+    background:#111827;
+
+    padding:35px 45px;
+
+    border-radius:25px 25px 0 0;
+
+    color:white;
+
+}
+
+
+
+.footer-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.footer-logo i{
+
+    width:45px;
+
+    height:45px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:12px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+}
+
+
+
+.footer p{
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+    line-height:1.7;
+
+}
+
+
+
+
+
+.copyright{
+
+    background:#0f172a;
+
+    color:#94a3b8;
+
+    text-align:center;
+
+    padding:18px;
+
+    font-size:14px;
+
+}
+
+
+
+
+
+/* =====================================================
+   RESPONSIVE DESIGN
+===================================================== */
+
+
+@media(max-width:1200px){
+
+
+    .job-statistics{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+
+    .saved-job-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+
+    .recommend-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+}
+
+
+
+
+@media(max-width:992px){
+
+
+    .sidebar{
+
+        width:90px;
+
+    }
+
+
+
+    .sidebar .logo span,
+
+    .sidebar ul li span{
+
+        display:none;
+
+    }
+
+
+
+    .sidebar ul li a{
+
+        justify-content:center;
+
+    }
+
+
+
+    .content{
+
+        margin-left:90px;
+
+        padding:20px;
+
+    }
+
+
+
+    .saved-hero{
+
+        flex-direction:column;
+
+        text-align:center;
+
+        gap:30px;
+
+    }
+
+
+
+    .footer{
+
+        text-align:center;
+
+    }
+
+
+}
+
+
+
+
+@media(max-width:768px){
+
+
+    .topbar{
+
+        height:auto;
+
+        flex-direction:column;
+
+        gap:20px;
+
+        padding:20px;
+
+    }
+
+
+
+    .search{
+
+        width:100%;
+
+    }
+
+
+
+    .job-statistics,
+
+    .saved-job-grid,
+
+    .recommend-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .section-heading{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+
+
+    .insight-banner{
+
+        flex-direction:column;
+
+        gap:25px;
+
+        text-align:center;
+
+    }
+
+
+
+    .timeline-item{
+
+        align-items:flex-start;
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:480px){
+
+
+    .sidebar{
+
+        width:70px;
+
+    }
+
+
+
+    .content{
+
+        margin-left:70px;
+
+        padding:15px;
+
+    }
+
+
+
+    .profile div{
+
+        display:none;
+
+    }
+
+
+
+    .saved-hero h1{
+
+        font-size:28px;
+
+    }
+
+
+
+    .job-card{
+
+        padding:20px;
+
+    }
+
+
+
+    .job-footer{
+
+        flex-direction:column;
+
+        gap:15px;
+
+        align-items:flex-start;
+
+    }
+
+
+}
+
+

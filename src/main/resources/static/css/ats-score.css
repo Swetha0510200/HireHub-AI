@@ -1,0 +1,2670 @@
+/* =====================================================
+   HIREHUB AI - ATS SCORE PAGE
+   Premium SaaS Dashboard Styling
+   Version 1.0
+===================================================== */
+
+
+/* ===============================
+   GLOBAL RESET
+================================ */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+
+body{
+
+    background:#f4f7fb;
+    color:#1f2937;
+    min-height:100vh;
+
+}
+
+
+/* ===============================
+   SIDEBAR
+================================ */
+
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:260px;
+    height:100vh;
+    background:linear-gradient(180deg,#0f6fff,#2ea8ff);
+    color:white;
+    padding:30px 20px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+    z-index:100;
+    overflow-y:auto;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:white;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:35px;
+}
+
+.logo i{
+    font-size:26px;
+    color:white;
+    background:transparent;
+}
+
+.sidebar ul{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.sidebar ul li{
+    margin-bottom:2px;
+}
+
+.sidebar ul li a{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-decoration:none;
+    color:rgba(255,255,255,0.9);
+    padding:12px 16px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:500;
+    transition:.25s ease;
+}
+
+.sidebar ul li a i{
+    width:20px;
+    font-size:16px;
+    text-align:center;
+}
+
+.sidebar ul li a:hover{
+    background:rgba(255,255,255,0.18);
+    color:white;
+    transform:none;
+}
+
+.sidebar ul li.active a,
+.sidebar ul li a.active,
+.sidebar ul li.active{
+    color:#0284c7;
+    background:white;
+    font-weight:600;
+    border-radius:12px;
+    transform:none;
+}
+
+.sidebar ul li.active a i{
+    color:#0284c7;
+}
+
+/* ===============================
+   MAIN CONTENT
+================================ */
+
+.content{
+    margin-left:260px;
+    padding:25px 35px;
+}
+
+
+
+
+/* ===============================
+   TOP BAR
+================================ */
+
+
+.topbar{
+
+    height:75px;
+
+    background:white;
+
+    border-radius:18px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 25px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.06);
+
+    margin-bottom:35px;
+
+}
+
+
+
+.search{
+
+    width:350px;
+
+    height:45px;
+
+    background:#f1f5f9;
+
+    border-radius:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:0 18px;
+
+}
+
+
+
+.search i{
+
+    color:#64748b;
+
+}
+
+
+
+.search input{
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    width:100%;
+
+    font-size:14px;
+
+}
+
+
+
+
+
+.profile{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+
+.profile>i{
+
+    font-size:20px;
+
+    color:#64748b;
+
+}
+
+
+
+.profile img{
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+}
+
+
+
+.profile h4{
+
+    font-size:15px;
+
+}
+
+
+
+.profile small{
+
+    color:#64748b;
+
+    font-size:12px;
+
+}
+
+
+
+/* ===============================
+   HERO SECTION
+================================ */
+
+
+.hero{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    border-radius:25px;
+
+    padding:45px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    color:white;
+
+    overflow:hidden;
+
+    margin-bottom:35px;
+
+}
+
+
+
+.hero .tag{
+
+    background:
+    rgba(255,255,255,.18);
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+}
+
+
+
+.hero h1{
+
+    font-size:42px;
+
+    margin:20px 0;
+
+    font-weight:700;
+
+}
+
+
+
+.hero p{
+
+    max-width:650px;
+
+    line-height:1.7;
+
+    color:#e0e7ff;
+
+}
+
+
+
+.hero img{
+
+    width:360px;
+
+    height:240px;
+
+    object-fit:cover;
+
+    border-radius:20px;
+
+    opacity:.9;
+
+}
+
+
+/* =====================================================
+   ATS SCORE DASHBOARD SECTION
+===================================================== */
+
+
+.score-dashboard{
+
+    display:grid;
+
+    grid-template-columns:350px 1fr;
+
+    gap:30px;
+
+    margin-bottom:40px;
+
+}
+
+```css
+/* =====================================================
+   FOOTER SECTION
+===================================================== */
+
+
+.footer{
+
+    background:#111827;
+
+    margin-top:70px;
+
+    padding:45px 50px;
+
+    border-radius:25px 25px 0 0;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:40px;
+
+    color:white;
+
+}
+
+
+
+.footer-left{
+
+    max-width:350px;
+
+}
+
+
+
+.footer-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+}
+
+
+
+.footer-logo i{
+
+    width:42px;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+}
+
+
+
+.footer-left p{
+
+    color:#94a3b8;
+
+    line-height:1.7;
+
+    font-size:14px;
+
+}
+
+
+
+
+
+.footer-links{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+    gap:60px;
+
+}
+
+
+
+.footer-links div{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+
+
+.footer-links h3{
+
+    font-size:17px;
+
+    margin-bottom:10px;
+
+}
+
+
+
+.footer-links a{
+
+    text-decoration:none;
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+    transition:.3s;
+
+}
+
+
+
+.footer-links a:hover{
+
+    color:white;
+
+    transform:translateX(5px);
+
+}
+
+
+
+
+
+/* =====================================================
+   COPYRIGHT
+===================================================== */
+
+
+.copyright{
+
+    background:#0f172a;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+}
+
+
+
+.copyright i{
+
+    color:#ef4444;
+
+    margin:0 5px;
+
+}
+
+
+
+
+
+/* =====================================================
+   RESPONSIVE DESIGN
+===================================================== */
+
+
+
+@media(max-width:1200px){
+
+
+    .strength-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+
+    .recommendation-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+
+    .comparison-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+
+    .insight-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:992px){
+
+
+    .sidebar{
+
+        width:90px;
+
+        padding:25px 15px;
+
+    }
+
+
+
+    .sidebar .logo span,
+
+    .sidebar ul li span{
+
+        display:none;
+
+    }
+
+
+
+    .sidebar ul li a{
+
+        justify-content:center;
+
+    }
+
+
+
+    .content{
+
+        margin-left:90px;
+
+        padding:20px;
+
+    }
+
+
+
+    .hero{
+
+        flex-direction:column;
+
+        gap:30px;
+
+        text-align:center;
+
+    }
+
+
+
+    .score-dashboard{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .skill-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .footer{
+
+        flex-direction:column;
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:768px){
+
+
+    .topbar{
+
+        flex-direction:column;
+
+        height:auto;
+
+        padding:20px;
+
+        gap:20px;
+
+    }
+
+
+
+    .search{
+
+        width:100%;
+
+    }
+
+
+
+    .hero h1{
+
+        font-size:32px;
+
+    }
+
+
+
+    .hero img{
+
+        width:100%;
+
+        height:200px;
+
+    }
+
+
+
+    .recommendation-grid,
+
+    .comparison-grid,
+
+    .insight-grid,
+
+    .strength-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .section-heading{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+
+
+    .report-card{
+
+        flex-direction:column;
+
+        text-align:center;
+
+        gap:30px;
+
+    }
+
+
+
+    .report-icon i{
+
+        font-size:80px;
+
+    }
+
+
+
+    .footer-links{
+
+        grid-template-columns:1fr;
+
+        gap:25px;
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:480px){
+
+
+    .sidebar{
+
+        width:70px;
+
+    }
+
+
+
+    .content{
+
+        margin-left:70px;
+
+        padding:15px;
+
+    }
+
+
+
+    .profile div{
+
+        display:none;
+
+    }
+
+
+
+    .hero{
+
+        padding:30px 20px;
+
+    }
+
+
+
+    .hero h1{
+
+        font-size:26px;
+
+    }
+
+
+
+    .score-card{
+
+        padding:25px 15px;
+
+    }
+
+
+
+    .report-content h2{
+
+        font-size:25px;
+
+    }
+
+
+}
+
+
+
+.score-card{
+
+    background:white;
+
+    padding:35px;
+
+    border-radius:25px;
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.07);
+
+    text-align:center;
+
+}
+
+
+
+.circle{
+
+    position:relative;
+
+    width:230px;
+
+    height:230px;
+
+    margin:auto;
+
+}
+
+
+
+
+.circle svg{
+
+    width:230px;
+
+    height:230px;
+
+    transform:rotate(-90deg);
+
+}
+
+
+
+.circle circle{
+
+    fill:none;
+
+    stroke-width:18;
+
+    stroke:#e5e7eb;
+
+}
+
+
+
+.circle .progress{
+
+    stroke:
+
+    url(#gradient);
+
+    stroke:#2563eb;
+
+    stroke-linecap:round;
+
+    stroke-dasharray:565;
+
+    stroke-dashoffset:50;
+
+}
+
+
+
+
+.number{
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+}
+
+
+
+.number h1{
+
+    font-size:45px;
+
+    color:#2563eb;
+
+    font-weight:800;
+
+}
+
+
+
+.number span{
+
+    font-size:14px;
+
+    color:#64748b;
+
+}
+
+
+
+
+
+.score-card h2{
+
+    margin-top:25px;
+
+    font-size:24px;
+
+    color:#111827;
+
+}
+
+
+
+.score-card p{
+
+    margin-top:12px;
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    font-size:14px;
+
+}
+
+
+
+
+/* =====================================================
+   ATS OVERVIEW SECTION
+===================================================== */
+
+
+.overview-left{
+
+    width:100%;
+
+}
+
+
+
+.overview-left .score-card{
+
+    height:100%;
+
+}
+
+
+
+.score-circle{
+
+    position:relative;
+
+    width:220px;
+
+    height:220px;
+
+    margin:auto;
+
+}
+
+
+
+.score-circle svg{
+
+    width:220px;
+
+    height:220px;
+
+    transform:rotate(-90deg);
+
+}
+
+
+
+.score-circle circle{
+
+    fill:none;
+
+    stroke-width:18;
+
+    stroke:#e2e8f0;
+
+}
+
+
+
+.score-circle .progress{
+
+    stroke:#4f46e5;
+
+    stroke-linecap:round;
+
+    stroke-dasharray:502;
+
+    stroke-dashoffset:45;
+
+}
+
+
+
+.score-content{
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    text-align:center;
+
+}
+
+
+
+.score-content h1{
+
+    font-size:42px;
+
+    color:#2563eb;
+
+}
+
+
+
+.score-content span{
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+
+
+
+.overview-right{
+
+    width:100%;
+
+}
+
+
+
+.breakdown-card{
+
+    background:white;
+
+    padding:35px;
+
+    border-radius:25px;
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.07);
+
+}
+
+
+
+.breakdown-card h3{
+
+    font-size:22px;
+
+    margin-bottom:30px;
+
+}
+
+
+
+
+
+.progress-item{
+
+    display:grid;
+
+    grid-template-columns:130px 1fr 50px;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.progress-item span{
+
+    font-weight:500;
+
+    color:#374151;
+
+}
+
+
+
+.progress-item strong{
+
+    color:#2563eb;
+
+}
+
+
+
+.progress-bar{
+
+    height:10px;
+
+    background:#e5e7eb;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+
+
+.progress-bar div{
+
+    height:100%;
+
+    border-radius:20px;
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #2563eb,
+        #7c3aed
+    );
+
+}
+
+
+
+
+
+/* =====================================================
+   RESUME STRENGTH SECTION
+===================================================== */
+
+
+.section-title{
+
+    margin:45px 0 25px;
+
+}
+
+
+
+.section-title h2{
+
+    font-size:30px;
+
+    color:#111827;
+
+}
+
+
+
+.section-title p{
+
+    color:#64748b;
+
+    margin-top:8px;
+
+}
+
+
+
+
+
+.strength-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:25px;
+
+}
+
+
+
+
+.strength-card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:22px;
+
+    box-shadow:
+    0 12px 30px rgba(0,0,0,.06);
+
+    transition:.3s;
+
+}
+
+
+
+.strength-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+
+.strength-card i{
+
+    font-size:32px;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.strength-card h3{
+
+    font-size:18px;
+
+    margin-bottom:12px;
+
+}
+
+
+
+.strength-card p{
+
+    color:#64748b;
+
+    line-height:1.6;
+
+    font-size:14px;
+
+}
+
+
+
+.strength-card.success i{
+
+    color:#16a34a;
+
+}
+
+
+
+.strength-card.warning i{
+
+    color:#f59e0b;
+
+}
+
+/* =====================================================
+   AI RECOMMENDATION SECTION
+===================================================== */
+
+
+.recommendation-section{
+
+    margin-top:50px;
+
+}
+
+
+
+.section-heading{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.section-heading h2{
+
+    font-size:30px;
+
+    color:#111827;
+
+    font-weight:700;
+
+}
+
+
+
+.section-heading p{
+
+    margin-top:8px;
+
+    color:#64748b;
+
+    font-size:15px;
+
+}
+
+
+
+
+.ai-badge{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 18px;
+
+    border-radius:30px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #ede9fe,
+        #dbeafe
+    );
+
+    color:#4f46e5;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+
+
+
+.recommendation-grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+    gap:25px;
+
+}
+
+
+
+
+
+.recommend-card{
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:28px;
+
+    display:flex;
+
+    gap:20px;
+
+    box-shadow:
+
+    0 12px 35px rgba(0,0,0,0.06);
+
+    transition:.3s ease;
+
+}
+
+
+
+.recommend-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+.recommend-icon{
+
+    min-width:55px;
+
+    height:55px;
+
+    border-radius:15px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+}
+
+
+
+.recommend-content h3{
+
+    font-size:19px;
+
+    margin-bottom:12px;
+
+    color:#111827;
+
+}
+
+
+
+.recommend-content p{
+
+    font-size:14px;
+
+    color:#64748b;
+
+    line-height:1.7;
+
+}
+
+
+
+
+
+.recommend-card.high .recommend-icon{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+}
+
+
+
+.recommend-card.medium .recommend-icon{
+
+    background:#fef3c7;
+
+    color:#d97706;
+
+}
+
+
+
+.recommend-card.low .recommend-icon{
+
+    background:#dcfce7;
+
+    color:#16a34a;
+
+}
+
+
+
+
+
+.keyword-list{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:18px;
+
+}
+
+
+
+.keyword-list span{
+
+    padding:7px 14px;
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:500;
+
+}
+
+
+
+
+
+.recommend-content ul{
+
+    margin-top:18px;
+
+    list-style:none;
+
+}
+
+
+
+.recommend-content ul li{
+
+    margin-bottom:10px;
+
+    color:#475569;
+
+    font-size:14px;
+
+}
+
+
+
+
+
+.outline-btn{
+
+    margin-top:20px;
+
+    padding:10px 22px;
+
+    border-radius:25px;
+
+    border:2px solid #2563eb;
+
+    background:white;
+
+    color:#2563eb;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+
+.outline-btn:hover{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+
+
+
+
+/* =====================================================
+   SKILL MATCH ANALYSIS SECTION
+===================================================== */
+
+
+.skill-match-section{
+
+    margin-top:55px;
+
+}
+
+
+
+.skill-grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(2,1fr);
+
+    gap:25px;
+
+}
+
+
+
+
+.skill-progress-card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.06);
+
+}
+
+
+
+.skill-title{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.skill-title span{
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:#1f2937;
+
+}
+
+
+
+.skill-title strong{
+
+    color:#2563eb;
+
+}
+
+
+
+
+
+.skill-progress-card .progress{
+
+    height:12px;
+
+    background:#e5e7eb;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+
+
+.skill-progress-card .progress div{
+
+    height:100%;
+
+    border-radius:20px;
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #2563eb,
+        #7c3aed
+    );
+
+}
+
+
+
+/* =====================================================
+   RESUME COMPARISON ANALYSIS
+===================================================== */
+
+
+.comparison-section{
+
+    margin-top:55px;
+
+}
+
+
+
+.comparison-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:25px;
+
+}
+
+
+
+.comparison-card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:24px;
+
+    box-shadow:
+
+    0 12px 35px rgba(0,0,0,.06);
+
+    transition:.3s ease;
+
+}
+
+
+
+.comparison-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+.comparison-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.comparison-header i{
+
+    width:45px;
+
+    height:45px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    font-size:20px;
+
+}
+
+
+
+.comparison-header h3{
+
+    font-size:18px;
+
+}
+
+
+
+.match-score h1{
+
+    font-size:42px;
+
+    color:#2563eb;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.match-score span{
+
+    display:inline-block;
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    background:#dcfce7;
+
+    color:#16a34a;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+
+.comparison-card p{
+
+    margin-top:20px;
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    font-size:14px;
+
+}
+
+
+
+
+
+/* =====================================================
+   MISSING KEYWORDS SECTION
+===================================================== */
+
+
+.keyword-section{
+
+    margin-top:55px;
+
+}
+
+
+
+.keyword-container{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:18px;
+
+}
+
+
+
+.keyword-box{
+
+    background:white;
+
+    padding:18px 25px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    box-shadow:
+
+    0 10px 25px rgba(0,0,0,.06);
+
+    color:#374151;
+
+    font-weight:500;
+
+    transition:.3s;
+
+}
+
+
+
+.keyword-box:hover{
+
+    transform:translateY(-5px);
+
+}
+
+
+
+.keyword-box i{
+
+    color:#2563eb;
+
+    font-size:20px;
+
+}
+
+
+
+
+
+
+
+/* =====================================================
+   RECRUITER INSIGHTS
+===================================================== */
+
+
+.insight-section{
+
+    margin-top:55px;
+
+}
+
+
+
+.insight-grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+    gap:25px;
+
+}
+
+
+
+.insight-card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:22px;
+
+    box-shadow:
+
+    0 12px 30px rgba(0,0,0,.06);
+
+    transition:.3s;
+
+}
+
+
+
+.insight-card:hover{
+
+    transform:translateY(-7px);
+
+}
+
+
+
+.insight-card i{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:15px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:24px;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.insight-card h3{
+
+    margin-bottom:12px;
+
+    font-size:19px;
+
+}
+
+
+
+.insight-card p{
+
+    color:#64748b;
+
+    font-size:14px;
+
+    line-height:1.7;
+
+}
+
+
+
+
+
+/* =====================================================
+   FINAL ATS REPORT SECTION
+===================================================== */
+
+
+.report-section{
+
+    margin-top:60px;
+
+    margin-bottom:50px;
+
+}
+
+
+
+.report-card{
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #111827,
+        #312e81
+    );
+
+    padding:45px;
+
+    border-radius:30px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:white;
+
+}
+
+
+
+.report-content h2{
+
+    font-size:32px;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.report-content p{
+
+    max-width:650px;
+
+    color:#cbd5e1;
+
+    line-height:1.7;
+
+}
+
+
+
+.download-btn{
+
+    margin-top:25px;
+
+    padding:14px 28px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:white;
+
+    color:#2563eb;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+
+.download-btn:hover{
+
+    transform:scale(1.05);
+
+}
+
+
+
+.report-icon i{
+
+    font-size:120px;
+
+    color:#ffffff;
+
+    opacity:.9;
+
+}
+
+/* =====================================================
+   FOOTER SECTION
+===================================================== */
+
+
+.footer{
+
+    background:#111827;
+
+    margin-top:70px;
+
+    padding:45px 50px;
+
+    border-radius:25px 25px 0 0;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:40px;
+
+    color:white;
+
+}
+
+
+
+.footer-left{
+
+    max-width:350px;
+
+}
+
+
+
+.footer-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+}
+
+
+
+.footer-logo i{
+
+    width:42px;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #7c3aed
+    );
+
+}
+
+
+
+.footer-left p{
+
+    color:#94a3b8;
+
+    line-height:1.7;
+
+    font-size:14px;
+
+}
+
+
+
+
+
+.footer-links{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+    gap:60px;
+
+}
+
+
+
+.footer-links div{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+
+
+.footer-links h3{
+
+    font-size:17px;
+
+    margin-bottom:10px;
+
+}
+
+
+
+.footer-links a{
+
+    text-decoration:none;
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+    transition:.3s;
+
+}
+
+
+
+.footer-links a:hover{
+
+    color:white;
+
+    transform:translateX(5px);
+
+}
+
+
+
+
+
+/* =====================================================
+   COPYRIGHT
+===================================================== */
+
+
+.copyright{
+
+    background:#0f172a;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+}
+
+
+
+.copyright i{
+
+    color:#ef4444;
+
+    margin:0 5px;
+
+}
+
+
+
+
+
+/* =====================================================
+   RESPONSIVE DESIGN
+===================================================== */
+
+
+
+@media(max-width:1200px){
+
+
+    .strength-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+
+    .recommendation-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+
+    .comparison-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+
+    .insight-grid{
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:992px){
+
+
+    .sidebar{
+
+        width:90px;
+
+        padding:25px 15px;
+
+    }
+
+
+
+    .sidebar .logo span,
+
+    .sidebar ul li span{
+
+        display:none;
+
+    }
+
+
+
+    .sidebar ul li a{
+
+        justify-content:center;
+
+    }
+
+
+
+    .content{
+
+        margin-left:90px;
+
+        padding:20px;
+
+    }
+
+
+
+    .hero{
+
+        flex-direction:column;
+
+        gap:30px;
+
+        text-align:center;
+
+    }
+
+
+
+    .score-dashboard{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .skill-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .footer{
+
+        flex-direction:column;
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:768px){
+
+
+    .topbar{
+
+        flex-direction:column;
+
+        height:auto;
+
+        padding:20px;
+
+        gap:20px;
+
+    }
+
+
+
+    .search{
+
+        width:100%;
+
+    }
+
+
+
+    .hero h1{
+
+        font-size:32px;
+
+    }
+
+
+
+    .hero img{
+
+        width:100%;
+
+        height:200px;
+
+    }
+
+
+
+    .recommendation-grid,
+
+    .comparison-grid,
+
+    .insight-grid,
+
+    .strength-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .section-heading{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+
+
+    .report-card{
+
+        flex-direction:column;
+
+        text-align:center;
+
+        gap:30px;
+
+    }
+
+
+
+    .report-icon i{
+
+        font-size:80px;
+
+    }
+
+
+
+    .footer-links{
+
+        grid-template-columns:1fr;
+
+        gap:25px;
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:480px){
+
+
+    .sidebar{
+
+        width:70px;
+
+    }
+
+
+
+    .content{
+
+        margin-left:70px;
+
+        padding:15px;
+
+    }
+
+
+
+    .profile div{
+
+        display:none;
+
+    }
+
+
+
+    .hero{
+
+        padding:30px 20px;
+
+    }
+
+
+
+    .hero h1{
+
+        font-size:26px;
+
+    }
+
+
+
+    .score-card{
+
+        padding:25px 15px;
+
+    }
+
+
+
+    .report-content h2{
+
+        font-size:25px;
+
+    }
+
+
+}

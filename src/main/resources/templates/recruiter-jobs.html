@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Jobs | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Recruiter Portal</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/recruiter/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a>
+            <a th:href="@{/post-job}" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a>
+            <a th:href="@{/recruiter/jobs}" class="menu-item active"><i class="fa-solid fa-briefcase"></i><span>Manage Jobs</span></a>
+            <a th:href="@{/recruiter/applicants}" class="menu-item"><i class="fa-solid fa-users"></i><span>Applicants</span></a>
+            <a th:href="@{/browse-jobs}" class="menu-item"><i class="fa-solid fa-globe"></i><span>Browse Live Jobs</span></a>
+            <a th:href="@{/profile}" class="menu-item"><i class="fa-solid fa-building"></i><span>Company Profile</span></a>
+            <a th:href="@{/settings}" class="menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="top-header">
+            <div class="search-section">
+                <h3 style="font-weight: 700; color: #0f172a;">Manage Posted Opportunities</h3>
+            </div>
+            <div class="header-right">
+                <a th:href="@{/post-job}" style="background: #0284c7; color: #ffffff; padding: 0.6rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <i class="fa-solid fa-plus"></i> Post Job
+                </a>
+            </div>
+        </header>
+
+        <div th:if="${successMessage}" style="background: #dcfce7; color: #16a34a; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fa-solid fa-circle-check"></i> <span th:text="${successMessage}">Success message</span>
+        </div>
+
+        <section style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.5rem;">
+            <div th:if="${jobs != null and !jobs.isEmpty()}">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="text-align: left; color: #64748b; border-bottom: 2px solid #f1f5f9; font-size: 0.8rem; text-transform: uppercase;">
+                            <th style="padding: 1rem 0.5rem;">Job Role & Details</th>
+                            <th style="padding: 1rem 0.5rem;">Work Mode / Type</th>
+                            <th style="padding: 1rem 0.5rem;">Salary / Experience</th>
+                            <th style="padding: 1rem 0.5rem;">Status</th>
+                            <th style="padding: 1rem 0.5rem; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="job : ${jobs}" style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1rem 0.5rem;">
+                                <div style="font-weight: 700; color: #0f172a; font-size: 1rem;" th:text="${job.title}">Job Title</div>
+                                <div style="color: #64748b; font-size: 0.8rem;">
+                                    <i class="fa-solid fa-building"></i> <span th:text="${job.company}">Company</span> &bull;
+                                    <i class="fa-solid fa-location-dot"></i> <span th:text="${job.location}">Location</span>
+                                </div>
+                            </td>
+                            <td style="padding: 1rem 0.5rem;">
+                                <span style="background: #e0f2fe; color: #0284c7; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 600; font-size: 0.75rem;" th:text="${job.type}">Full-time</span>
+                                <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.2rem;" th:text="${job.workMode}">Hybrid</div>
+                            </td>
+                            <td style="padding: 1rem 0.5rem;">
+                                <div style="font-weight: 600; color: #334155;" th:text="${job.salary}">Salary</div>
+                                <div style="font-size: 0.8rem; color: #64748b;" th:text="${job.experience}">Experience</div>
+                            </td>
+                            <td style="padding: 1rem 0.5rem;">
+                                <span th:if="${job.active}" style="background: #dcfce7; color: #16a34a; padding: 0.3rem 0.75rem; border-radius: 20px; font-weight: 700; font-size: 0.75rem;">● Active</span>
+                                <span th:if="${!job.active}" style="background: #fee2e2; color: #dc2626; padding: 0.3rem 0.75rem; border-radius: 20px; font-weight: 700; font-size: 0.75rem;">● Paused</span>
+                            </td>
+                            <td style="padding: 1rem 0.5rem; text-align: right;">
+                                <div style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                                    <a th:href="@{/recruiter/applicants(jobId=${job.id})}" style="background: #f1f5f9; color: #0284c7; padding: 0.4rem 0.8rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">
+                                        <i class="fa-solid fa-users"></i> Applicants
+                                    </a>
+                                    <form th:action="@{/recruiter/jobs/{id}/toggle-status(id=${job.id})}" method="post" style="display: inline;">
+                                        <button type="submit" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 0.4rem 0.7rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; color: #475569;" th:text="${job.active ? 'Pause' : 'Activate'}">Toggle</button>
+                                    </form>
+                                    <form th:action="@{/recruiter/jobs/{id}/delete(id=${job.id})}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this job posting?');">
+                                        <button type="submit" style="background: #fee2e2; border: none; padding: 0.4rem 0.7rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; color: #dc2626;"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${jobs == null or #lists.isEmpty(jobs)}" style="text-align: center; padding: 4rem 1rem;">
+                <i class="fa-solid fa-briefcase" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                <h3 style="color: #0f172a; font-weight: 700; margin-bottom: 0.5rem;">No job postings found</h3>
+                <p style="color: #64748b; margin-bottom: 1.5rem;">You have not published any job opportunities yet.</p>
+                <a th:href="@{/post-job}" style="background: #0284c7; color: #ffffff; padding: 0.75rem 1.75rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Post Your First Job</a>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

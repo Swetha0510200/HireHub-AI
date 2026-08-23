@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireHub AI | Create Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+</head>
+
+<body>
+
+<div class="background">
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+</div>
+
+<div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <div class="logo">
+            <i class="fa-solid fa-briefcase"></i>
+            <h1>HireHub AI</h1>
+        </div>
+        <h2>Build Your Career with Confidence</h2>
+        <p>
+            Join thousands of students and recruiters using AI-powered
+            hiring, resume analysis, ATS scoring and smart job matching.
+        </p>
+
+        <div class="benefits">
+            <div><i class="fa-solid fa-circle-check"></i> AI Resume Analysis</div>
+            <div><i class="fa-solid fa-circle-check"></i> Smart Job Recommendations</div>
+            <div><i class="fa-solid fa-circle-check"></i> ATS Resume Score</div>
+            <div><i class="fa-solid fa-circle-check"></i> Internship Finder</div>
+            <div><i class="fa-solid fa-circle-check"></i> Interview Tracking</div>
+            <div><i class="fa-solid fa-circle-check"></i> Recruiter Dashboard</div>
+        </div>
+
+        <div class="stats">
+            <div>
+                <h3>25K+</h3>
+                <span>Students</span>
+            </div>
+            <div>
+                <h3>850+</h3>
+                <span>Companies</span>
+            </div>
+            <div>
+                <h3>15K+</h3>
+                <span>Placements</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+        <div class="register-card">
+            <h2>Create Your Account</h2>
+            <p>Start your AI-powered career journey today.</p>
+
+            <div th:if="${error}" class="error-message" style="background: #fee2e2; color: #dc2626; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;" th:text="${error}"></div>
+            <div th:if="${success}" class="success-message" style="background: #dcfce7; color: #16a34a; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;" th:text="${success}"></div>
+
+            <form th:action="@{/register}" method="post">
+                <!-- ROLE SELECTION INSIDE FORM -->
+                <div class="role-selection" style="margin-bottom: 1.25rem;">
+                    <label class="role-card active" id="roleCardStudent" style="cursor: pointer;">
+                        <input type="radio" name="role" value="student" checked onchange="toggleRole('student')">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span>Student</span>
+                    </label>
+
+                    <label class="role-card" id="roleCardRecruiter" style="cursor: pointer;">
+                        <input type="radio" name="role" value="recruiter" onchange="toggleRole('recruiter')">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Recruiter</span>
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" name="name" placeholder="Full Name" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" name="mobile" placeholder="Mobile Number" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <input type="text" name="location" placeholder="City / Location" required>
+                </div>
+
+                <!-- STUDENT FIELDS -->
+                <div id="studentFields">
+                    <div class="input-group">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <input type="text" name="college" placeholder="College / University">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-book"></i>
+                        <input type="text" name="degree" placeholder="Degree (B.E, B.Tech, MCA...)">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-calendar"></i>
+                        <input type="number" name="graduationYear" placeholder="Graduation Year (e.g. 2025)">
+                    </div>
+                </div>
+
+                <!-- RECRUITER FIELDS -->
+                <div id="recruiterFields" style="display:none;">
+                    <div class="input-group">
+                        <i class="fa-solid fa-building"></i>
+                        <input type="text" name="companyName" placeholder="Company Name">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-briefcase"></i>
+                        <input type="text" name="designation" placeholder="Your Designation (e.g. HR Manager)">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-globe"></i>
+                        <input type="url" name="companyWebsite" placeholder="Company Website (https://...)">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" id="password" placeholder="Create Password (min 6 chars)" minlength="6" required>
+                    <span class="toggle-password" id="togglePassword">
+                        <i class="fa-solid fa-eye"></i>
+                    </span>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="confirmPassword" placeholder="Confirm Password" minlength="6" required>
+                </div>
+
+                <div class="terms">
+                    <label>
+                        <input type="checkbox" required checked>
+                        I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="register-btn">
+                    <i class="fa-solid fa-user-plus"></i> Create Account
+                </button>
+
+                <div class="login-link">
+                    Already have an account? <a th:href="@{/login}">Login Here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleRole(role) {
+    const studentFields = document.getElementById("studentFields");
+    const recruiterFields = document.getElementById("recruiterFields");
+    const roleCardStudent = document.getElementById("roleCardStudent");
+    const roleCardRecruiter = document.getElementById("roleCardRecruiter");
+
+    if (role === 'student') {
+        studentFields.style.display = "block";
+        recruiterFields.style.display = "none";
+        roleCardStudent.classList.add("active");
+        roleCardRecruiter.classList.remove("active");
+    } else {
+        studentFields.style.display = "none";
+        recruiterFields.style.display = "block";
+        roleCardRecruiter.classList.add("active");
+        roleCardStudent.classList.remove("active");
+    }
+}
+
+const toggle = document.getElementById("togglePassword");
+const pwd = document.getElementById("password");
+if (toggle && pwd) {
+    toggle.onclick = function () {
+        if (pwd.type === "password") {
+            pwd.type = "text";
+            toggle.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+        } else {
+            pwd.type = "password";
+            toggle.innerHTML = '<i class="fa-solid fa-eye"></i>';
+        }
+    };
+}
+</script>
+
+</body>
+</html>

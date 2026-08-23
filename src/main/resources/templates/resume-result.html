@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resume Analysis Result | HireHub AI</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0878f9, #0056d6);
+            color: white;
+            padding: 28px 7%;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin-top: 6px;
+            opacity: .9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .resume-name {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,.06);
+        }
+
+        .resume-name i {
+            color: #0878f9;
+            margin-right: 10px;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,.06);
+        }
+
+        .score-card {
+            text-align: center;
+        }
+
+        .score {
+            font-size: 55px;
+            font-weight: 800;
+            color: #0878f9;
+            margin: 10px 0;
+        }
+
+        .score-label {
+            color: #667085;
+        }
+
+        .section {
+            margin-top: 25px;
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .analysis-text {
+            line-height: 1.8;
+            color: #475467;
+            white-space: pre-line;
+        }
+
+        .success {
+            color: #16a34a;
+        }
+
+        .error {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #be123c;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 13px 22px;
+            background: #0878f9;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        @media(max-width: 800px) {
+            .score-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>
+        <i class="fa-solid fa-file-circle-check"></i>
+        HireHub AI Resume Analysis
+    </h1>
+
+    <p>
+        AI-powered resume evaluation and recruiter insights
+    </p>
+</header>
+
+<main class="container">
+
+    <div class="resume-name">
+        <i class="fa-solid fa-file-lines"></i>
+
+        <strong>Resume:</strong>
+
+        <span th:text="${resumeName}">
+            Uploaded Resume
+        </span>
+    </div>
+
+    <!-- Error -->
+    <div th:if="${error}" class="error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        <strong>Analysis Error</strong>
+
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Result -->
+    <div th:if="${analysis}">
+
+        <div class="score-grid">
+
+            <div class="card score-card">
+                <i class="fa-solid fa-chart-line fa-2x"></i>
+
+                <div class="score"
+                    th:text="${atsScore + '%'}">
+                    0%
+                </div>
+                <div class="score-label">
+                    ATS Compatibility
+                </div>
+            </div>
+
+            <div class="card score-card">
+                <i class="fa-solid fa-file-circle-check fa-2x success"></i>
+
+                <div class="score"
+                    th:text="${resumeQuality}">
+                    Analyzed
+                </div>
+
+                <div class="score-label">
+                    Resume Quality
+                </div>
+            </div>
+
+            <div class="card score-card">
+                <i class="fa-solid fa-robot fa-2x"></i>
+
+                <div class="score">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+
+                <div class="score-label">
+                    AI Analysis Completed
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card section">
+
+            <h2>
+                <i class="fa-solid fa-brain"></i>
+                AI Analysis
+            </h2>
+
+            <div class="analysis-text">
+
+    <p>
+        <strong>Summary:</strong>
+        <span th:text="${summary}">
+            Resume summary will appear here.
+        </span>
+    </p>
+
+    <br>
+
+    <p>
+        <strong>Skills:</strong>
+        <span th:text="${skills}">
+            Skills detected here.
+        </span>
+    </p>
+
+    <br>
+
+    <p>
+        <strong>Strengths:</strong>
+        <span th:text="${strengths}">
+            Strengths will appear here.
+        </span>
+    </p>
+
+    <br>
+
+    <p>
+        <strong>Recommended Improvements:</strong>
+        <span th:text="${improvements}">
+            Improvement suggestions will appear here.
+        </span>
+    </p>
+
+</div>
+
+        </div>
+
+    </div>
+
+    <a href="/resume-analyzer" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Analyze Another Resume
+    </a>
+
+</main>
+
+</body>
+</html>

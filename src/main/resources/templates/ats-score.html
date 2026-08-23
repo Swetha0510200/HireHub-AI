@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS Score | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/ats-score.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>HireHub AI</span>
+        </div>
+        <ul>
+            <li><a th:href="@{/dashboard}"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
+            <li><a th:href="@{/browse-jobs}"><i class="fa-solid fa-briefcase"></i><span>Browse Jobs</span></a></li>
+            <li><a th:href="@{/ai-job-match}"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a></li>
+            <li><a th:href="@{/resume-analyzer}"><i class="fa-solid fa-file-lines"></i><span>Resume Analyzer</span></a></li>
+            <li class="active"><a th:href="@{/ats-score}"><i class="fa-solid fa-chart-line"></i><span>ATS Resume Score</span></a></li>
+            <li><a th:href="@{/saved-jobs}"><i class="fa-solid fa-bookmark"></i><span>Saved Jobs</span></a></li>
+            <li><a th:href="@{/applications}"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a></li>
+            <li><a th:href="@{/interviews}"><i class="fa-solid fa-calendar-days"></i><span>Interviews</span></a></li>
+            <li><a th:href="@{/profile}"><i class="fa-solid fa-user"></i><span>Profile</span></a></li>
+            <li><a th:href="@{/settings}"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            <li><a th:href="@{/logout}" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="content">
+        <header class="topbar">
+            <div class="search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search ATS insights...">
+            </div>
+            <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                <a th:href="@{/notifications}" style="color: #64748b; text-decoration: none;">
+                    <i class="fa-regular fa-bell"></i>
+                </a>
+                <div th:if="${session.userProfileImage != null && !session.userProfileImage.isEmpty()}">
+                    <img th:src="${session.userProfileImage}" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+                </div>
+                <div th:if="${session.userProfileImage == null || session.userProfileImage.isEmpty()}" class="avatar-initial"
+                     th:text="${session.userInitials != null ? session.userInitials : (userName != null && !userName.isEmpty() ? (userName.contains(' ') ? userName.split(' ')[0].substring(0,1).toUpperCase() + userName.split(' ')[userName.split(' ').length-1].substring(0,1).toUpperCase() : userName.substring(0,1).toUpperCase()) : 'U')}">
+                    U
+                </div>
+                <div>
+                    <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600;" th:text="${userName != null ? userName : 'Candidate'}">Candidate</h4>
+                    <small style="color: #64748b; font-size: 0.75rem;" th:text="${userRole != null ? userRole : 'Student'}">Student</small>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div>
+                <span class="tag">ATS Score Analytics</span>
+                <h1>Optimize Your Resume for ATS</h1>
+                <p>Get a live view on your resume's applicant tracking compatibility and improvement areas based on your uploaded file.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.18); border-radius: 20px; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #ffffff; margin-right: 1.5rem;">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+        </section>
+
+        <section class="score-dashboard" th:if="${hasResume}">
+            <div class="score-card">
+                <div class="circle"><svg><circle cx="110" cy="110" r="90"></circle><circle class="progress" cx="110" cy="110" r="90"></circle></svg>
+                    <div class="number"><h1 th:text="${atsScore + '%'}">0%</h1><span>ATS Score</span></div>
+                </div>
+                <h2 th:text="${atsScore >= 80 ? 'Excellent ATS Resume' : (atsScore >= 60 ? 'Good ATS Foundation' : 'Improve Your Resume')}">ATS Score</h2>
+                <p th:text="${atsScore >= 80 ? 'Your resume is highly ATS-friendly with strong keywords and structured sections.' : 'Increase action verbs and quantified achievements to boost interview callbacks.'}">Resume guidance</p>
+                <div style="margin-top: 1rem; font-size: 0.85rem; color: #64748b;" th:if="${resumeName != null}">
+                    <i class="fa-solid fa-file-pdf" style="color: #0284c7;"></i> <span th:text="${resumeName}">resume.pdf</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="ats-overview" th:if="${hasResume}">
+            <div class="overview-grid">
+                <div class="breakdown-card"><h3>Formatting</h3><div class="progress-bar"><div th:style="'width:' + ${formattingScore} + '%'"/></div><strong th:text="${formattingScore + '%'}">0%</strong></div>
+                <div class="breakdown-card"><h3>Keywords</h3><div class="progress-bar"><div th:style="'width:' + ${keywordScore} + '%'"/></div><strong th:text="${keywordScore + '%'}">0%</strong></div>
+                <div class="breakdown-card"><h3>Skills</h3><div class="progress-bar"><div th:style="'width:' + ${skillScore} + '%'"/></div><strong th:text="${skillScore + '%'}">0%</strong></div>
+                <div class="breakdown-card"><h3>Experience</h3><div class="progress-bar"><div th:style="'width:' + ${experienceScore} + '%'"/></div><strong th:text="${experienceScore + '%'}">0%</strong></div>
+                <div class="breakdown-card"><h3>Projects</h3><div class="progress-bar"><div th:style="'width:' + ${projectScore} + '%'"/></div><strong th:text="${projectScore + '%'}">0%</strong></div>
+                <div class="breakdown-card"><h3>Education</h3><div class="progress-bar"><div th:style="'width:' + ${educationScore} + '%'"/></div><strong th:text="${educationScore + '%'}">0%</strong></div>
+            </div>
+        </section>
+
+        <section th:if="${!hasResume}" style="background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1; padding: 3.5rem 2rem; text-align: center; margin: 2rem 0;">
+            <div style="width: 70px; height: 70px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 1rem;">
+                <i class="fa-solid fa-file-arrow-up"></i>
+            </div>
+            <h2 style="font-size: 1.4rem; color: #0f172a; margin-bottom: 0.5rem;">Upload your resume to get your ATS score</h2>
+            <p style="color: #64748b; max-width: 500px; margin: 0 auto 1.5rem;">HireHub AI analyzes keyword density, section headers, skill matches, and quantifiable achievements.</p>
+            <a th:href="@{/resume-analyzer}" class="primary-btn" style="background: #0284c7; color: #ffffff; padding: 0.75rem 1.75rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-upload"></i>
+                Upload Resume Now
+            </a>
+        </section>
+    </main>
+</div>
+</body>
+</html>

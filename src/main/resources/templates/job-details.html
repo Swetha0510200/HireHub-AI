@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${job.title} + ' | HireHub AI'">Job Details | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/jobs.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .details-block {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .details-block h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .details-block h3 i {
+            color: #0284c7;
+        }
+        .details-block p, .details-block pre {
+            color: #334155;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            white-space: pre-line;
+            font-family: inherit;
+        }
+    </style>
+</head>
+
+<body>
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Career Platform</p>
+            </div>
+        </div>
+        <nav th:if="${userRole != 'Recruiter' and userRole != 'Admin'}">
+            <a th:href="@{/dashboard}" class="menu-item"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a th:href="@{/browse-jobs}" class="menu-item active"><i class="fa-solid fa-briefcase"></i><span>Browse Jobs</span></a>
+            <a th:href="@{/ai-job-match}" class="menu-item"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a>
+            <a th:href="@{/resume-analyzer}" class="menu-item"><i class="fa-solid fa-file-lines"></i><span>Resume Analyzer</span></a>
+            <a th:href="@{/ats-score}" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>ATS Resume Score</span></a>
+            <a th:href="@{/saved-jobs}" class="menu-item"><i class="fa-solid fa-bookmark"></i><span>Saved Jobs</span></a>
+            <a th:href="@{/applications}" class="menu-item"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a>
+            <a th:href="@{/interviews}" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Interviews</span></a>
+            <a th:href="@{/profile}" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+            <a th:href="@{/settings}" class="menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+        <nav th:if="${userRole == 'Recruiter' or userRole == 'Admin'}">
+            <a th:href="@{/recruiter/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a>
+            <a th:href="@{/post-job}" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a>
+            <a th:href="@{/recruiter/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Manage Jobs</span></a>
+            <a th:href="@{/recruiter/applicants}" class="menu-item"><i class="fa-solid fa-users"></i><span>Applicants</span></a>
+            <a th:href="@{/browse-jobs}" class="menu-item active"><i class="fa-solid fa-globe"></i><span>Browse Live Jobs</span></a>
+            <a th:href="@{/profile}" class="menu-item"><i class="fa-solid fa-building"></i><span>Company Profile</span></a>
+            <a th:href="@{/settings}" class="menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="top-header">
+            <div class="search-section">
+                <a th:href="@{/browse-jobs}" style="color: #0284c7; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Browse Jobs
+                </a>
+            </div>
+            <div class="header-right">
+                <a th:href="@{/notifications}" class="icon-btn" style="text-decoration: none; color: inherit;">
+                    <i class="fa-regular fa-bell"></i>
+                </a>
+                <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                    <div class="avatar-initial"
+                         th:text="${userName != null && !userName.isEmpty() ? userName.substring(0, 1).toUpperCase() : 'U'}">
+                        U
+                    </div>
+                    <div>
+                        <h4 th:text="${userName != null ? userName : 'Student'}">Candidate</h4>
+                        <p th:text="${userRole != null ? userRole : 'Student'}">Student</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-left">
+                <span class="hero-tag"><i class="fa-solid fa-briefcase"></i> Job Overview</span>
+                <h1 th:text="${job.title}">Job Title</h1>
+                <div class="job-meta" style="margin-top: 0.5rem; margin-bottom: 1.25rem;">
+                    <span><i class="fa-solid fa-building"></i> <strong th:text="${job.company}">Company</strong></span>
+                    <span><i class="fa-solid fa-location-dot"></i> <span th:text="${job.location}">Location</span></span>
+                    <span><i class="fa-solid fa-briefcase"></i> <span th:text="${job.experience}">Experience</span></span>
+                    <span><i class="fa-solid fa-clock"></i> <span th:text="${job.type}">Type</span></span>
+                    <span th:if="${job.workMode != null}"><i class="fa-solid fa-laptop-house"></i> <span th:text="${job.workMode}">Hybrid</span></span>
+                    <span th:if="${job.salary != null}"><i class="fa-solid fa-indian-rupee-sign"></i> <strong th:text="${job.salary}">Salary</strong></span>
+                </div>
+                <div class="hero-buttons" style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                    <a th:if="${!hasApplied}" class="secondary-btn" th:href="@{/apply/{jobId}(jobId=${job.id})}" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-paper-plane"></i> Apply Now
+                    </a>
+                    <a th:if="${hasApplied}" class="secondary-btn" th:href="@{/applications}" style="background: #16a34a; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-circle-check"></i> Already Applied (Track Status)
+                    </a>
+                    <form th:if="${!hasSaved}" th:action="@{/jobs/{id}/save(id=${job.id})}" method="post" style="display: inline;">
+                        <button class="primary-btn" type="submit" style="background: #ffffff; color: #0284c7; border: 1.5px solid #0284c7; cursor: pointer;">
+                            <i class="fa-regular fa-bookmark"></i> Save Job
+                        </button>
+                    </form>
+                    <form th:if="${hasSaved}" th:action="@{/jobs/{id}/unsave(id=${job.id})}" method="post" style="display: inline;">
+                        <button class="primary-btn" type="submit" style="background: #f1f5f9; color: #475569; border: 1.5px solid #cbd5e1; cursor: pointer;">
+                            <i class="fa-solid fa-bookmark"></i> Bookmarked (Remove)
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="company-logo-large"><i class="fa-solid fa-building"></i></div>
+            </div>
+        </section>
+
+        <!-- Key Skills -->
+        <div class="details-block" th:if="${job.skills != null and !job.skills.isBlank()}">
+            <h3><i class="fa-solid fa-layer-group"></i> Required Tech Stack & Skills</h3>
+            <div class="skills" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <span th:each="skill : ${#strings.arraySplit(job.skills, ',')}"
+                      style="background: #e0f2fe; color: #0284c7; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem;"
+                      th:text="${#strings.trim(skill)}">Skill</span>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="details-block" th:if="${job.description != null and !job.description.isBlank()}">
+            <h3><i class="fa-solid fa-align-left"></i> About the Position</h3>
+            <p th:text="${job.description}">Detailed job description</p>
+        </div>
+
+        <!-- Responsibilities -->
+        <div class="details-block" th:if="${job.responsibilities != null and !job.responsibilities.isBlank()}">
+            <h3><i class="fa-solid fa-list-check"></i> Key Responsibilities</h3>
+            <p th:text="${job.responsibilities}">Responsibilities details</p>
+        </div>
+
+        <!-- Requirements -->
+        <div class="details-block" th:if="${job.requirements != null and !job.requirements.isBlank()}">
+            <h3><i class="fa-solid fa-certificate"></i> Qualifications & Requirements</h3>
+            <p th:text="${job.requirements}">Requirements details</p>
+        </div>
+
+        <!-- Benefits -->
+        <div class="details-block" th:if="${job.benefits != null and !job.benefits.isBlank()}">
+            <h3><i class="fa-solid fa-gift"></i> Perks & Benefits</h3>
+            <p th:text="${job.benefits}">Benefits details</p>
+        </div>
+
+        <!-- Related Jobs -->
+        <section class="related-jobs" style="margin-top: 2rem;">
+            <h2 style="font-size: 1.3rem; font-weight: 700; color: #0f172a; margin-bottom: 1rem;">Other Opportunities on HireHub</h2>
+            <div class="job-grid">
+                <div class="job-card" th:each="otherJob : ${recommendedJobs}" th:if="${otherJob.id != job.id}">
+                    <div class="company">
+                        <i class="fa-solid fa-building"></i>
+                        <div>
+                            <h3 th:text="${otherJob.title}">Title</h3>
+                            <span th:text="${otherJob.company + ' • ' + otherJob.location}">Company · Location</span>
+                        </div>
+                    </div>
+                    <div class="match-score"><span th:text="${otherJob.type}">Job</span></div>
+                    <a th:href="@{/jobs/{id}(id=${otherJob.id})}" class="apply-btn">View Details</a>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

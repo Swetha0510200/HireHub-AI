@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Applicants | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: #ffffff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 550px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalFadeIn 0.2s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Recruiter Portal</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/recruiter/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a>
+            <a th:href="@{/post-job}" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a>
+            <a th:href="@{/recruiter/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Manage Jobs</span></a>
+            <a th:href="@{/recruiter/applicants}" class="menu-item active"><i class="fa-solid fa-users"></i><span>Applicants</span></a>
+            <a th:href="@{/browse-jobs}" class="menu-item"><i class="fa-solid fa-globe"></i><span>Browse Live Jobs</span></a>
+            <a th:href="@{/profile}" class="menu-item"><i class="fa-solid fa-building"></i><span>Company Profile</span></a>
+            <a th:href="@{/settings}" class="menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header class="top-header">
+            <div class="search-section">
+                <h3 style="font-weight: 700; color: #0f172a;">Candidate Applications</h3>
+            </div>
+            <div class="header-right">
+                <a th:href="@{/recruiter/dashboard}" style="color: #0284c7; text-decoration: none; font-weight: 600;">
+                    <i class="fa-solid fa-arrow-left"></i> Dashboard
+                </a>
+            </div>
+        </header>
+
+        <div th:if="${successMessage}" style="background: #dcfce7; color: #16a34a; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fa-solid fa-circle-check"></i> <span th:text="${successMessage}">Success message</span>
+        </div>
+        <div th:if="${errorMessage}" style="background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${errorMessage}">Error message</span>
+        </div>
+
+        <section style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.5rem;">
+            <!-- Filter by Job -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h4 style="font-size: 1.1rem; font-weight: 700; color: #0f172a;">All Received Applications</h4>
+                    <p style="font-size: 0.85rem; color: #64748b;" th:text="${applications != null ? applications.size() + ' candidates found' : '0 candidates'}">0 candidates</p>
+                </div>
+                <form th:action="@{/recruiter/applicants}" method="get" style="display: flex; gap: 0.5rem; align-items: center;">
+                    <label for="jobFilter" style="font-size: 0.85rem; font-weight: 600; color: #475569;">Filter by Job:</label>
+                    <select id="jobFilter" name="jobId" onchange="this.form.submit()" style="padding: 0.5rem 1rem; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.85rem;">
+                        <option value="">All Job Listings</option>
+                        <option th:each="rj : ${recruiterJobs}" th:value="${rj.id}" th:text="${rj.title}" th:selected="${rj.id == selectedJobId}">Job Title</option>
+                    </select>
+                </form>
+            </div>
+
+            <!-- Candidate Cards / Table -->
+            <div th:if="${applications != null and !applications.isEmpty()}">
+                <div th:each="app : ${applications}" style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; background: #ffffff; transition: box-shadow 0.2s;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;" th:text="${app.applicantName != null ? app.applicantName : app.applicantEmail}">Candidate Name</h3>
+                                <span th:if="${app.matchScore != null}" style="background: #e0f2fe; color: #0284c7; font-weight: 700; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 20px;">
+                                    <i class="fa-solid fa-bolt"></i> <span th:text="${app.matchScore + '% ATS'}">90% ATS</span>
+                                </span>
+                            </div>
+                            <div style="color: #64748b; font-size: 0.85rem; margin-top: 0.25rem;">
+                                <i class="fa-solid fa-envelope"></i> <span th:text="${app.applicantEmail}">email</span> &bull;
+                                <i class="fa-solid fa-phone" th:if="${app.applicantPhone != null}"></i> <span th:text="${app.applicantPhone}">phone</span>
+                            </div>
+                            <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #334155;">
+                                <strong>Role Applied:</strong> <span th:text="${app.job.title} + ' (' + ${app.job.company} + ')'">Job</span>
+                            </div>
+                        </div>
+
+                        <!-- Status Update Dropdown -->
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                            <form th:action="@{/recruiter/applications/{id}/status(id=${app.id})}" method="post" style="display: flex; align-items: center; gap: 0.4rem;">
+                                <select name="status" onchange="this.form.submit()" style="padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 600; font-size: 0.8rem; border: 1.5px solid #cbd5e1;">
+                                    <option value="Applied" th:selected="${app.status == 'Applied'}">Applied</option>
+                                    <option value="Under Review" th:selected="${app.status == 'Under Review'}">Under Review</option>
+                                    <option value="Shortlisted" th:selected="${app.status == 'Shortlisted'}">Shortlisted</option>
+                                    <option value="Interview" th:selected="${app.status == 'Interview'}">Interview</option>
+                                    <option value="Selected" th:selected="${app.status == 'Selected'}">Selected</option>
+                                    <option value="Rejected" th:selected="${app.status == 'Rejected'}">Rejected</option>
+                                </select>
+                            </form>
+                            <button type="button" class="btn-schedule"
+                                    th:data-appid="${app.id}"
+                                    th:data-cname="${app.applicantName != null ? app.applicantName : app.applicantEmail}"
+                                    th:data-jtitle="${app.job.title}"
+                                    onclick="openScheduleModal(this)"
+                                    style="background: #0284c7; color: #ffffff; border: none; padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                                <i class="fa-solid fa-calendar-plus"></i> Schedule Interview
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Skills & Education Details -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; background: #f8fafc; padding: 0.85rem; border-radius: 8px; font-size: 0.85rem; color: #475569; margin-bottom: 0.75rem;">
+                        <div th:if="${app.degree != null}"><strong>Education:</strong> <span th:text="${app.degree + (app.university != null ? ' - ' + app.university : '')}">B.Tech</span></div>
+                        <div th:if="${app.experience != null}"><strong>Experience:</strong> <span th:text="${app.experience}">Fresher</span></div>
+                        <div th:if="${app.skills != null}" style="grid-column: 1 / -1;"><strong>Skills:</strong> <span th:text="${app.skills}">Java, Spring Boot, MySQL</span></div>
+                        <div th:if="${app.coverLetter != null and !app.coverLetter.isBlank()}" style="grid-column: 1 / -1;"><strong>Cover Note:</strong> <span th:text="${app.coverLetter}">Letter</span></div>
+                    </div>
+
+                    <!-- Links & Resume Download -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="display: flex; gap: 1rem;">
+                            <a th:if="${app.linkedIn != null}" th:href="${app.linkedIn}" target="_blank" style="color: #0284c7; text-decoration: none;"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+                            <a th:if="${app.github != null}" th:href="${app.github}" target="_blank" style="color: #334155; text-decoration: none;"><i class="fa-brands fa-github"></i> GitHub</a>
+                            <a th:if="${app.portfolio != null}" th:href="${app.portfolio}" target="_blank" style="color: #059669; text-decoration: none;"><i class="fa-solid fa-globe"></i> Portfolio</a>
+                        </div>
+                        <div>
+                            <a th:if="${app.resumeData != null}" th:href="@{/recruiter/applications/{id}/resume(id=${app.id})}"
+                               style="background: #e0f2fe; color: #0284c7; padding: 0.4rem 0.9rem; border-radius: 6px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                                <i class="fa-solid fa-file-pdf"></i> Download Resume (<span th:text="${app.resumeFileName}">resume.pdf</span>)
+                            </a>
+                            <span th:if="${app.resumeData == null}" style="color: #94a3b8; font-size: 0.8rem;">No resume attached</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${applications == null or #lists.isEmpty(applications)}" style="text-align: center; padding: 4rem 1rem; color: #64748b;">
+                <i class="fa-solid fa-users-slash" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                <h3 style="color: #0f172a; font-weight: 700; margin-bottom: 0.5rem;">No applicants found</h3>
+                <p>No candidates have applied for the selected criteria yet.</p>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Schedule Interview Modal -->
+<div id="scheduleModal" class="modal">
+    <div class="modal-content">
+        <div style="background: #0284c7; color: #ffffff; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 1.15rem; font-weight: 700;"><i class="fa-solid fa-calendar-check"></i> Schedule Candidate Interview</h3>
+            <button type="button" onclick="closeScheduleModal()" style="background: none; border: none; color: #ffffff; font-size: 1.2rem; cursor: pointer;">&times;</button>
+        </div>
+        <form th:action="@{/recruiter/schedule-interview}" method="post" style="padding: 1.5rem;">
+            <input type="hidden" id="modalAppId" name="applicationId" value="">
+            <div style="margin-bottom: 1rem;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: #334155;">Candidate & Role</label>
+                <div id="modalCandidateInfo" style="font-weight: 600; color: #0f172a; background: #f8fafc; padding: 0.6rem; border-radius: 6px; margin-top: 0.25rem;">Candidate Name</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label for="interviewDate" style="font-size: 0.85rem; font-weight: 600; color: #334155;">Interview Date *</label>
+                    <input type="date" id="interviewDate" name="interviewDate" required style="width: 100%; padding: 0.6rem; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit;">
+                </div>
+                <div>
+                    <label for="interviewTime" style="font-size: 0.85rem; font-weight: 600; color: #334155;">Interview Time *</label>
+                    <input type="text" id="interviewTime" name="interviewTime" placeholder="e.g. 11:00 AM IST" required style="width: 100%; padding: 0.6rem; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit;">
+                </div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label for="interviewType" style="font-size: 0.85rem; font-weight: 600; color: #334155;">Interview Type *</label>
+                <select id="interviewType" name="interviewType" required style="width: 100%; padding: 0.6rem; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit;">
+                    <option value="Technical Round 1">Technical Round 1 (Coding & Fundamentals)</option>
+                    <option value="Technical Round 2">Technical Round 2 (System Design & Frameworks)</option>
+                    <option value="HR Discussion">HR Discussion & Culture Fit</option>
+                    <option value="Managerial Round">Managerial & Final Discussion</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label for="meetingUrl" style="font-size: 0.85rem; font-weight: 600; color: #334155;">Meeting Link (Google Meet / Zoom)</label>
+                <input type="url" id="meetingUrl" name="meetingUrl" placeholder="https://meet.google.com/abc-xyz-pqr" style="width: 100%; padding: 0.6rem; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit;">
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label for="notes" style="font-size: 0.85rem; font-weight: 600; color: #334155;">Preparation Notes for Candidate</label>
+                <textarea id="notes" name="notes" placeholder="Please prepare a live coding environment with Java/Spring Boot and keep your webcam on..." style="width: 100%; min-height: 80px; padding: 0.6rem; border: 1.5px solid #cbd5e1; border-radius: 8px; font-family: inherit;"></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" onclick="closeScheduleModal()" style="padding: 0.6rem 1.25rem; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 6px; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button type="submit" style="padding: 0.6rem 1.5rem; background: #0284c7; color: #ffffff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Send Invitation</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openScheduleModal(btn) {
+    document.getElementById('modalAppId').value = btn.dataset.appid;
+    document.getElementById('modalCandidateInfo').textContent = btn.dataset.cname + ' — ' + btn.dataset.jtitle;
+    document.getElementById('scheduleModal').classList.add('show');
+}
+function closeScheduleModal() {
+    document.getElementById('scheduleModal').classList.remove('show');
+}
+</script>
+</body>
+</html>

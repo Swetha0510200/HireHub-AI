@@ -1,0 +1,980 @@
+/* ==========================================
+        GOOGLE FONT
+========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* ==========================================
+        RESET
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+    overflow-x:hidden;
+
+    background:linear-gradient(135deg,
+            #eef8ff 0%,
+            #d9f1ff 35%,
+            #b9e5ff 70%,
+            #91d5ff 100%);
+
+}
+
+/* ==========================================
+        ANIMATED BACKGROUND
+========================================== */
+
+.background{
+
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    z-index:-1;
+
+}
+
+.background .circle{
+
+    position:absolute;
+    border-radius:50%;
+    filter:blur(60px);
+    animation:float 12s infinite alternate ease-in-out;
+
+}
+
+.c1{
+
+    width:420px;
+    height:420px;
+
+    background:#60a5fa;
+
+    top:-120px;
+    left:-120px;
+
+}
+
+.c2{
+
+    width:340px;
+    height:340px;
+
+    background:#38bdf8;
+
+    right:-100px;
+    bottom:-100px;
+
+}
+
+.c3{
+
+    width:260px;
+    height:260px;
+
+    background:#bfdbfe;
+
+    top:45%;
+    left:45%;
+
+}
+
+@keyframes float{
+
+    from{
+
+        transform:translateY(0) translateX(0);
+
+    }
+
+    to{
+
+        transform:translateY(35px)
+                  translateX(25px);
+
+    }
+
+}
+
+/* ==========================================
+        MAIN CONTAINER
+========================================== */
+
+.container{
+
+    width:92%;
+    max-width:1450px;
+
+    margin:40px auto;
+
+    display:flex;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    background:rgba(255,255,255,.75);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+    0 25px 60px rgba(13,71,161,.18);
+
+}
+
+/* ==========================================
+        LEFT PANEL
+========================================== */
+
+.left-panel{
+
+    width:45%;
+
+    padding:60px;
+
+    color:#0f172a;
+
+    background:linear-gradient(160deg,
+            rgba(255,255,255,.55),
+            rgba(255,255,255,.15));
+
+}
+
+.logo{
+
+    display:flex;
+    align-items:center;
+    gap:15px;
+
+    margin-bottom:40px;
+
+}
+
+.logo i{
+
+    width:70px;
+    height:70px;
+
+    border-radius:20px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:linear-gradient(135deg,#2563eb,#38bdf8);
+
+    color:#fff;
+
+    font-size:28px;
+
+}
+
+.logo h1{
+
+    font-size:34px;
+    color:#1565c0;
+    font-weight:700;
+
+}
+
+.left-panel h2{
+
+    font-size:46px;
+    line-height:1.25;
+    margin-bottom:20px;
+
+}
+
+.left-panel p{
+
+    font-size:17px;
+    color:#475569;
+
+    line-height:1.8;
+
+    margin-bottom:35px;
+
+}
+
+/* ==========================================
+        BENEFITS
+========================================== */
+
+.benefits{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:18px;
+
+    margin-bottom:40px;
+
+}
+
+.benefits div{
+
+    background:rgba(255,255,255,.75);
+
+    padding:18px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-weight:500;
+
+    color:#334155;
+
+    box-shadow:0 10px 25px rgba(37,99,235,.08);
+
+    transition:.3s;
+
+}
+
+.benefits div:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 18px 35px rgba(37,99,235,.18);
+
+}
+
+.benefits i{
+
+    color:#1d4ed8;
+
+    font-size:20px;
+
+}
+
+/* ==========================================
+        STATS
+========================================== */
+
+.stats{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:20px;
+
+}
+
+.stats div{
+
+    text-align:center;
+
+}
+
+.stats h3{
+
+    font-size:32px;
+
+    color:#0d47a1;
+
+    font-weight:700;
+
+}
+
+.stats span{
+
+    color:#64748b;
+
+    font-size:15px;
+
+}
+
+/* ==========================================
+        RIGHT PANEL
+========================================== */
+
+.right-panel{
+
+    width:55%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px;
+
+}
+
+/* ==========================================
+        REGISTER CARD
+========================================== */
+
+.register-card{
+
+    width:100%;
+
+    max-width:560px;
+
+    background:rgba(255,255,255,.92);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:28px;
+
+    padding:40px;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.12);
+
+}
+
+.register-card h2{
+
+    text-align:center;
+
+    font-size:34px;
+
+    color:#0f172a;
+
+    margin-bottom:8px;
+
+}
+
+.register-card p{
+
+    text-align:center;
+
+    color:#64748b;
+
+    margin-bottom:30px;
+
+}
+
+/* ==========================================
+        ROLE SELECTION
+========================================== */
+
+.role-selection{
+
+    display:flex;
+
+    gap:18px;
+
+    margin-bottom:30px;
+
+}
+
+.role-card{
+
+    flex:1;
+
+    background:#f1f8ff;
+
+    border:2px solid transparent;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    position:relative;
+
+}
+
+.role-card:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.role-card.active{
+
+    border-color:#2563eb;
+
+    background:#e0f2fe;
+
+    box-shadow:0 12px 25px rgba(37,99,235,.18);
+
+}
+
+.role-card input{
+
+    display:none;
+
+}
+
+.role-card i{
+
+    font-size:30px;
+
+    color:#2563eb;
+
+    margin-bottom:12px;
+
+}
+
+.role-card span{
+
+    display:block;
+
+    font-weight:600;
+
+    color:#0f172a;
+
+}
+
+/* ==========================================
+        INPUT GROUPS
+========================================== */
+
+.input-group{
+
+    position:relative;
+
+    margin-bottom:18px;
+
+}
+
+.input-group input{
+
+    width:100%;
+
+    padding:16px 50px;
+
+    border:2px solid #dbeafe;
+
+    border-radius:14px;
+
+    background:#f8fbff;
+
+    font-size:15px;
+
+    color:#1e293b;
+
+    outline:none;
+
+    transition:.3s;
+
+}
+
+.input-group input:focus{
+
+    border-color:#2563eb;
+
+    background:#ffffff;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+
+}
+
+.input-group i{
+
+    position:absolute;
+
+    left:18px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#2563eb;
+
+    font-size:17px;
+
+}
+
+/* ==========================================
+        PASSWORD EYE ICON
+========================================== */
+
+.toggle-password{
+
+    position:absolute;
+
+    right:18px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:#64748b;
+
+    transition:.3s;
+
+}
+
+.toggle-password:hover{
+
+    color:#2563eb;
+
+}
+
+/* ==========================================
+        TERMS
+========================================== */
+
+.terms{
+
+    margin:18px 0 25px;
+
+    font-size:14px;
+
+    color:#475569;
+
+}
+
+.terms label{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    line-height:1.6;
+
+}
+
+.terms input{
+
+    margin-top:4px;
+
+}
+
+.terms a{
+
+    color:#2563eb;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.terms a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ==========================================
+        CREATE ACCOUNT BUTTON
+========================================== */
+
+.register-btn{
+
+    width:100%;
+
+    border:none;
+
+    border-radius:14px;
+
+    padding:16px;
+
+    background:linear-gradient(135deg,#2563eb,#38bdf8);
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    box-shadow:0 12px 25px rgba(37,99,235,.25);
+
+}
+
+.register-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 18px 35px rgba(37,99,235,.35);
+
+}
+
+.register-btn i{
+
+    margin-right:8px;
+
+}
+
+/* ==========================================
+        DIVIDER
+========================================== */
+
+.divider{
+
+    display:flex;
+
+    align-items:center;
+
+    margin:30px 0 20px;
+
+}
+
+.divider::before,
+
+.divider::after{
+
+    content:"";
+
+    flex:1;
+
+    height:1px;
+
+    background:#dbeafe;
+
+}
+
+.divider span{
+
+    padding:0 18px;
+
+    color:#64748b;
+
+    font-weight:500;
+
+}
+
+/* ==========================================
+        SOCIAL BUTTONS
+========================================== */
+
+.google-btn,
+
+.linkedin-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    border-radius:14px;
+
+    border:1px solid #dbeafe;
+
+    background:white;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    margin-bottom:14px;
+
+    transition:.3s;
+
+}
+
+.google-btn:hover,
+
+.linkedin-btn:hover{
+
+    background:#f5f9ff;
+
+    transform:translateY(-2px);
+
+}
+
+.google-btn i{
+
+    color:#ea4335;
+
+    margin-right:10px;
+
+}
+
+.linkedin-btn i{
+
+    color:#0a66c2;
+
+    margin-right:10px;
+
+}
+
+/* ==========================================
+        LOGIN LINK
+========================================== */
+
+.login-link{
+
+    margin-top:25px;
+
+    text-align:center;
+
+    font-size:15px;
+
+    color:#475569;
+
+}
+
+.login-link a{
+
+    text-decoration:none;
+
+    color:#2563eb;
+
+    font-weight:700;
+
+}
+
+.login-link a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ==========================================
+        RESPONSIVE DESIGN
+========================================== */
+
+@media (max-width:1200px){
+
+    .container{
+
+        width:95%;
+
+    }
+
+    .left-panel{
+
+        padding:40px;
+
+    }
+
+    .left-panel h2{
+
+        font-size:38px;
+
+    }
+
+}
+
+@media (max-width:992px){
+
+    body{
+
+        overflow:auto;
+
+    }
+
+    .container{
+
+        flex-direction:column;
+
+        margin:20px auto;
+
+    }
+
+    .left-panel{
+
+        width:100%;
+
+        text-align:center;
+
+        padding:45px;
+
+    }
+
+    .benefits{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .stats{
+
+        justify-content:space-evenly;
+
+    }
+
+    .right-panel{
+
+        width:100%;
+
+        padding:30px;
+
+    }
+
+    .register-card{
+
+        max-width:650px;
+
+    }
+
+}
+
+@media (max-width:768px){
+
+    .left-panel{
+
+        display:none;
+
+    }
+
+    .right-panel{
+
+        width:100%;
+
+        padding:20px;
+
+    }
+
+    .register-card{
+
+        width:100%;
+
+        border-radius:20px;
+
+        padding:30px 22px;
+
+    }
+
+    .role-selection{
+
+        flex-direction:column;
+
+    }
+
+    .register-card h2{
+
+        font-size:28px;
+
+    }
+
+}
+
+@media (max-width:480px){
+
+    .register-card{
+
+        padding:22px 18px;
+
+    }
+
+    .input-group input{
+
+        padding:14px 45px;
+
+        font-size:14px;
+
+    }
+
+    .register-btn,
+
+    .google-btn,
+
+    .linkedin-btn{
+
+        font-size:14px;
+
+        padding:14px;
+
+    }
+
+}
+
+/* ==========================================
+        SMOOTH ANIMATIONS
+========================================== */
+
+.container{
+
+    animation:fadeUp .9s ease;
+
+}
+
+.register-card{
+
+    animation:cardAnimation 1s ease;
+
+}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(35px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@keyframes cardAnimation{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(.96);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+/* ==========================================
+        SCROLLBAR
+========================================== */
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#eaf6ff;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#60a5fa;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#2563eb;
+
+}

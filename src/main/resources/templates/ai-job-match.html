@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Job Match | HireHub AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/ai-job-match.css}">
+</head>
+<body>
+
+<div class="dashboard">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-briefcase"></i>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Career Platform</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/dashboard}" class="menu-item"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a th:href="@{/browse-jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Browse Jobs</span></a>
+            <a th:href="@{/ai-job-match}" class="menu-item active"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a>
+            <a th:href="@{/resume-analyzer}" class="menu-item"><i class="fa-solid fa-file-lines"></i><span>Resume Analyzer</span></a>
+            <a th:href="@{/ats-score}" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>ATS Score</span></a>
+            <a th:href="@{/saved-jobs}" class="menu-item"><i class="fa-solid fa-bookmark"></i><span>Saved Jobs</span></a>
+            <a th:href="@{/applications}" class="menu-item"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a>
+            <a th:href="@{/interviews}" class="menu-item"><i class="fa-solid fa-calendar-days"></i><span>Interviews</span></a>
+            <a th:href="@{/profile}" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+            <a th:href="@{/settings}" class="menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+        <header class="topbar">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search matched jobs, skills, or roles...">
+            </div>
+            <div class="top-right">
+                <a th:href="@{/notifications}" class="icon-btn" style="text-decoration: none; color: inherit;">
+                    <i class="fa-regular fa-bell"></i>
+                </a>
+                <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                    <div th:if="${session.userProfileImage != null && !session.userProfileImage.isEmpty()}">
+                        <img th:src="${session.userProfileImage}" alt="Profile" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                    <div th:if="${session.userProfileImage == null || session.userProfileImage.isEmpty()}" class="avatar-initial"
+                         th:text="${session.userInitials != null ? session.userInitials : (userName != null && !userName.isEmpty() ? (userName.contains(' ') ? userName.split(' ')[0].substring(0,1).toUpperCase() + userName.split(' ')[userName.split(' ').length-1].substring(0,1).toUpperCase() : userName.substring(0,1).toUpperCase()) : 'U')}">
+                        U
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600;" th:text="${userName != null ? userName : 'Student'}">Candidate</h4>
+                        <span style="color: #64748b; font-size: 0.75rem;" th:text="${profile != null && profile.currentTitle != null ? profile.currentTitle : 'Job Seeker'}">Candidate</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- AI HERO SECTION -->
+        <section class="hero">
+            <div class="hero-left">
+                <span class="hero-tag">🤖 AI Career Intelligence Engine</span>
+                <h1>Personalized Job Matching & Skill Gap Analysis</h1>
+                <p>
+                    Our AI compares your verified profile skills, academic credentials, and latest parsed resume against every active opportunity in the database to rank the highest-probability roles for you.
+                </p>
+                <div class="hero-buttons">
+                    <a th:href="@{/resume-analyzer}" class="primary-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-upload"></i> <span th:text="${hasResume ? 'Re-Analyze Resume' : 'Upload Resume'}">Upload Resume</span>
+                    </a>
+                    <a th:href="@{/browse-jobs}" class="secondary-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-briefcase"></i> Explore All Roles
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI MATCH STATS & SUMMARY -->
+        <section class="match-dashboard">
+            <div class="analysis-section">
+                <div class="score-grid">
+                    <div class="score-card blue">
+                        <div class="score-header">
+                            <h4>Top Match Fit</h4>
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="circle-score">
+                            <span th:text="${topMatchScore + '%'}">94%</span>
+                        </div>
+                        <p>Calculated Alignment</p>
+                    </div>
+
+                    <div class="score-card green">
+                        <div class="score-header">
+                            <h4>Profile ATS Score</h4>
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="circle-score">
+                            <span th:text="${latestResume != null ? latestResume.atsScore + '%' : 'N/A'}">88%</span>
+                        </div>
+                        <p th:text="${latestResume != null ? latestResume.resumeQuality : 'Upload Resume'}">Optimized</p>
+                    </div>
+
+                    <div class="score-card orange">
+                        <div class="score-header">
+                            <h4>Verified Skills</h4>
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <div class="circle-score">
+                            <span th:text="${latestResume != null && latestResume.skillCount != null ? latestResume.skillCount : (profile != null && profile.skills != null ? profile.skills.split(',').length : 0)}">0</span>
+                        </div>
+                        <p>Core Competencies</p>
+                    </div>
+
+                    <div class="score-card purple">
+                        <div class="score-header">
+                            <h4>Ranked Matches</h4>
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div class="circle-score">
+                            <span th:text="${matchedJobs != null ? matchedJobs.size() : 0}">0</span>
+                        </div>
+                        <p>Live Opportunities</p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="right-panel">
+                <div class="ai-summary">
+                    <div class="panel-title">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <h3>AI Candidate Insight</h3>
+                    </div>
+                    <p th:text="${latestResume != null && latestResume.summary != null ? latestResume.summary : (profile != null && profile.summary != null ? profile.summary : 'Upload your resume to receive custom AI keyword insights, skill matching, and interview readiness recommendations.')}">
+                        Summary insight will appear here.
+                    </p>
+                    <ul>
+                        <li><i class="fa-solid fa-circle-check"></i> Algorithmic match across all MySQL listings</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Live Skill Gap Analysis for each position</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Ranked by probability of interview shortlisting</li>
+                    </ul>
+                </div>
+            </aside>
+        </section>
+
+        <!-- RANKED MATCHED JOBS LIST -->
+        <section class="jobs-section" style="margin-top: 2rem;">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.4rem; font-weight: 700; color: #0f172a;"><i class="fa-solid fa-bolt" style="color: #0284c7;"></i> Ranked AI Recommendations</h2>
+                <span style="font-size: 0.85rem; color: #64748b;" th:text="${matchedJobs != null ? matchedJobs.size() + ' jobs analyzed' : '0'}">Jobs</span>
+            </div>
+
+            <div th:if="${matchedJobs != null and !matchedJobs.isEmpty()}" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <div th:each="m : ${matchedJobs}" style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.5rem; transition: transform 0.2s, box-shadow 0.2s;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a;" th:text="${m.job.title}">Software Engineer</h3>
+                                <span style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; font-weight: 700; font-size: 0.8rem; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                    <i class="fa-solid fa-bolt"></i> <span th:text="${m.matchScore + '% Match'}">92% Match</span>
+                                </span>
+                            </div>
+                            <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
+                                <i class="fa-solid fa-building" style="color: #0284c7;"></i> <strong th:text="${m.job.company}">Company</strong> &bull;
+                                <i class="fa-solid fa-location-dot"></i> <span th:text="${m.job.location}">Location</span> &bull;
+                                <i class="fa-solid fa-briefcase"></i> <span th:text="${m.job.type}">Full-time</span> &bull;
+                                <i class="fa-solid fa-indian-rupee-sign"></i> <span th:text="${m.job.salary}">Salary</span>
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a th:href="@{/jobs/{id}(id=${m.job.id})}" style="background: #f1f5f9; color: #0284c7; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+                                Details
+                            </a>
+                            <a th:if="${!m.applied}" th:href="@{/apply/{jobId}(jobId=${m.job.id})}" style="background: #0284c7; color: #ffffff; padding: 0.5rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+                                <i class="fa-solid fa-paper-plane"></i> Apply Now
+                            </a>
+                            <span th:if="${m.applied}" style="background: #dcfce7; color: #16a34a; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.3rem;">
+                                <i class="fa-solid fa-circle-check"></i> Applied
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Match Explanation -->
+                    <div style="background: #f0f9ff; border-left: 3px solid #0284c7; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; color: #0369a1; margin-bottom: 1rem;">
+                        <i class="fa-solid fa-brain"></i> <strong>AI Matching Reason:</strong> <span th:text="${m.matchReason}">Reason</span>
+                    </div>
+
+                    <!-- Skills Comparison (Matched vs Missing) -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+                        <div>
+                            <strong style="color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Matched Skills:</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem;">
+                                <span th:each="s : ${m.matchedSkills}" style="background: #dcfce7; color: #16a34a; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem;" th:text="${s}">Java</span>
+                                <span th:if="${m.matchedSkills.isEmpty()}" style="color: #94a3b8;">None detected yet</span>
+                            </div>
+                        </div>
+                        <div>
+                            <strong style="color: #d97706;"><i class="fa-solid fa-triangle-exclamation"></i> Skills to Learn (Gap):</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem;">
+                                <span th:each="ms : ${m.missingSkills}" style="background: #fef3c7; color: #d97706; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem;" th:text="${ms}">Docker</span>
+                                <span th:if="${m.missingSkills.isEmpty()}" style="color: #16a34a; font-weight: 600;">100% Skill Coverage!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${matchedJobs == null or #lists.isEmpty(matchedJobs)}" style="text-align: center; padding: 4rem 1rem; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <i class="fa-solid fa-robot" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                <h3 style="color: #0f172a; font-weight: 700; margin-bottom: 0.5rem;">No job matches found</h3>
+                <p style="color: #64748b;">Browse live openings on HireHub or update your profile skills.</p>
+                <a th:href="@{/browse-jobs}" class="primary-btn" style="margin-top: 1rem; display: inline-block;">Browse All Jobs</a>
+            </div>
+        </section>
+    </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Internships | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/jobs.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .avatar-placeholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+        .internship-tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <!-- Unified Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p th:text="${userRole == 'Recruiter' ? 'Recruiter Portal' : (userRole == 'Admin' ? 'Admin Portal' : 'Student Portal')}">Student Portal</p>
+            </div>
+        </div>
+        <nav th:if="${userRole != 'Recruiter' and userRole != 'Admin'}">
+            <a th:href="@{/dashboard}" class="menu-item"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+            <a th:href="@{/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Find Jobs</span></a>
+            <a th:href="@{/internships}" class="menu-item active"><i class="fa-solid fa-graduation-cap"></i><span>Internships</span></a>
+            <a th:href="@{/recommendations}" class="menu-item"><i class="fa-solid fa-robot"></i><span>AI Job Match</span></a>
+            <a th:href="@{/saved-jobs}" class="menu-item"><i class="fa-solid fa-bookmark"></i><span>Saved</span></a>
+            <a th:href="@{/applications}" class="menu-item"><i class="fa-solid fa-paper-plane"></i><span>Applications</span></a>
+            <a th:href="@{/profile}" class="menu-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+        <nav th:if="${userRole == 'Recruiter' or userRole == 'Admin'}">
+            <a th:href="@{/recruiter/dashboard}" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a>
+            <a th:href="@{/post-internship}" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Post Internship</span></a>
+            <a th:href="@{/recruiter/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Manage Postings</span></a>
+            <a th:href="@{/recruiter/applicants}" class="menu-item"><i class="fa-solid fa-users"></i><span>Applicants</span></a>
+            <a th:href="@{/internships}" class="menu-item active"><i class="fa-solid fa-graduation-cap"></i><span>Browse Internships</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+        <header class="top-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div>
+                <h3 style="font-weight: 700; color: #0f172a; margin: 0;">Explore Student Internships</h3>
+                <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.2rem;">Verified internships offering industry experience, stipends, and PPO potential.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a th:if="${userRole == 'Recruiter' or userRole == 'Admin'}" th:href="@{/post-internship}" style="background: #0ea5e9; color: #ffffff; padding: 0.55rem 1.1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <i class="fa-solid fa-plus"></i> Post Internship
+                </a>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="avatar-placeholder" th:text="${userName != null && !userName.isEmpty() ? userName.substring(0,1).toUpperCase() : 'U'}">U</div>
+                    <div>
+                        <h4 style="font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0;" th:text="${userName != null ? userName : 'User'}">Candidate</h4>
+                        <small style="color: #64748b; font-size: 0.75rem;" th:text="${userRole != null ? userRole : 'Student'}">Student</small>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash Messages -->
+        <div th:if="${successMessage}" style="background: #dcfce7; color: #16a34a; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fa-solid fa-circle-check"></i> <span th:text="${successMessage}">Success message</span>
+        </div>
+        <div th:if="${errorMessage}" style="background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span th:text="${errorMessage}">Error message</span>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="search-filter-card" style="background: #ffffff; padding: 1.25rem; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 1.5rem;">
+            <form th:action="@{/internships}" method="GET" style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+                <div style="flex: 2; min-width: 240px; position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                    <input type="text" name="search" th:value="${searchQuery}" placeholder="Search domain, skills (e.g. Python, Java), or company..." style="width: 100%; padding: 0.65rem 1rem 0.65rem 2.5rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem;">
+                </div>
+
+                <div style="flex: 1; min-width: 160px;">
+                    <select name="domain" style="width: 100%; padding: 0.65rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem;">
+                        <option value="all">All Domains</option>
+                        <option value="Software Development" th:selected="${selectedDomain == 'Software Development'}">Software Development</option>
+                        <option value="Artificial Intelligence" th:selected="${selectedDomain == 'Artificial Intelligence'}">AI & Machine Learning</option>
+                        <option value="Data Science" th:selected="${selectedDomain == 'Data Science'}">Data Science & BI</option>
+                        <option value="Cloud Computing" th:selected="${selectedDomain == 'Cloud Computing'}">Cloud Computing</option>
+                        <option value="Web Development" th:selected="${selectedDomain == 'Web Development'}">Web Development</option>
+                        <option value="UI/UX Design" th:selected="${selectedDomain == 'UI/UX Design'}">UI/UX Design</option>
+                        <option value="Cyber Security" th:selected="${selectedDomain == 'Cyber Security'}">Cyber Security</option>
+                        <option value="Testing" th:selected="${selectedDomain == 'Testing'}">Software Testing</option>
+                    </select>
+                </div>
+
+                <div style="flex: 1; min-width: 140px;">
+                    <select name="duration" style="width: 100%; padding: 0.65rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem;">
+                        <option value="all">Any Duration</option>
+                        <option value="3 Months" th:selected="${selectedDuration == '3 Months'}">3 Months</option>
+                        <option value="6 Months" th:selected="${selectedDuration == '6 Months'}">6 Months</option>
+                    </select>
+                </div>
+
+                <div style="flex: 1; min-width: 140px;">
+                    <select name="mode" style="width: 100%; padding: 0.65rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.85rem;">
+                        <option value="all">Any Work Mode</option>
+                        <option value="Remote" th:selected="${selectedMode == 'Remote'}">Remote</option>
+                        <option value="Hybrid" th:selected="${selectedMode == 'Hybrid'}">Hybrid</option>
+                        <option value="On-site" th:selected="${selectedMode == 'On-site'}">On-site</option>
+                    </select>
+                </div>
+
+                <button type="submit" style="background: #0ea5e9; color: #ffffff; border: none; padding: 0.65rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    Filter
+                </button>
+                <a th:href="@{/internships}" style="background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; padding: 0.65rem 1rem; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600;">
+                    Reset
+                </a>
+            </form>
+        </div>
+
+        <!-- Count Summary -->
+        <div style="margin-bottom: 1rem; font-size: 0.9rem; color: #64748b;">
+            Showing <strong style="color: #0f172a;" th:text="${totalInternshipCount}">0</strong> live internship opportunities
+        </div>
+
+        <!-- Internships Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.25rem;">
+            <div th:each="internship : ${internships}" class="job-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-left: 4px solid #0ea5e9;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                        <div>
+                            <h4 style="margin: 0 0 0.35rem 0; font-size: 1.1rem; font-weight: 700; color: #0f172a;">
+                                <a th:href="@{'/internships/' + ${internship.id}}" th:text="${internship.title}" style="color: #0f172a; text-decoration: none;">Internship Title</a>
+                            </h4>
+                            <p style="margin: 0; font-size: 0.85rem; color: #64748b; font-weight: 600;">
+                                <i class="fa-regular fa-building"></i> <span th:text="${internship.company}">Company</span>
+                            </p>
+                        </div>
+                        <span class="internship-tag"><i class="fa-solid fa-graduation-cap"></i> Internship</span>
+                    </div>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; font-size: 0.8rem; color: #64748b; margin-bottom: 1rem;">
+                        <span><i class="fa-solid fa-location-dot"></i> <span th:text="${internship.location}">Location</span></span>
+                        <span><i class="fa-regular fa-calendar"></i> <span th:text="${internship.getDisplayDurationOrExp()}">3-6 Months</span></span>
+                        <span><i class="fa-solid fa-laptop"></i> <span th:text="${internship.workMode}">Work Mode</span></span>
+                    </div>
+
+                    <p style="font-size: 0.85rem; color: #475569; line-height: 1.5; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"
+                       th:text="${internship.description}">
+                        Internship description...
+                    </p>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.25rem;" th:if="${internship.skills != null}">
+                        <span th:each="skill : ${#strings.arraySplit(internship.skills, ',')}" class="skill-tag" th:text="${#strings.trim(skill)}" style="background: #f8fafc; border: 1px solid #e2e8f0; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; color: #334155;">Skill</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                    <div style="font-size: 1rem; font-weight: 700; color: #0ea5e9;" th:text="${internship.getDisplayPay()}">
+                        ₹25,000 / month
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <form th:action="@{'/internships/' + ${internship.id} + '/save'}" method="POST" style="display: inline;">
+                            <button type="submit" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 0.45rem 0.75rem; border-radius: 6px; cursor: pointer; color: #64748b;">
+                                <i th:class="${savedJobIds.contains(internship.id) ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'}" th:style="${savedJobIds.contains(internship.id) ? 'color: #f59e0b;' : ''}"></i>
+                            </button>
+                        </form>
+                        <a th:href="@{'/internships/' + ${internship.id}}" style="background: #0ea5e9; color: #ffffff; text-decoration: none; padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">
+                            Apply Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${internships.isEmpty()}" style="text-align: center; padding: 4rem 1rem; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 1.5rem;">
+            <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+            <h3 style="color: #1e293b; margin-bottom: 0.5rem;">No Internships Found</h3>
+            <p style="color: #64748b; font-size: 0.9rem;">Try adjusting your domain filters or search keyword.</p>
+            <a th:href="@{/internships}" style="display: inline-block; margin-top: 1rem; background: #0ea5e9; color: #ffffff; padding: 0.6rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Reset Filters</a>
+        </div>
+    </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

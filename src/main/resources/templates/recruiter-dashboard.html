@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard | HireHub AI</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="dashboard">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+                <h2>HireHub AI</h2>
+                <p>Recruiter Portal</p>
+            </div>
+        </div>
+        <nav>
+            <a th:href="@{/recruiter/dashboard}" class="menu-item active"><i class="fa-solid fa-chart-pie"></i><span>Overview</span></a>
+            <a th:href="@{/post-job}" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Post a Job</span></a>
+            <a th:href="@{/recruiter/jobs}" class="menu-item"><i class="fa-solid fa-briefcase"></i><span>Manage Jobs</span></a>
+            <a th:href="@{/recruiter/applicants}" class="menu-item"><i class="fa-solid fa-users"></i><span>Applicants</span></a>
+            <a th:href="@{/browse-jobs}" class="menu-item"><i class="fa-solid fa-globe"></i><span>Browse Live Jobs</span></a>
+            <a th:href="@{/profile}" class="menu-item"><i class="fa-solid fa-building"></i><span>Company Profile</span></a>
+            <a th:href="@{/settings}" class="menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+            <a th:href="@{/logout}" class="menu-item" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+        <header class="top-header">
+            <div class="search-section">
+                <h3 style="font-weight: 700; color: #0f172a;">Recruiter Hiring Hub</h3>
+            </div>
+            <div class="header-right">
+                <a th:href="@{/notifications}" class="icon-btn" style="text-decoration: none; color: inherit; position: relative;">
+                    <i class="fa-regular fa-bell"></i>
+                </a>
+                <div class="profile" style="display: flex; align-items: center; gap: 10px;">
+                    <div th:if="${profile != null && profile.imageUrl != null && !profile.imageUrl.isEmpty()}">
+                        <img th:src="${profile.imageUrl}" alt="Recruiter" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                    <div th:if="${profile == null || profile.imageUrl == null || profile.imageUrl.isEmpty()}" class="avatar-initial"
+                         th:text="${userName != null && !userName.isEmpty() ? userName.substring(0, 1).toUpperCase() : 'R'}">
+                        R
+                    </div>
+                    <div>
+                        <h4 th:text="${userName != null ? userName : 'Recruiter'}">David Miller</h4>
+                        <p th:text="${company != null ? company.name : 'Recruiter Portal'}">Google India</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Recruiter Hero Banner -->
+        <section class="welcome-card" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">RECRUITMENT PLATFORM</span>
+                <h1 style="font-size: 1.8rem; font-weight: 700; margin: 0.5rem 0;" th:text="'Welcome back, ' + ${userName != null ? userName : 'Recruiter'} + '!'">Welcome back!</h1>
+                <p style="opacity: 0.9; max-width: 600px;">Manage your job listings, review real candidate applications, download parsed resumes, and schedule candidate interviews seamlessly.</p>
+            </div>
+            <div>
+                <a th:href="@{/post-job}" class="primary-btn" style="background: #ffffff; color: #0284c7; padding: 0.85rem 1.75rem; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">
+                    <i class="fa-solid fa-plus"></i> Post New Job
+                </a>
+            </div>
+        </section>
+
+        <!-- Metric Cards -->
+        <section class="metrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+            <div class="metric-card" style="background: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-size: 0.85rem; color: #64748b; font-weight: 500;">Total Jobs Posted</p>
+                        <h2 style="font-size: 2rem; font-weight: 800; color: #0f172a;" th:text="${totalJobs}">0</h2>
+                    </div>
+                    <div style="background: #e0f2fe; color: #0284c7; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-size: 0.85rem; color: #64748b; font-weight: 500;">Total Candidates</p>
+                        <h2 style="font-size: 2rem; font-weight: 800; color: #0f172a;" th:text="${totalApplicants}">0</h2>
+                    </div>
+                    <div style="background: #fef3c7; color: #d97706; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-size: 0.85rem; color: #64748b; font-weight: 500;">Shortlisted</p>
+                        <h2 style="font-size: 2rem; font-weight: 800; color: #16a34a;" th:text="${shortlistedCount}">0</h2>
+                    </div>
+                    <div style="background: #dcfce7; color: #16a34a; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card" style="background: #ffffff; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-size: 0.85rem; color: #64748b; font-weight: 500;">Interviews</p>
+                        <h2 style="font-size: 2rem; font-weight: 800; color: #9333ea;" th:text="${interviewCount}">0</h2>
+                    </div>
+                    <div style="background: #f3e8ff; color: #9333ea; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two Column Layout: Recent Applicants & Quick Jobs -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+            <!-- Recent Applicants Table -->
+            <section style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;"><i class="fa-solid fa-user-graduate" style="color: #0284c7; margin-right: 0.5rem;"></i> Recent Applicants</h3>
+                    <a th:href="@{/recruiter/applicants}" style="color: #0284c7; text-decoration: none; font-size: 0.85rem; font-weight: 600;">View All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div th:if="${recentApplicants != null and !recentApplicants.isEmpty()}">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="text-align: left; color: #64748b; border-bottom: 1.5px solid #f1f5f9; font-size: 0.8rem; text-transform: uppercase;">
+                                <th style="padding: 0.75rem 0.5rem;">Candidate</th>
+                                <th style="padding: 0.75rem 0.5rem;">Job Applied</th>
+                                <th style="padding: 0.75rem 0.5rem;">Status</th>
+                                <th style="padding: 0.75rem 0.5rem;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="app : ${recentApplicants}" style="border-bottom: 1px solid #f8fafc;">
+                                <td style="padding: 0.75rem 0.5rem;">
+                                    <div style="font-weight: 600; color: #0f172a;" th:text="${app.applicantName != null ? app.applicantName : app.applicantEmail}">Name</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;" th:text="${app.applicantEmail}">email</div>
+                                </td>
+                                <td style="padding: 0.75rem 0.5rem; color: #334155; font-weight: 500;" th:text="${app.job.title}">Job</td>
+                                <td style="padding: 0.75rem 0.5rem;">
+                                    <span style="font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 12px; font-weight: 600; background: #e0f2fe; color: #0284c7;" th:text="${app.status}">Applied</span>
+                                </td>
+                                <td style="padding: 0.75rem 0.5rem;">
+                                    <a th:href="@{/recruiter/applicants(jobId=${app.job.id})}" style="background: #0284c7; color: #ffffff; padding: 0.35rem 0.75rem; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">Review</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div th:if="${recentApplicants == null or #lists.isEmpty(recentApplicants)}" style="text-align: center; padding: 3rem 1rem; color: #64748b;">
+                    <i class="fa-solid fa-inbox" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 0.75rem;"></i>
+                    <p>No candidate applications received yet.</p>
+                </div>
+            </section>
+
+            <!-- Recruiter's Active Jobs List -->
+            <section style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;"><i class="fa-solid fa-briefcase" style="color: #0284c7; margin-right: 0.5rem;"></i> Your Job Posts</h3>
+                    <a th:href="@{/recruiter/jobs}" style="color: #0284c7; text-decoration: none; font-size: 0.85rem; font-weight: 600;">Manage <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div th:if="${jobs != null and !jobs.isEmpty()}" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div th:each="j : ${jobs}" style="padding: 0.75rem; border: 1px solid #f1f5f9; border-radius: 8px; background: #f8fafc;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h4 style="font-size: 0.95rem; font-weight: 600; color: #0f172a;" th:text="${j.title}">Title</h4>
+                                <span style="font-size: 0.8rem; color: #64748b;" th:text="${j.type + ' • ' + j.location}">Type Location</span>
+                            </div>
+                            <span th:if="${j.active}" style="font-size: 0.75rem; color: #16a34a; background: #dcfce7; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">Active</span>
+                            <span th:if="${!j.active}" style="font-size: 0.75rem; color: #dc2626; background: #fee2e2; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">Paused</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${jobs == null or #lists.isEmpty(jobs)}" style="text-align: center; padding: 2rem 1rem; color: #64748b;">
+                    <p>No job listings posted yet.</p>
+                    <a th:href="@{/post-job}" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 0.5rem;">+ Post your first role</a>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+</body>
+</html>
