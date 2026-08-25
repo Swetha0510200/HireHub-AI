@@ -45,6 +45,8 @@ LIVE DEMO
 
    https://hirehub-ai-system.onrender.com
 
+   https://drive.google.com/file/d/1cOWu5OFKWEEdP88MbegqXU3GmUGEmJ8w/view?usp=drive_link
+   
 ## ✨ Key Features
 
 ### 👨‍💼 Candidate Features
